@@ -6,39 +6,73 @@ import {
   Dimensions,
   ActivityIndicator,
   Image,
+  Button,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
-import {TouchableOpacity, Switch} from 'react-native-gesture-handler';
+import {Switch} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Input from '../components/LoginInput';
+import {useDispatch} from 'react-redux';
 const {width, height} = Dimensions.get('window');
 
-const Login = ({navigation}) => {
+const Login = () => {
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    navigation.setOptions({
-      header: () => null,
-    });
-  }, []);
   const login = async () => {
     setLoading(true);
-    setTimeout(() => {
-      console.log('logged in');
-      navigation.navigate('dashboard');
-      setLoading(false);
-    }, 1000);
+    fetch('http://api.kncb.itkv4.com/usersys/authenticate', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    })
+      .then(res => {
+        if (res.status === 401) {
+          Alert.alert(
+            'Đăng nhập không thành công',
+            'Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại',
+            // [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+            // {cancelable: false},
+          );
+          throw new Error(res.status);
+        }
+        return res.json();
+      })
+      .then(data => {
+        dispatch({
+          type: 'LOGIN',
+          payload: data.token,
+        });
+      })
+      .catch(error => console.log(error))
+      .finally(() => setLoading(false));
   };
   return (
     <LinearGradient colors={['#4cd48c', '#029547']} style={styles.container}>
       <View style={styles.wraper}>
         <Image style={styles.logo} source={require('../assets/logo.png')} />
         <View>
-          <Input label="Tài khoản" placeholder="Nhập tài khoản" name="user" />
-          <View style={{height: 35}} />
+          <Input
+            label="Tài khoản"
+            placeholder="Nhập tài khoản"
+            name="user"
+            onChangeText={setUsername}
+          />
+          <View style={{height: 20}} />
           <Input
             label="Mật khẩu"
             placeholder="Nhập mật khẩu"
             name="key"
             password
+            onChangeText={setPassword}
           />
           <TouchableOpacity onPress={login} style={styles.btnLogin}>
             {!loading ? (
@@ -80,4 +114,5 @@ const styles = StyleSheet.create({
   },
   logo: {alignSelf: 'center'},
 });
+
 export default Login;

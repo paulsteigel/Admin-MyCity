@@ -21,6 +21,7 @@ export default function Input(props) {
           style={styles.textInput}
           autoCorrect={false}
           secureTextEntry={props.password}
+          onChangeText={props.onChangeText}
         />
       </LinearGradient>
     </View>

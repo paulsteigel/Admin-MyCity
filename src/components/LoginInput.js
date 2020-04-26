@@ -16,12 +16,14 @@ export default function Input(props) {
         style={{borderRadius: 10, elevation: 10}}>
         <Icon name={props.name} color="#fff" size={18} style={styles.icons} />
         <TextInput
+          autoCapitalize="none"
           placeholderTextColor="#ddd"
           placeholder={props.placeholder}
           style={styles.textInput}
           autoCorrect={false}
           secureTextEntry={props.password}
           onChangeText={props.onChangeText}
+          value={props.value}
         />
       </LinearGradient>
     </View>

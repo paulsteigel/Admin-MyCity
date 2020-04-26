@@ -1,14 +1,19 @@
-const initialState = '';
+import Axios from 'axios';
 
-const token = (state = initialState, action) => {
+const initialState = {
+  token: '',
+};
+
+const tokenReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'LOGIN':
-      return action.payload;
+    case 'LOGIN': {
+      Axios.defaults.headers.commons.Authorization = 'Bearer ' + action.payload;
+      return {token: action.payload};
+    }
     case 'LOGOUT':
-      console.log(action);
-      return '';
+      return {token: ''};
     default:
       return state;
   }
 };
-export default token;
+export default tokenReducer;

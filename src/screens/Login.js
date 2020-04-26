@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -6,14 +6,13 @@ import {
   Dimensions,
   ActivityIndicator,
   Image,
-  Button,
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {Switch} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Input from '../components/LoginInput';
 import {useDispatch} from 'react-redux';
+import Axios from 'axios';
 const {width, height} = Dimensions.get('window');
 
 const Login = () => {
@@ -23,37 +22,24 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const login = async () => {
     setLoading(true);
-    fetch('http://api.kncb.itkv4.com/usersys/authenticate', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
+    Axios.post('http://api.kncb.itkv4.com/usersys/authenticate', {
+      username,
+      password,
     })
       .then(res => {
-        if (res.status === 401) {
-          Alert.alert(
-            'Đăng nhập không thành công',
-            'Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại',
-            // [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-            // {cancelable: false},
-          );
-          throw new Error(res.status);
-        }
-        return res.json();
-      })
-      .then(data => {
         dispatch({
           type: 'LOGIN',
-          payload: data.token,
+          payload: res.data.token,
         });
       })
-      .catch(error => console.log(error))
-      .finally(() => setLoading(false));
+      .catch(error => {
+        Alert.alert(
+          'Đăng nhập không thành công',
+          'Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại',
+        );
+        setPassword('');
+        setLoading(false);
+      });
   };
   return (
     <LinearGradient colors={['#4cd48c', '#029547']} style={styles.container}>
@@ -65,6 +51,7 @@ const Login = () => {
             placeholder="Nhập tài khoản"
             name="user"
             onChangeText={setUsername}
+            value={username}
           />
           <View style={{height: 20}} />
           <Input
@@ -73,6 +60,7 @@ const Login = () => {
             name="key"
             password
             onChangeText={setPassword}
+            value={password}
           />
           <TouchableOpacity onPress={login} style={styles.btnLogin}>
             {!loading ? (

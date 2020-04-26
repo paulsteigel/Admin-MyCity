@@ -1,37 +1,41 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableHighlight} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import {useNavigation} from '@react-navigation/native';
 
-const Header = ({navigation}) => {
+const headerHeihgt = 50;
+const Header = () => {
+  const navigation = useNavigation();
   return (
-    <View style={style.wrapper}>
+    <View style={styles.wrapper}>
       <Icon
+        color="#fff"
         name="menu"
-        size={35}
-        onPress={() => navigation.toggleDrawer()}
-        style={style.icon}
+        size={headerHeihgt}
+        style={styles.menu}
+        onPress={() => navigation.openDrawer()}
       />
-      <Text style={style.title}>Phan Anh</Text>
+      <Text style={styles.title}>Tiêu đề </Text>
     </View>
   );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   wrapper: {
-    flexDirection: 'column',
-    backgroundColor: 'red',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#491',
     alignItems: 'center',
-    height: 50,
+    // height: headerHeihgt,
   },
-  icon: {
-    width: 35,
-    backgroundColor: 'green',
-    alignSelf: 'flex-start',
+  menu: {
+    width: headerHeihgt,
+    height: headerHeihgt,
   },
   title: {
-    backgroundColor: 'blue',
-    alignSelf: 'center',
+    flex: 1,
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 20,
   },
 });
 

@@ -1,85 +1,69 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React, {useState, useEffect} from 'react';
-
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useEffect} from 'react';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import Login from './src/screen/Login';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import Login from './src/screens/Login';
+import {useSelector, useDispatch} from 'react-redux';
 import {View, Text} from 'react-native';
-import Dashboard from './src/screens/Dashboard';
+import Dashboard from './src/screen/Dashboard';
+import moment from 'moment';
+import localization from 'moment/locale/vi';
+import DetailReport from './src/screen/DetailReport';
+import {LOGIN} from './src/redux/constants';
 import AsyncStorage from '@react-native-community/async-storage';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+moment.updateLocale('vi', localization);
 
 const Stack = createStackNavigator();
-const Tab = createMaterialTopTabNavigator();
-function Temp(params) {
-  const render = [1, 2, 2, 3, 3, 33, 2, 22, 2, 2].map((item, index) => (
-    <Tab.Screen key={index} name={'tab' + index} component={Tab2} />
-  ));
+const Drawer = createDrawerNavigator();
+function Dummy() {
   return (
-    <Tab.Navigator
-      tabBarPosition="bottom"
-      tabBarOptions={{
-        activeTintColor: 'lightgreen',
-        inactiveTintColor: 'grey',
+    <View>
+      <Text>Duymy</Text>
+    </View>
+  );
+}
+function StackNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#018037',
+        },
+        headerTitleStyle: {
+          color: '#fff',
+        },
+        headerTintColor: '#fff',
       }}>
-      <Tab.Screen name="taba" component={Tab1} />
-      {render}
-      {/* <Tab.Screen name="tab1" component={Tab1} />
-      <Tab.Screen name="tab2" component={Tab2} />
-      <Tab.Screen name="tab5" component={Tab2} /> */}
-    </Tab.Navigator>
+      <Stack.Screen
+        options={{title: 'Phản ánh chưa chuyển tiếp'}}
+        name="drawerNav"
+        component={DawerNavigator}
+      />
+      <Stack.Screen
+        options={{title: 'Chi tiết phản ánh'}}
+        name="detailReport"
+        component={DetailReport}
+      />
+    </Stack.Navigator>
   );
 }
-function Tab1(params) {
+
+function DawerNavigator() {
   return (
-    <View>
-      <Text>Tab 1</Text>
-    </View>
+    <Drawer.Navigator>
+      <Drawer.Screen component={Dashboard} name="dashboard" />
+    </Drawer.Navigator>
   );
 }
-class Tab2 extends React.Component {
-  static count = 1;
-  render() {
-    Tab2.count++;
-    return (
-      <View>
-        <Text>Tab {Tab2.count++}</Text>
-      </View>
-    );
-  }
-}
-function Tab3(params) {
-  return (
-    <View>
-      <Text>Tab 2</Text>
-    </View>
-  );
-}
+
 const App = () => {
-  const [initialRoute, setInitialRoute] = useState('login');
-  useEffect(() => {
-    AsyncStorage.getItem('user').then((user) => {
-      if (user !== null) setInitialRoute('dashboard');
-    });
-  });
+  const user = useSelector(state => state.user);
+
+  if (!user) return <Login />;
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={initialRoute}>
-        <Stack.Screen name="login" component={Login} />
-        <Stack.Screen
-          options={{header: () => null}}
-          name="dashboard"
-          component={Temp}
-        />
-      </Stack.Navigator>
+      <StackNavigator />
     </NavigationContainer>
   );
 };

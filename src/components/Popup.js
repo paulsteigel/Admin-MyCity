@@ -5,13 +5,22 @@ import {CLOSE_POPUP} from '../redux/constants';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {ScrollView} from 'react-native-gesture-handler';
-import Row from './PopupRow';
 import ConfirmReport from './ConfirmReport';
+import UpdateFeedback from './UpdateFeedback';
 const {width} = Dimensions.get('window');
-const Popup = props => {
+const Popup = ({id}) => {
   const [isSubmit, setIsSubmit] = useState(false);
   const dispatch = useDispatch();
   const {visible, popupTitle, height} = useSelector(state => state.popup);
+
+  const renderPopupContent = () => {
+    switch (popupId) {
+      case 10:
+        return <UpdateFeedback id={id} />;
+      default:
+        return <ConfirmReport isSubmit={isSubmit} />;
+    }
+  };
 
   const handleClose = () => dispatch({type: CLOSE_POPUP});
   return (
@@ -28,9 +37,7 @@ const Popup = props => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{popupTitle}</Text>
         </View>
-        <ScrollView>
-          <ConfirmReport isSubmit={isSubmit} />
-        </ScrollView>
+        <ScrollView>{renderPopupContent()}</ScrollView>
         <View style={styles.buttonContainer}>
           <Button title="OK" color="green" onPress={() => setIsSubmit(true)} />
         </View>

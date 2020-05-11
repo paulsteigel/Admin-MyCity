@@ -65,7 +65,7 @@ const DetailReport = ({navigation, ...props}) => {
   }
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <Popup />
+      <Popup id={report.id} />
       <PhotoView
         visible={imageView.visible}
         data={imageList}

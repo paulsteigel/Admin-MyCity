@@ -31,8 +31,6 @@ const Login = () => {
         username,
         password,
       });
-      console.log('login: ', response.data);
-
       const user = {...response.data.user, token: response.data.token};
       Axios.defaults.headers.common.Authorization = 'Bearer ' + user.token;
       await AsyncStorage.setItem('user', JSON.stringify(user));

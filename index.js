@@ -13,6 +13,7 @@ import React from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {LOGIN} from './src/redux/constants';
 import Axios from 'axios';
+import {MenuProvider} from 'react-native-popup-menu';
 AsyncStorage.getItem('user').then(user => {
   if (!user) return;
   user = JSON.parse(user);
@@ -22,7 +23,9 @@ AsyncStorage.getItem('user').then(user => {
 function ReduxProvier() {
   return (
     <Provider store={store}>
-      <App />
+      <MenuProvider>
+        <App />
+      </MenuProvider>
     </Provider>
   );
 }

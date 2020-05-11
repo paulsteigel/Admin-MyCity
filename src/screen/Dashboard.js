@@ -1,6 +1,6 @@
 /** @format */
 
-import React, {Component, useReducer, useState, useEffect} from 'react';
+import React, {useReducer, useState, useEffect} from 'react';
 import {
   FlatList,
   ActivityIndicator,
@@ -12,29 +12,33 @@ import {BASE_URL} from '../service';
 import ListItem from '../components/ListItem';
 import Axios from 'axios';
 
-const width = Dimensions.get('window').width;
+const {width, height} = Dimensions.get('window');
 
 function Dashboard({navigation, ...props}) {
-  const [loading, setLoading] = useState(false);
-  const [loadMore, setLoadMore] = useState(false);
-  const [reports, setReport] = useState([]);
+  const [loadMore, setLoadMore] = useState(true);
+
+  const [reports, setReports] = useState([]);
   useEffect(() => {
-    Axios.get(`${BASE_URL}/admin/feedbacks/pendingFeedbacks`)
-      .then(res => {
-        setReport(res.data);
-        // console.log('data: ', res.data);
-      })
-      .catch(err => {
-        console.log('[PENDING REPORT] err:', JSON.stringify(err));
-      });
-  }, []);
+    if (loadMore) loadFeedBack(reports.length);
+  }, [loadMore]);
+
+  const loadFeedBack = async start => {
+    let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
+    let res = await Axios.get(url);
+    setReports(prevState => [...prevState, ...res.data]);
+    setLoadMore(false);
+  };
+  // useEffect(() => console.log('state changed: ', reports.length), [reports]);
   const renderList = () => {
     return (
       <FlatList
+        contentContainerStyle={{paddingTop: 10}}
+        onEndReached={() => setLoadMore(true)}
         data={reports}
         onEndReachedThreshold={0.2}
         keyExtractor={(item, index) => index + ''}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
           <ListItem
             report={item}
@@ -44,19 +48,19 @@ function Dashboard({navigation, ...props}) {
         ItemSeparatorComponent={() => (
           <View style={{width: width, height: 10}} />
         )}
-        // refreshing={this.state.refreshing}
+        refreshing={true}
         // onRefresh={this.handleRefresh}
       />
     );
   };
-  function renderNoItem() {
+  function listEmptyComponent() {
     return (
-      <View>
-        <Text>No iTem</Text>
+      <View style={{height, alignItems: 'center', justifyContent: 'center'}}>
+        <Text>Chưa có phản ánh nào</Text>
       </View>
     );
   }
-  if (loading)
+  if (!reports.length)
     return (
       <View style={{flex: 1, justifyContent: 'center'}}>
         <ActivityIndicator size="large" color="green" />

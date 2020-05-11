@@ -1,3 +1,4 @@
 import {combineReducers} from 'redux';
 import user from './userReducer';
-export default combineReducers({user});
+import popup from './PopupReducer';
+export default combineReducers({user, popup});

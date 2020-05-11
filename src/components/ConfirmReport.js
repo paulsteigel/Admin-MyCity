@@ -9,11 +9,7 @@ const ConfirmReport = ({isSubmit}) => {
   }, [isSubmit]);
   return (
     <>
-      <Row
-        label="Ý kiến tổ xác minh"
-        placeholder="Ý kiến tổ xác minh"
-        multiline
-      />
+      <Row label="Ý kiến tổ xác minh" placeholder="Mô tả chi tiết" multiline />
     </>
   );
 };

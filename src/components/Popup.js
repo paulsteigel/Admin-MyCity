@@ -7,11 +7,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {ScrollView} from 'react-native-gesture-handler';
 import Row from './PopupRow';
 import ConfirmReport from './ConfirmReport';
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const Popup = props => {
   const [isSubmit, setIsSubmit] = useState(false);
   const dispatch = useDispatch();
-  const {visible, popupTitle} = useSelector(state => state.popup);
+  const {visible, popupTitle, height} = useSelector(state => state.popup);
 
   const handleClose = () => dispatch({type: CLOSE_POPUP});
   return (
@@ -21,7 +21,7 @@ const Popup = props => {
       onBackButtonPress={handleClose}
       isVisible={visible}
       avoidKeyboard={true}>
-      <View style={styles.container}>
+      <View style={{...styles.container, height}}>
         <View style={styles.closeModalBtn}>
           <Icon name="close" onPress={handleClose} size={18} />
         </View>
@@ -29,7 +29,7 @@ const Popup = props => {
           <Text style={styles.title}>{popupTitle}</Text>
         </View>
         <ScrollView>
-          <ConfirmReport />
+          <ConfirmReport isSubmit={isSubmit} />
         </ScrollView>
         <View style={styles.buttonContainer}>
           <Button title="OK" color="green" onPress={() => setIsSubmit(true)} />
@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
     width: width * 0.85,
-    height: 400,
     backgroundColor: '#fff',
     borderRadius: 20,
   },

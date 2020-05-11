@@ -1,5 +1,10 @@
 import React from 'react';
-import {TouchableWithoutFeedback, Text, StyleSheet} from 'react-native';
+import {
+  TouchableWithoutFeedback,
+  Text,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import {
   Menu,
   MenuOptions,
@@ -9,18 +14,19 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useDispatch} from 'react-redux';
 import {OPEN_POPUP} from '../redux/constants';
+const {height} = Dimensions.get('window');
 const popupList = [
-  {someThingElse: 'handle', title: 'Xử lý nhanh'},
-  {someThingElse: 'NoneSS', title: 'Chuyển phản ánh'},
-  {someThingElse: 'getoff', title: 'Xác minh phản ánh'},
-  {someThingElse: 'myassd', title: 'Xóa phản ánh'},
-  {someThingElse: 'youhag', title: 'Công khai phản ánh'},
-  {someThingElse: 'naggie', title: 'Ẩn thông tin người phản ánh'},
+  {height: height * 0.3, title: 'Xử lý nhanh'},
+  {height: height * 0.4, title: 'Chuyển phản ánh'},
+  {height: height * 0.4, title: 'Xác minh phản ánh'},
+  {height: height * 0.3, title: 'Xóa phản ánh'},
+  {height: height * 0.3, title: 'Công khai phản ánh'},
+  {height: height * 0.5, title: 'Ẩn thông tin người phản ánh'},
 ];
 const HandleFeedback = props => {
   const dispatch = useDispatch();
-  function handleSelect(title) {
-    dispatch({type: OPEN_POPUP, payload: {title}});
+  function handleSelect(popupSetting) {
+    dispatch({type: OPEN_POPUP, payload: popupSetting});
   }
 
   return (
@@ -34,7 +40,7 @@ const HandleFeedback = props => {
           <MenuOption
             key={item.title}
             style={styles.btn}
-            onSelect={() => handleSelect(item.title)}>
+            onSelect={() => handleSelect(item)}>
             <Text style={styles.text}>{item.title}</Text>
           </MenuOption>
         ))}

@@ -4,7 +4,7 @@ import Login from './src/screen/Login';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Dashboard from './src/screen/Dashboard';
 import moment from 'moment';
 import localization from 'moment/locale/vi';
@@ -35,9 +35,9 @@ function StackNavigator() {
         headerTintColor: '#fff',
       }}>
       <Stack.Screen
-        options={{title: 'Phản ánh chưa chuyển tiếp'}}
-        name="drawerNav"
-        component={DawerNavigator}
+        component={Dashboard}
+        name="dashboard"
+        options={{title: 'Phản ánh chưa chuyển'}}
       />
       <Stack.Screen
         options={{title: 'Chi tiết phản ánh'}}
@@ -48,10 +48,11 @@ function StackNavigator() {
   );
 }
 
-function DawerNavigator() {
+function DrawerNavigator() {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen component={Dashboard} name="dashboard" />
+      <Drawer.Screen component={StackNavigator} name="stack" />
+      <Drawer.Screen component={Dummy} name="dummy" />
     </Drawer.Navigator>
   );
 }
@@ -63,9 +64,23 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <StackNavigator />
+      <DrawerNavigator />
     </NavigationContainer>
   );
 };
 
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: '#018037',
+    height: 40,
+    // width,
+    // padding: 0,
+    // zIndex: 1000,
+  },
+  container: {
+    padding: 0,
+    // zIndex: 100000,
+    // backgroundColor: 'red',
+  },
+});
 export default App;

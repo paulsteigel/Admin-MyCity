@@ -1,6 +1,6 @@
 /** @format */
 
-import React, {useReducer, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   FlatList,
   ActivityIndicator,
@@ -9,22 +9,24 @@ import {
   Dimensions,
 } from 'react-native';
 import {BASE_URL} from '../service';
-import ListItem from '../components/ListItem';
+import ListItem from './ListItem';
 import Axios from 'axios';
 
 const {width, height} = Dimensions.get('window');
 
-function Dashboard({navigation, ...props}) {
+function NewFeedbackFoward({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
   const [refreshing, setRefeshing] = useState(false);
+
   const [reports, setReports] = useState([]);
   useEffect(() => {
     if (loadMore) loadFeedBack(reports.length);
   }, [loadMore]);
 
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
+    let url = `${BASE_URL}/admin/feedbackforwards/agency/newFeedbackForwards?limit=10&skip=${start}`;
     let res = await Axios.get(url);
+    console.log(res.data.length);
 
     if (!loadMore) setReports(res.data);
     else setReports(prevState => [...prevState, ...res.data]);
@@ -35,7 +37,6 @@ function Dashboard({navigation, ...props}) {
     setRefeshing(true);
     loadFeedBack(0);
   };
-  useEffect(() => console.log('state changed: ', reports.length), [reports]);
   const renderList = () => {
     return (
       <FlatList
@@ -47,10 +48,9 @@ function Dashboard({navigation, ...props}) {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
-          <ListItem
-            report={item}
-            onPress={() => navigation.navigate('detailReport', item.id)}
-          />
+          <View>
+            <Text>{item.message}</Text>
+          </View>
         )}
         ItemSeparatorComponent={() => (
           <View style={{width: width, height: 10}} />
@@ -88,4 +88,4 @@ function Dashboard({navigation, ...props}) {
     </View>
   );
 }
-export default Dashboard;
+export default NewFeedbackFoward;

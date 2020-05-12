@@ -3,16 +3,15 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import Login from './src/screen/Login';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {useSelector, useDispatch} from 'react-redux';
-import {View, Text, StyleSheet} from 'react-native';
+import {useSelector} from 'react-redux';
+import {View, Text, StyleSheet, Button} from 'react-native';
 import Dashboard from './src/screen/Dashboard';
 import moment from 'moment';
 import localization from 'moment/locale/vi';
 import DetailReport from './src/screen/DetailReport';
-import {LOGIN} from './src/redux/constants';
-import AsyncStorage from '@react-native-community/async-storage';
+import RecivedReports from './src/screen/RecivedReports';
+import CustomDrawerContent from './src/components/CustomDrawer';
 moment.updateLocale('vi', localization);
-
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 function Dummy() {
@@ -50,9 +49,10 @@ function StackNavigator() {
 
 function DrawerNavigator() {
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator
+      drawerContent={props => <CustomDrawerContent {...props} />}>
       <Drawer.Screen component={StackNavigator} name="stack" />
-      <Drawer.Screen component={Dummy} name="dummy" />
+      <Drawer.Screen component={RecivedReports} name="tabbar" />
     </Drawer.Navigator>
   );
 }

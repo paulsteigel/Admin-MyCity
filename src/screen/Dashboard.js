@@ -16,7 +16,7 @@ const {width, height} = Dimensions.get('window');
 
 function Dashboard({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
-
+  const [refreshing, setRefeshing] = useState(false);
   const [reports, setReports] = useState([]);
   useEffect(() => {
     if (loadMore) loadFeedBack(reports.length);
@@ -25,10 +25,17 @@ function Dashboard({navigation, ...props}) {
   const loadFeedBack = async start => {
     let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
     let res = await Axios.get(url);
-    setReports(prevState => [...prevState, ...res.data]);
+
+    if (!loadMore) setReports(res.data);
+    else setReports(prevState => [...prevState, ...res.data]);
     setLoadMore(false);
+    setRefeshing(false);
   };
-  // useEffect(() => console.log('state changed: ', reports.length), [reports]);
+  const handleRefresh = () => {
+    setRefeshing(true);
+    loadFeedBack(0);
+  };
+  useEffect(() => console.log('state changed: ', reports.length), [reports]);
   const renderList = () => {
     return (
       <FlatList
@@ -48,8 +55,8 @@ function Dashboard({navigation, ...props}) {
         ItemSeparatorComponent={() => (
           <View style={{width: width, height: 10}} />
         )}
-        refreshing={true}
-        // onRefresh={this.handleRefresh}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
       />
     );
   };

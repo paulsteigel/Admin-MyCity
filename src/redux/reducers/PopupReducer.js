@@ -8,6 +8,7 @@ const PopupReducer = (state = initialstate, {type, payload}) => {
       return {
         ...state,
         visible: true,
+        popupId: payload.id,
         popupTitle: payload.title,
         height: payload.height,
       };

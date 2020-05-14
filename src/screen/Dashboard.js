@@ -11,21 +11,34 @@ import {
 import {BASE_URL} from '../service';
 import ListItem from '../components/ListItem';
 import Axios from 'axios';
+import {useSelector, useDispatch} from 'react-redux';
+import {MARK_REPORTS_OUTDATED} from '../redux/constants';
 
 const {width, height} = Dimensions.get('window');
 
 function Dashboard({navigation, ...props}) {
-  const [loadMore, setLoadMore] = useState(true);
+  const {isDataOutdated} = useSelector(state => state.pendingReport);
+  const dispatch = useDispatch();
 
+  const [loadMore, setLoadMore] = useState(true);
   const [reports, setReports] = useState([]);
+
   useEffect(() => {
     if (loadMore) loadFeedBack(reports.length);
   }, [loadMore]);
+  useEffect(() => {
+    if (isDataOutdated) {
+      loadFeedBack(0);
+      dispatch({type: MARK_REPORTS_OUTDATED, payload: {isDataOutdated: false}});
+    }
+  }, [isDataOutdated]);
 
   const loadFeedBack = async start => {
     let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
     let res = await Axios.get(url);
-    setReports(prevState => [...prevState, ...res.data]);
+    if (loadMore) setReports(prevState => [...prevState, ...res.data]);
+    else setReports(res.data);
+    console.log('reload feedbacks', start, res.data[0].title);
     setLoadMore(false);
   };
   // useEffect(() => console.log('state changed: ', reports.length), [reports]);

@@ -9,8 +9,10 @@ import Dashboard from './src/screen/Dashboard';
 import moment from 'moment';
 import localization from 'moment/locale/vi';
 import DetailReport from './src/screen/DetailReport';
-import {LOGIN} from './src/redux/constants';
+import {LOGIN, GET_SUBJECTS} from './src/redux/constants';
+import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import {BASE_URL} from './src/service';
 moment.updateLocale('vi', localization);
 
 const Stack = createStackNavigator();
@@ -59,6 +61,12 @@ function DrawerNavigator() {
 
 const App = () => {
   const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    Axios.get(BASE_URL + '/subjects').then(res => {
+      dispatch({type: GET_SUBJECTS, payload: res.data});
+    });
+  }, []);
 
   if (!user) return <Login />;
 

@@ -7,16 +7,51 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {ScrollView} from 'react-native-gesture-handler';
 import ConfirmReport from './ConfirmReport';
 import UpdateFeedback from './UpdateFeedback';
+import VerifyFeedback from './VerifyFeedback';
+import QuickHandleFeedback from './QuickHandleFeedback';
+import ForwardFeedback from './ForwardFeedback';
 const {width} = Dimensions.get('window');
-const Popup = ({id}) => {
+const Popup = ({report}) => {
   const [isSubmit, setIsSubmit] = useState(false);
   const dispatch = useDispatch();
-  const {visible, popupTitle, height} = useSelector(state => state.popup);
+  const {visible, popupId, popupTitle, height} = useSelector(
+    state => state.popup,
+  );
 
   const renderPopupContent = () => {
     switch (popupId) {
-      case 10:
-        return <UpdateFeedback id={id} />;
+      case 1:
+        return (
+          <QuickHandleFeedback
+            item={report}
+            isSubmit={isSubmit}
+            setIsSubmit={setIsSubmit}
+          />
+        );
+      case 2:
+        return (
+          <ForwardFeedback
+            item={report}
+            isSubmit={isSubmit}
+            setIsSubmit={setIsSubmit}
+          />
+        );
+      case 3:
+        return (
+          <VerifyFeedback
+            item={report}
+            isSubmit={isSubmit}
+            setIsSubmit={setIsSubmit}
+          />
+        );
+      case 4:
+        return (
+          <UpdateFeedback
+            item={report}
+            isSubmit={isSubmit}
+            setIsSubmit={setIsSubmit}
+          />
+        );
       default:
         return <ConfirmReport isSubmit={isSubmit} />;
     }
@@ -39,7 +74,7 @@ const Popup = ({id}) => {
         </View>
         <ScrollView>{renderPopupContent()}</ScrollView>
         <View style={styles.buttonContainer}>
-          <Button title="OK" color="green" onPress={() => setIsSubmit(true)} />
+          <Button title="Lưu" color="green" onPress={() => setIsSubmit(true)} />
         </View>
       </View>
     </Modal>

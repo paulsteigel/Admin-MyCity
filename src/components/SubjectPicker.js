@@ -1,17 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {Picker} from 'react-native';
-import Axios from 'axios';
-import {BASE_URL} from '../service';
+import {useSelector} from 'react-redux';
 
-const SubjectPicker = () => {
-  const [subjects, setSubjects] = useState([]);
-  useEffect(() => {
-    Axios(BASE_URL + '/subjects').then(res => {
-      setSubjects(res.data);
-    });
-  }, []);
+const SubjectPicker = ({onValueChange, selectedValue}) => {
+  const subjects = useSelector(state => state.subject);
   return (
-    <Picker>
+    <Picker onValueChange={onValueChange} selectedValue={selectedValue}>
       {subjects.map(subject => (
         <Picker.Item
           label={subject.subArea}

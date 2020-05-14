@@ -13,6 +13,7 @@
   "dependencies": {
     "@merryjs/photo-viewer": "^3.1.4",
     "@react-native-community/async-storage": "^1.9.0",
+    "@react-native-community/datetimepicker": "^2.3.2",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/drawer": "^5.6.3",
     "@react-navigation/material-top-tabs": "^5.1.14",

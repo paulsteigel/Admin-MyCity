@@ -63,9 +63,11 @@ const App = () => {
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
   useEffect(() => {
-    Axios.get(BASE_URL + '/subjects').then(res => {
-      dispatch({type: GET_SUBJECTS, payload: res.data});
-    });
+    Axios.get(`${BASE_URL}/subjects`)
+      .then(res => {
+        dispatch({type: GET_SUBJECTS, payload: res.data});
+      })
+      .catch(err => console.log('subject', JSON.stringify(err)));
   }, []);
 
   if (!user) return <Login />;

@@ -1,34 +1,74 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {View, Text, TouchableWithoutFeedback} from 'react-native';
 import {TextInput, Switch} from 'react-native-gesture-handler';
 import DepartmentPicker from './DepartmentPicker';
 import AgencyPicker from './AgencyPicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import DocumentPicker from 'react-native-document-picker';
 import moment from 'moment';
+import Icon from 'react-native-vector-icons/Entypo';
+import Axios from 'axios';
+import {CLOSE_POPUP} from '../redux/constants';
+import {BASE_URL} from '../service';
 
 const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
-  const [report, setReport] = useState(item);
+  const [report] = useState(item);
   const [isPermit, setIsPermit] = useState(true);
   const [departmentId, setDepartmentId] = useState(null);
   const [agencyId, setAgencyId] = useState(null);
+  const [dateExpired, setDateExpired] = useState(new Date());
+  const [message, setMessage] = useState('');
+  const [file, setFile] = useState(null);
+  const [show, setShow] = useState(false);
+  const selectFileAsync = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+      });
+      setFile(res);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log(err);
+      } else {
+        throw err;
+      }
+    }
+  };
+
   const user = useSelector(state => state.user);
 
-  const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!isSubmit) return;
+    const payload = new FormData();
+    payload.append('feedbackId', report.id);
+    payload.append('isPermit', isPermit);
+    payload.append('departmentIds[]', departmentId);
+    payload.append('agencyIds[]', agencyId);
+    payload.append('message', message);
+    payload.append('file', file);
+    payload.append('dateExpired', dateExpired);
+    console.log('payload', payload);
+    Axios.post(
+      `http://10.42.0.179:63819/admin/feedbacks/forwardFeedback`,
+      payload,
+    )
+      .then(res => {
+        console.log(res);
+        console.log(res).data;
+      })
+      .catch(err => console.log('err', JSON.stringify(err)));
+    dispatch({type: CLOSE_POPUP});
+    setIsSubmit(false);
+  }, [isSubmit]);
 
   const onChange = (event, selectedDate) => {
     let currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios');
-    setDate(currentDate);
+    setDateExpired(currentDate);
   };
-
-  const showMode = () => {
-    setShow(true);
-  };
-
-  const dispatch = useDispatch();
 
   return (
     <View style={{padding: 15}}>
@@ -74,6 +114,24 @@ const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
         <Text style={{fontSize: 16, fontWeight: 'bold'}}>
           Tài liệu đính kèm
         </Text>
+        <TouchableWithoutFeedback onPress={selectFileAsync}>
+          <View
+            style={{
+              padding: 10,
+            }}>
+            <Text>Bấm để chọn file</Text>
+            {file && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  padding: 5,
+                }}>
+                <Icon name="attachment" size={20} style={{marginRight: 5}} />
+                <Text numberOfLines={1}>{file.name}</Text>
+              </View>
+            )}
+          </View>
+        </TouchableWithoutFeedback>
       </View>
       <View>
         <Text style={{fontSize: 16, fontWeight: 'bold'}}>
@@ -88,22 +146,22 @@ const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
           }}
           multiline
           numberOfLines={5}
-          onChangeText={description => setReport({...report, description})}
+          onChangeText={message => setMessage(message)}
         />
       </View>
       <View>
         <Text style={{fontSize: 16, fontWeight: 'bold'}}>Thời hạn xử lý</Text>
-        <TouchableWithoutFeedback onPress={showMode}>
+        <TouchableWithoutFeedback onPress={() => setShow(true)}>
           <View>
             <TextInput
               style={{borderColor: '#eee', borderWidth: 1}}
               editable={false}
-              value={moment(date).format('DD/MM/YYYY')}
+              value={moment(dateExpired).format('DD/MM/YYYY')}
             />
           </View>
         </TouchableWithoutFeedback>
         {show && (
-          <DateTimePicker value={date} mode="date" onChange={onChange} />
+          <DateTimePicker value={dateExpired} mode="date" onChange={onChange} />
         )}
       </View>
     </View>

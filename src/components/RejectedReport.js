@@ -9,24 +9,22 @@ import {
   Dimensions,
 } from 'react-native';
 import {BASE_URL} from '../service';
-import ListItem from './ListItem';
 import Axios from 'axios';
-
+import ReportComponent from './RejecttedCard';
 const {width, height} = Dimensions.get('window');
 
-function NewFeedbackFoward({navigation, ...props}) {
+function RejectedReport({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
   const [refreshing, setRefeshing] = useState(false);
-
   const [reports, setReports] = useState([]);
   useEffect(() => {
     if (loadMore) loadFeedBack(reports.length);
   }, [loadMore]);
 
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbackforwards/agency/newFeedbackForwards?limit=10&skip=${start}`;
+    let url = `${BASE_URL}/admin/feedbackforwards/agency/rejectedFeedbackForwards?limit=10&skip=${start}`;
     let res = await Axios.get(url);
-    console.log(res.data.length);
+    console.log('rejected report', res.data.length);
 
     if (!loadMore) setReports(res.data);
     else setReports(prevState => [...prevState, ...res.data]);
@@ -37,6 +35,9 @@ function NewFeedbackFoward({navigation, ...props}) {
     setRefeshing(true);
     loadFeedBack(0);
   };
+  const forwarding = () => {
+    console.log('forwarding this feedback');
+  };
   const renderList = () => {
     return (
       <FlatList
@@ -44,13 +45,11 @@ function NewFeedbackFoward({navigation, ...props}) {
         onEndReached={() => setLoadMore(true)}
         data={reports}
         onEndReachedThreshold={0.2}
-        keyExtractor={(item, index) => index + ''}
+        keyExtractor={arg => JSON.stringify(arg)}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
-          <View>
-            <Text>{item.message}</Text>
-          </View>
+          <ReportComponent forwarding={forwarding} item={item} />
         )}
         ItemSeparatorComponent={() => (
           <View style={{width: width, height: 10}} />
@@ -67,7 +66,7 @@ function NewFeedbackFoward({navigation, ...props}) {
       </View>
     );
   }
-  if (!reports.length)
+  if (!reports.length && loadMore)
     return (
       <View style={{flex: 1, justifyContent: 'center'}}>
         <ActivityIndicator size="large" color="green" />
@@ -88,4 +87,4 @@ function NewFeedbackFoward({navigation, ...props}) {
     </View>
   );
 }
-export default NewFeedbackFoward;
+export default RejectedReport;

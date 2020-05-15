@@ -5,6 +5,11 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 const {width} = Dimensions.get('window');
 import moment from 'moment';
 function truncate(str, displayWords) {
+  // if (!str) {
+  //   console.log('rnoe');
+
+  //   return '';
+  // }
   let result = str;
   result = str.trim().split(' ');
   if (result.length > displayWords) {

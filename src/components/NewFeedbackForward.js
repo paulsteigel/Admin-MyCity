@@ -1,14 +1,14 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-const ReturnedReport = () => {
+const RecivedReport = () => {
   return (
     <View style={styles.container}>
-      <Text>ReturnedReport.js </Text>
+      <Text>RecivedReport.js </Text>
     </View>
   );
 };
 const styles = StyleSheet.create({
   container: {},
 });
-export default ReturnedReport;
+export default RecivedReport;

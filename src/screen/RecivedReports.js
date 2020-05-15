@@ -1,9 +1,9 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import RecivedReport from '../components/RecivedReport';
+import NewFeedbackForward from '../components/NewFeedbackForward';
 import FowardedReport from '../components/FowardedReport';
-import ReturnedReport from '../components/ReturnedReport';
+import RejectedReport from '../components/RejectedReport';
 const Tabbar = createMaterialTopTabNavigator();
 const TABBAR_OPTION = {
   labelStyle: {fontSize: 12},
@@ -15,12 +15,12 @@ const RecivedReports = props => {
   return (
     <Tabbar.Navigator tabBarOptions={TABBAR_OPTION}>
       <Tabbar.Screen
-        component={RecivedReport}
+        component={NewFeedbackForward}
         name="recivedReport"
         options={{title: 'Phản ánh mới tiếp nhận'}}
       />
       <Tabbar.Screen
-        component={ReturnedReport}
+        component={RejectedReport}
         name="returnReport"
         options={{title: 'Phản ánh trả lại'}}
       />

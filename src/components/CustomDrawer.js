@@ -3,15 +3,19 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import {View, Text, StyleSheet} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {View, Text, StyleSheet, AsyncStorage} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {LOGOUT} from '../redux/constants';
 import Image from 'react-native-fast-image';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 const BTN_COLOR = '#df1212';
 export default function CustomDrawerContent(props) {
   const dispatch = useDispatch();
-  const logout = () => dispatch({type: LOGOUT});
+  const user = useSelector(state => state.user);
+  const logout = async () => {
+    await AsyncStorage.removeItem('user');
+    dispatch({type: LOGOUT});
+  };
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.container}>
@@ -21,8 +25,8 @@ export default function CustomDrawerContent(props) {
             style={styles.image}
             resizeMode="contain"
           />
-          <Text style={styles.userInfo}>Nguyen Vu Ngoc</Text>
-          <Text style={styles.userInfo}>Ngoc@sfdg.vn</Text>
+          <Text style={styles.userInfo}>{user.name}</Text>
+          <Text style={styles.userInfo}>{user.email}</Text>
         </View>
         <View>
           <TouchableOpacity style={styles.button} onPress={logout}>

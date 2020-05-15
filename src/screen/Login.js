@@ -19,7 +19,7 @@ import {BASE_URL} from '../service';
 import {userLogin} from '../service/authenticate';
 const {width, height} = Dimensions.get('window');
 
-const Login = () => {
+function Login() {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -33,10 +33,12 @@ const Login = () => {
       });
       const user = {...response.data.user, token: response.data.token};
       Axios.defaults.headers.common.Authorization = 'Bearer ' + user.token;
+      setLoading(false);
       await AsyncStorage.setItem('user', JSON.stringify(user));
       dispatch({type: LOGIN, payload: user});
     } catch (e) {
-      Alert('Sai tên đăng nhập hoặc mật khẩu');
+      Alert.alert('Sai tên đăng nhập hoặc mật khẩu');
+      setLoading(false);
       setPassword('');
     }
   };
@@ -72,7 +74,7 @@ const Login = () => {
       </View>
     </LinearGradient>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

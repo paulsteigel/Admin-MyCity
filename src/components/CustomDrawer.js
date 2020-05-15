@@ -3,11 +3,12 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import {View, Text, StyleSheet, AsyncStorage} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {LOGOUT} from '../redux/constants';
 import Image from 'react-native-fast-image';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage';
 const BTN_COLOR = '#df1212';
 export default function CustomDrawerContent(props) {
   const dispatch = useDispatch();

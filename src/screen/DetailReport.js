@@ -27,6 +27,8 @@ import BottomSheet from 'react-native-raw-bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import HandleFeedback from '../components/HandleFeedback';
 import Popup from '../components/Popup';
+import {useSelector, useDispatch} from 'react-redux';
+import {MARK_REPORTS_OUTDATED} from '../redux/constants';
 
 const {width, height} = Dimensions.get('window');
 
@@ -35,15 +37,30 @@ const DetailReport = ({navigation, ...props}) => {
   const [report, setReport] = useState(null);
   const [imageList, setImageList] = useState([]);
   const bottomSheet = useRef(null);
+
+  const dispatch = useDispatch();
+
+  const {isDataOutdated} = useSelector(state => state.pendingReport);
+
   useEffect(() => {
     let isMounted = true;
     navigation.setOptions({
       headerRight: () => <HandleFeedback />,
     });
+    loadReport(isMounted);
+    return () => (isMounted = false);
+  }, []);
+
+  useEffect(() => {
+    if (!isDataOutdated) return;
+    loadReport(true);
+    dispatch({type: MARK_REPORTS_OUTDATED, payload: {isDataOutdated: false}});
+  }, [isDataOutdated]);
+
+  const loadReport = isMounted => {
     Axios.get(`${BASE_URL}/admin/feedbacks/${props.route.params}`)
       .then(res => {
         // console.log(res.data.images);
-
         let imageList = res.data.images.map(item => ({
           source: {uri: `${BASE_URL}/images/${item.id}`},
         }));
@@ -54,8 +71,8 @@ const DetailReport = ({navigation, ...props}) => {
         setImageList(imageList);
       })
       .catch(err => {});
-    return () => (isMounted = false);
-  }, []);
+  };
+
   if (!report) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -65,7 +82,7 @@ const DetailReport = ({navigation, ...props}) => {
   }
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <Popup />
+      <Popup report={report} />
       <PhotoView
         visible={imageView.visible}
         data={imageList}

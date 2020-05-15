@@ -11,6 +11,10 @@ import localization from 'moment/locale/vi';
 import DetailReport from './src/screen/DetailReport';
 import RecivedReports from './src/screen/RecivedReports';
 import CustomDrawerContent from './src/components/CustomDrawer';
+import {LOGIN, GET_SUBJECTS} from './src/redux/constants';
+import Axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
+import {BASE_URL} from './src/service';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -59,6 +63,14 @@ function DrawerNavigator() {
 
 const App = () => {
   const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    Axios.get(`${BASE_URL}/subjects`)
+      .then(res => {
+        dispatch({type: GET_SUBJECTS, payload: res.data});
+      })
+      .catch(err => console.log('subject', JSON.stringify(err)));
+  }, []);
 
   if (!user) return <Login />;
 

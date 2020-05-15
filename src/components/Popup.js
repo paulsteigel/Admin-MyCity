@@ -5,13 +5,57 @@ import {CLOSE_POPUP} from '../redux/constants';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {ScrollView} from 'react-native-gesture-handler';
-import Row from './PopupRow';
 import ConfirmReport from './ConfirmReport';
+import UpdateFeedback from './UpdateFeedback';
+import VerifyFeedback from './VerifyFeedback';
+import QuickHandleFeedback from './QuickHandleFeedback';
+import ForwardFeedback from './ForwardFeedback';
 const {width} = Dimensions.get('window');
-const Popup = props => {
+const Popup = ({report}) => {
   const [isSubmit, setIsSubmit] = useState(false);
   const dispatch = useDispatch();
-  const {visible, popupTitle, height} = useSelector(state => state.popup);
+  const {visible, popupId, popupTitle, height} = useSelector(
+    state => state.popup,
+  );
+
+  const renderPopupContent = () => {
+    switch (popupId) {
+      case 1:
+        return (
+          <QuickHandleFeedback
+            item={report}
+            isSubmit={isSubmit}
+            setIsSubmit={setIsSubmit}
+          />
+        );
+      case 2:
+        return (
+          <ForwardFeedback
+            item={report}
+            isSubmit={isSubmit}
+            setIsSubmit={setIsSubmit}
+          />
+        );
+      case 3:
+        return (
+          <VerifyFeedback
+            item={report}
+            isSubmit={isSubmit}
+            setIsSubmit={setIsSubmit}
+          />
+        );
+      case 4:
+        return (
+          <UpdateFeedback
+            item={report}
+            isSubmit={isSubmit}
+            setIsSubmit={setIsSubmit}
+          />
+        );
+      default:
+        return <ConfirmReport isSubmit={isSubmit} />;
+    }
+  };
 
   const handleClose = () => dispatch({type: CLOSE_POPUP});
   return (
@@ -28,11 +72,9 @@ const Popup = props => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{popupTitle}</Text>
         </View>
-        <ScrollView>
-          <ConfirmReport isSubmit={isSubmit} />
-        </ScrollView>
+        <ScrollView>{renderPopupContent()}</ScrollView>
         <View style={styles.buttonContainer}>
-          <Button title="OK" color="green" onPress={() => setIsSubmit(true)} />
+          <Button title="Lưu" color="green" onPress={() => setIsSubmit(true)} />
         </View>
       </View>
     </Modal>

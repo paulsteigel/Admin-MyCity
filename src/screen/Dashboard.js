@@ -1,6 +1,6 @@
 /** @format */
 
-import React, {useReducer, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   FlatList,
   ActivityIndicator,
@@ -13,7 +13,7 @@ import ListItem from '../components/ListItem';
 import Axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
 import {MARK_REPORTS_OUTDATED} from '../redux/constants';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 const {width, height} = Dimensions.get('window');
 
 function Dashboard({navigation, ...props}) {
@@ -23,6 +23,19 @@ function Dashboard({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
   const [reports, setReports] = useState([]);
   const [refreshing, setRefeshing] = useState(false);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Icon
+          style={{color: '#fff', paddingLeft: 20}}
+          onPress={() => navigation.toggleDrawer()}
+          size={30}
+          name="menu"
+        />
+      ),
+    });
+  }, []);
 
   useEffect(() => {
     if (loadMore) loadFeedBack(reports.length);
@@ -47,7 +60,7 @@ function Dashboard({navigation, ...props}) {
     setRefeshing(true);
     loadFeedBack(0);
   };
-  useEffect(() => console.log('state changed: ', reports.length), [reports]);
+  // useEffect(() => console.log('state changed: ', reports.length), [reports]);
   const renderList = () => {
     return (
       <FlatList
@@ -61,7 +74,7 @@ function Dashboard({navigation, ...props}) {
         renderItem={({item}) => (
           <ListItem
             report={item}
-            onPress={() => navigation.navigate('detailReport', item.id)}
+            onPress={() => navigation.navigate('detailReport', {id: item.id})}
           />
         )}
         ItemSeparatorComponent={() => (

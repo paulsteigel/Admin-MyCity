@@ -11,22 +11,28 @@ import {
 } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 export default function ReportComponent(props) {
-  const {item, forwarding} = props;
+  const {
+    feedbackId,
+    title,
+    forwarding,
+    message,
+    dateExpired,
+    dateCreate,
+  } = props.item;
   const navigation = useNavigation();
-  const {feedback} = item;
   const handleNavigate = () => {
-    navigation.navigate('detailReport', feedback.id);
+    navigation.navigate('detailReport', {id: feedbackId, hideHeaderBtn: true});
   };
   return (
     <View style={styles.Item}>
       <TouchableOpacity onPress={handleNavigate}>
-        <Text style={styles.title}>Tiêu đề: {feedback.title}</Text>
-        <Text style={styles.message}>Ghi chú: {item.message}</Text>
+        <Text style={styles.title}>Tiêu đề: {title}</Text>
+        <Text style={styles.message}>Ghi chú: {message}</Text>
       </TouchableOpacity>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View>
           <Text style={styles.time}>
-            Ngày gửi: {moment(item.dateCreate).format('DD/MM/YYYY')}
+            Ngày gửi: {moment(dateCreate).format('DD/MM/YYYY')}
           </Text>
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.time}>Hạn xử lý: </Text>
@@ -34,11 +40,11 @@ export default function ReportComponent(props) {
               style={{
                 ...styles.time,
                 color:
-                  moment(item.dateExpired).diff(new Date(), 'days') < 0
+                  moment(dateExpired).diff(new Date(), 'days') < 0
                     ? '#de6a6a'
                     : '#000',
               }}>
-              {moment(item.dateExpired).format('DD/MM/YYYY')}
+              {moment(dateExpired).format('DD/MM/YYYY')}
             </Text>
           </View>
         </View>

@@ -34,7 +34,7 @@ export default function ForwardComponent(props) {
       : `Quá hạn ${diffTime} ngày`;
   };
   const handleNavigate = () => {
-    navigation.navigate('detailReport', feedbackId);
+    navigation.navigate('detailReport', {id: feedbackId, hideHeaderBtn: true});
   };
   return (
     <View style={styles.Item}>

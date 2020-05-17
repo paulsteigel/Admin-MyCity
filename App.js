@@ -3,7 +3,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import Login from './src/screen/Login';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import Dashboard from './src/screen/Dashboard';
 import moment from 'moment';
@@ -13,7 +13,6 @@ import RecivedReports from './src/screen/RecivedReports';
 import CustomDrawerContent from './src/components/CustomDrawer';
 import {LOGIN, GET_SUBJECTS} from './src/redux/constants';
 import Axios from 'axios';
-import AsyncStorage from '@react-native-community/async-storage';
 import {BASE_URL} from './src/service';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
@@ -55,8 +54,16 @@ function DrawerNavigator() {
   return (
     <Drawer.Navigator
       drawerContent={props => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen component={StackNavigator} name="stack" />
-      <Drawer.Screen component={RecivedReports} name="tabbar" />
+      <Drawer.Screen
+        component={StackNavigator}
+        options={{title: 'Danh sách góp ý, phản ánh'}}
+        name="stack"
+      />
+      <Drawer.Screen
+        component={RecivedReports}
+        options={{title: 'Danh sách phản ánh tiếp nhận'}}
+        name="tabbar"
+      />
     </Drawer.Navigator>
   );
 }
@@ -64,6 +71,7 @@ function DrawerNavigator() {
 const App = () => {
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
+
   useEffect(() => {
     Axios.get(`${BASE_URL}/subjects`)
       .then(res => {

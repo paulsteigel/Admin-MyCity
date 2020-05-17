@@ -1,14 +1,18 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-const RecivedReport = () => {
+const NewFeedbackForward = () => {
   return (
     <View style={styles.container}>
-      <Text>RecivedReport.js </Text>
+      <Text>Chưa có phản ánh</Text>
     </View>
   );
 };
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
 });
-export default RecivedReport;
+export default NewFeedbackForward;

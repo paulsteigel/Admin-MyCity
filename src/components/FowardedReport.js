@@ -13,7 +13,7 @@ import Axios from 'axios';
 import ForwardComponent from './ForwardedCard';
 const {width, height} = Dimensions.get('window');
 
-function RejectedReport({navigation, ...props}) {
+function ForwardedReport({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
   const [refreshing, setRefeshing] = useState(false);
   const [reports, setReports] = useState([]);
@@ -96,4 +96,4 @@ function RejectedReport({navigation, ...props}) {
     </View>
   );
 }
-export default RejectedReport;
+export default ForwardedReport;

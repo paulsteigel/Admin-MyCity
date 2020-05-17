@@ -33,6 +33,7 @@ import {MARK_REPORTS_OUTDATED} from '../redux/constants';
 const {width, height} = Dimensions.get('window');
 
 const DetailReport = ({navigation, ...props}) => {
+  const {id, hideHeaderBtn = false} = props.route.params;
   const [imageView, setImageView] = useState({visible: false, index: 0});
   const [report, setReport] = useState(null);
   const [imageList, setImageList] = useState([]);
@@ -45,7 +46,7 @@ const DetailReport = ({navigation, ...props}) => {
   useEffect(() => {
     let isMounted = true;
     navigation.setOptions({
-      headerRight: () => <HandleFeedback />,
+      headerRight: () => (hideHeaderBtn ? <></> : <HandleFeedback />),
     });
     loadReport(isMounted);
     return () => (isMounted = false);
@@ -58,7 +59,7 @@ const DetailReport = ({navigation, ...props}) => {
   }, [isDataOutdated]);
 
   const loadReport = isMounted => {
-    Axios.get(`${BASE_URL}/admin/feedbacks/${props.route.params}`)
+    Axios.get(`${BASE_URL}/admin/feedbacks/${id}`)
       .then(res => {
         // console.log(res.data.images);
         let imageList = res.data.images.map(item => ({
@@ -114,8 +115,14 @@ const DetailReport = ({navigation, ...props}) => {
             );
           })}
         </View>
-        <View style={styles.spacer} />
-        <Button title="User info" onPress={() => bottomSheet.current.open()} />
+        <View style={{padding: 20}}>
+          {hideHeaderBtn || (
+            <Button
+              title="Thông tin người phản ánh"
+              onPress={() => bottomSheet.current.open()}
+            />
+          )}
+        </View>
       </ScrollView>
       <BottomSheet
         height={height * 0.23}

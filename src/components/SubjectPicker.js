@@ -1,5 +1,5 @@
 import React from 'react';
-import {Picker} from 'react-native';
+import {Picker} from '@react-native-community/picker';
 import {useSelector} from 'react-redux';
 
 const SubjectPicker = ({onValueChange, selectedValue}) => {

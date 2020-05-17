@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Picker} from 'react-native';
+import {Picker} from '@react-native-community/picker';
 import Axios from 'axios';
 import {BASE_URL} from '../service';
 const DepartmentPicker = ({agencyId, onValueChange, selectedValue}) => {

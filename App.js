@@ -4,7 +4,7 @@ import Login from './src/screen/Login';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, Text, StyleSheet, Alert, BackHandler} from 'react-native';
 import Dashboard from './src/screen/Dashboard';
 import moment from 'moment';
 import localization from 'moment/locale/vi';
@@ -15,6 +15,7 @@ import {LOGIN, GET_SUBJECTS} from './src/redux/constants';
 import Axios from 'axios';
 import {BASE_URL} from './src/service';
 import Popup from './src/components/Popup';
+import LoadingModal from './src/components/LoadingModal';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -70,9 +71,10 @@ function DrawerNavigator() {
 }
 
 const App = () => {
-  const user = useSelector(state => state.user);
+  const [user, loadingModal] = useSelector(state => {
+    return [state.user, state.loadingModal];
+  });
   const dispatch = useDispatch();
-
   useEffect(() => {
     Axios.get(`${BASE_URL}/subjects`)
       .then(res => {
@@ -80,13 +82,27 @@ const App = () => {
       })
       .catch(err => console.log('subject', JSON.stringify(err)));
   }, []);
+  useEffect(() => {
+    const backAction = () => {
+      console.log('back clicked', loadingModal);
 
+      return loadingModal.visible;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [loadingModal.visible]);
   if (!user) return <Login />;
 
   return (
     <NavigationContainer>
       <DrawerNavigator />
       <Popup />
+      <LoadingModal />
     </NavigationContainer>
   );
 };

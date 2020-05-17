@@ -8,11 +8,17 @@ import {
   View,
   Dimensions,
 } from 'react-native';
+import Toast from 'react-native-simple-toast';
 import {BASE_URL} from '../service';
 import Axios from 'axios';
 import ReportComponent from './RejecttedCard';
+import {useDispatch} from 'react-redux';
+import {
+  OPEN_LOADING_MODAL,
+  CLOSE_LOADING_MODAL,
+  OPEN_POPUP_DATA,
+} from '../redux/constants';
 const {width, height} = Dimensions.get('window');
-
 function RejectedReport({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
   const [refreshing, setRefeshing] = useState(false);
@@ -21,10 +27,11 @@ function RejectedReport({navigation, ...props}) {
     if (loadMore) loadFeedBack(reports.length);
   }, [loadMore]);
 
+  const dispatch = useDispatch();
   const loadFeedBack = async start => {
     let url = `${BASE_URL}/admin/feedbackforwards/agency/rejectedFeedbackForwards?limit=10&skip=${start}`;
     let res = await Axios.get(url);
-    console.log('rejected report', res.data.length);
+    // console.log('rejected report', res.data.length);
 
     if (!loadMore) setReports(res.data);
     else setReports(prevState => [...prevState, ...res.data]);
@@ -35,8 +42,19 @@ function RejectedReport({navigation, ...props}) {
     setRefeshing(true);
     loadFeedBack(0);
   };
-  const forwarding = () => {
-    console.log('forwarding this feedback');
+  const forwarding = async id => {
+    try {
+      dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
+      const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${id}`);
+      dispatch({
+        type: OPEN_POPUP_DATA,
+        payload: {report: res.data, popupId: 2, popupTitle: 'Chuyển phản ánh'},
+      });
+      dispatch({type: CLOSE_LOADING_MODAL});
+    } catch (error) {
+      dispatch({type: CLOSE_LOADING_MODAL});
+      Toast.show('Có lỗi xảy ra');
+    }
   };
   const renderList = () => {
     return (

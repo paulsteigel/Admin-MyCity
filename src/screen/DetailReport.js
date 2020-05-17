@@ -28,7 +28,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import HandleFeedback from '../components/HandleFeedback';
 import Popup from '../components/Popup';
 import {useSelector, useDispatch} from 'react-redux';
-import {MARK_REPORTS_OUTDATED} from '../redux/constants';
+import {MARK_REPORTS_OUTDATED, UPDATE_POPUP_DATA} from '../redux/constants';
 
 const {width, height} = Dimensions.get('window');
 
@@ -67,6 +67,7 @@ const DetailReport = ({navigation, ...props}) => {
         }));
         if (!isMounted) return;
         setReport(res.data);
+        dispatch({type: UPDATE_POPUP_DATA, payload: res.data});
         // console.log(res.data.user);
 
         setImageList(imageList);
@@ -83,7 +84,6 @@ const DetailReport = ({navigation, ...props}) => {
   }
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <Popup report={report} />
       <PhotoView
         visible={imageView.visible}
         data={imageList}

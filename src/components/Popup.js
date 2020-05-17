@@ -11,8 +11,9 @@ import VerifyFeedback from './VerifyFeedback';
 import QuickHandleFeedback from './QuickHandleFeedback';
 import ForwardFeedback from './ForwardFeedback';
 const {width} = Dimensions.get('window');
-const Popup = ({report}) => {
+const Popup = () => {
   const [isSubmit, setIsSubmit] = useState(false);
+  const {report} = useSelector(state => state.popup);
   const dispatch = useDispatch();
   const {visible, popupId, popupTitle, height} = useSelector(
     state => state.popup,

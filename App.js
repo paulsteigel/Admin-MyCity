@@ -14,6 +14,7 @@ import CustomDrawerContent from './src/components/CustomDrawer';
 import {LOGIN, GET_SUBJECTS} from './src/redux/constants';
 import Axios from 'axios';
 import {BASE_URL} from './src/service';
+import Popup from './src/components/Popup';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -85,6 +86,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <DrawerNavigator />
+      <Popup />
     </NavigationContainer>
   );
 };

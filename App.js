@@ -3,7 +3,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import Login from './src/screen/Login';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import Dashboard from './src/screen/Dashboard';
 import moment from 'moment';

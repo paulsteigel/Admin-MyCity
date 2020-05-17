@@ -15,8 +15,8 @@ import {BASE_URL} from '../service';
 const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
   const [report] = useState(item);
   const [isPermit, setIsPermit] = useState(true);
-  const [departmentId, setDepartmentId] = useState(null);
-  const [agencyId, setAgencyId] = useState(null);
+  const [departmentId, setDepartmentId] = useState([]);
+  const [agencyId, setAgencyId] = useState([]);
   const [dateExpired, setDateExpired] = useState(new Date());
   const [message, setMessage] = useState('');
   const [file, setFile] = useState(null);
@@ -43,12 +43,12 @@ const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
   useEffect(() => {
     if (!isSubmit) return;
     const payload = new FormData();
-    payload.append('feedbackId', report.id);
-    payload.append('isPermit', isPermit);
-    payload.append('departmentIds[]', departmentId);
-    payload.append('agencyIds[]', agencyId);
+    payload.append('feedbackId', report.id.toString());
+    payload.append('isPermit', isPermit.toString());
+    payload.append('departmentIds', departmentId.toString());
+    payload.append('agencyIds', agencyId.toString());
     payload.append('message', message);
-    payload.append('file', file);
+    payload.append('file', JSON.stringify(file));
     payload.append('dateExpired', dateExpired);
     console.log('payload', payload);
     Axios.post(`${BASE_URL}/admin/feedbacks/forwardFeedback`, payload)

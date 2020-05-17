@@ -18,12 +18,7 @@ const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
     if (!isSubmit) return;
     const payload = new FormData();
     payload.append('message', message);
-    payload.append('file', file);
-    Axios.interceptors.request.use(request => {
-      console.log('Starting Request', request);
-      console.log('Payload', request.data);
-      return request;
-    });
+    payload.append('file', JSON.stringify(file));
     Axios.post(`${BASE_URL}/admin/feedbacks/quickHandle/${item.id}`, payload)
       .then(res => {
         if (res.status == 200) {

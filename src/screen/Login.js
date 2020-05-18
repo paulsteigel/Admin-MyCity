@@ -29,10 +29,10 @@ function Login() {
     try {
       console.log('here');
       const response = await Axios.post(BASE_URL + '/usersys/authenticate', {
-        // username,
-        // password,
-        username: 'ubnd.tiepnhan.paulsteigel',
-        password: 'd1ndh1sk',
+        username,
+        password,
+        // username: 'ubnd.tiepnhan.paulsteigel',
+        // password: 'd1ndh1sk',
       });
       const user = {...response.data.user, token: response.data.token};
       Axios.defaults.headers.common.Authorization = 'Bearer ' + user.token;

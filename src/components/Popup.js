@@ -10,14 +10,20 @@ import UpdateFeedback from './UpdateFeedback';
 import VerifyFeedback from './VerifyFeedback';
 import QuickHandleFeedback from './QuickHandleFeedback';
 import ForwardFeedback from './ForwardFeedback';
+import ForwardHistory from './ForwardHistory';
 const {width} = Dimensions.get('window');
 const Popup = () => {
   const [isSubmit, setIsSubmit] = useState(false);
   const {report} = useSelector(state => state.popup);
   const dispatch = useDispatch();
-  const {visible, popupId, popupTitle, height} = useSelector(
-    state => state.popup,
-  );
+  const {
+    visible,
+    popupId,
+    popupTitle,
+    height,
+    hideSubmitButton,
+    forwardHistory,
+  } = useSelector(state => state.popup);
 
   const renderPopupContent = () => {
     switch (popupId) {
@@ -53,6 +59,8 @@ const Popup = () => {
             setIsSubmit={setIsSubmit}
           />
         );
+      case 5:
+        return <ForwardHistory data={forwardHistory} />;
       default:
         return <ConfirmReport isSubmit={isSubmit} />;
     }
@@ -75,7 +83,15 @@ const Popup = () => {
         </View>
         <ScrollView>{renderPopupContent()}</ScrollView>
         <View style={styles.buttonContainer}>
-          <Button title="Lưu" color="green" onPress={() => setIsSubmit(true)} />
+          {!hideSubmitButton ? (
+            <Button
+              title="Lưu"
+              color="green"
+              onPress={() => setIsSubmit(true)}
+            />
+          ) : (
+            <Button title="OK" color="green" onPress={handleClose} />
+          )}
         </View>
       </View>
     </Modal>

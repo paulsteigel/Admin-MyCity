@@ -10,8 +10,12 @@ import {
   MenuOption,
 } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-export default function ReportComponent(props) {
-  const {feedbackId, title, message, id, dateExpired, dateCreate} = props.item;
+export default function ReportComponent({
+  viewForwardHistory,
+  forwarding,
+  ...props
+}) {
+  const {feedbackId, title, message, dateExpired, dateCreate} = props.item;
   const navigation = useNavigation();
   const handleNavigate = () => {
     navigation.navigate('detailReport', {id: feedbackId, hideHeaderBtn: true});
@@ -50,11 +54,13 @@ export default function ReportComponent(props) {
             <MenuOption
               style={styles.button}
               text="Chuyển phản ánh"
-              onSelect={() => props.forwarding(id)}
+              onSelect={() => forwarding(feedbackId)}
             />
-            <MenuOption style={styles.button}>
-              <Text>Lịch sử chuyển</Text>
-            </MenuOption>
+            <MenuOption
+              style={styles.button}
+              text="Lịch sử chuyển"
+              onSelect={() => viewForwardHistory(feedbackId)}
+            />
           </MenuOptions>
         </Menu>
       </View>

@@ -19,13 +19,7 @@ import LoadingModal from './src/components/LoadingModal';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-function Dummy() {
-  return (
-    <View>
-      <Text>Duymy</Text>
-    </View>
-  );
-}
+
 function StackNavigator() {
   return (
     <Stack.Navigator
@@ -84,8 +78,6 @@ const App = () => {
   }, []);
   useEffect(() => {
     const backAction = () => {
-      console.log('back clicked', loadingModal);
-
       return loadingModal.visible;
     };
 

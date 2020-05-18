@@ -33,8 +33,8 @@ function RejectedReport({navigation, ...props}) {
     let res = await Axios.get(url);
     console.log('new report', res.data);
 
-    // if (!loadMore) setReports(res.data);
-    // else setReports(prevState => [...prevState, ...res.data]);
+    if (!loadMore) setReports(res.data);
+    else setReports(prevState => [...prevState, ...res.data]);
     setLoadMore(false);
     setRefeshing(false);
   };
@@ -50,10 +50,24 @@ function RejectedReport({navigation, ...props}) {
         type: OPEN_POPUP_DATA,
         payload: {report: res.data, popupId: 2, popupTitle: 'Chuyển phản ánh'},
       });
-      dispatch({type: CLOSE_LOADING_MODAL});
     } catch (error) {
-      dispatch({type: CLOSE_LOADING_MODAL});
       Toast.show('Có lỗi xảy ra');
+    } finally {
+      dispatch({type: CLOSE_LOADING_MODAL});
+    }
+  };
+  const viewForwardHistory = async id => {
+    try {
+      dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
+      const res = await Axios.get(`${BASE_URL}/fbfw/${id}`);
+      dispatch({
+        type: OPEN_FORWARD_HISTORY,
+        payload: {forwardHistory: res.data, height: height / 2},
+      });
+    } catch (error) {
+      Toast.show('Có lỗi xảy ra');
+    } finally {
+      dispatch({type: CLOSE_LOADING_MODAL});
     }
   };
   const renderList = () => {
@@ -67,7 +81,11 @@ function RejectedReport({navigation, ...props}) {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
-          <ReportComponent forwarding={forwarding} item={item} />
+          <ReportComponent
+            viewForwardHistory={viewForwardHistory}
+            forwarding={forwarding}
+            item={item}
+          />
         )}
         ItemSeparatorComponent={() => (
           <View style={{width: width, height: 10}} />

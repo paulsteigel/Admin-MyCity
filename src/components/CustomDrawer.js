@@ -3,7 +3,7 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {LOGOUT} from '../redux/constants';
 import Image from 'react-native-fast-image';
@@ -13,9 +13,18 @@ const BTN_COLOR = '#df1212';
 export default function CustomDrawerContent(props) {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
-  const logout = async () => {
-    await AsyncStorage.removeItem('user');
-    dispatch({type: LOGOUT});
+  const logout = () => {
+    Alert.alert('Đăng xuất', 'Bạn có muốn đăng xuất tài Khoản', [
+      {text: 'Hủy', style: 'cancel'},
+      {
+        text: 'OK',
+        style: 'default',
+        onPress: async () => {
+          await AsyncStorage.removeItem('user');
+          dispatch({type: LOGOUT});
+        },
+      },
+    ]);
   };
   return (
     <DrawerContentScrollView {...props}>

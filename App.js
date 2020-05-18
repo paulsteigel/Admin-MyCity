@@ -16,6 +16,7 @@ import Axios from 'axios';
 import {BASE_URL} from './src/service';
 import Popup from './src/components/Popup';
 import LoadingModal from './src/components/LoadingModal';
+import LoadingScreen from './src/screen/LoadingScreen';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -88,7 +89,10 @@ const App = () => {
 
     return () => backHandler.remove();
   }, [loadingModal.visible]);
-  if (!user) return <Login />;
+
+  if (user.isLoading) return <LoadingScreen />;
+
+  if (!user.user) return <Login />;
 
   return (
     <NavigationContainer>

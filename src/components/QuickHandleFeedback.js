@@ -5,9 +5,13 @@ import {useDispatch} from 'react-redux';
 import DocumentPicker from 'react-native-document-picker';
 import Icon from 'react-native-vector-icons/Entypo';
 import Axios from 'axios';
-import {CLOSE_POPUP, MARK_REPORTS_OUTDATED} from '../redux/constants';
+import {
+  CLOSE_POPUP,
+  MARK_REPORTS_OUTDATED,
+  OPEN_ERROR_POPUP,
+} from '../redux/constants';
 import {BASE_URL} from '../service';
-
+import FilePickerManager from 'react-native-file-picker';
 const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
   const [message, setMessage] = useState(item.description);
   const [file, setFile] = useState(null);
@@ -40,18 +44,17 @@ const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
   }, [isSubmit]);
 
   const selectFileAsync = async () => {
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles],
+    dispatch({type: OPEN_ERROR_POPUP});
+    console.log('1');
+    FilePickerManager.showFilePicker(null, response => {
+      console.log('Response; ', response);
+      if (response.didCancel || response.error) return;
+      setFile({
+        uri: 'file://' + response.path,
+        name: response.fileName,
+        type: response.type,
       });
-      setFile(res);
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log(err);
-      } else {
-        throw err;
-      }
-    }
+    });
   };
 
   return (

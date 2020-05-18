@@ -61,7 +61,12 @@ function Dashboard({navigation, ...props}) {
         renderItem={({item}) => (
           <ListItem
             report={item}
-            onPress={() => navigation.navigate('detailReport', item.id)}
+            onPress={() =>
+              navigation.navigate('detailReport', {
+                id: item.id,
+                fwid: item.fwid,
+              })
+            }
           />
         )}
         ItemSeparatorComponent={() => (

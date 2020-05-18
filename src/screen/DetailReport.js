@@ -59,7 +59,7 @@ const DetailReport = ({navigation, ...props}) => {
   }, [isDataOutdated]);
 
   const loadReport = isMounted => {
-    Axios.get(`${BASE_URL}/admin/feedbacks/${id}`)
+    Axios.get(`${BASE_URL}/admin/feedbacks/${props.route.params.id}`)
       .then(res => {
         // console.log(res.data.images);
         let imageList = res.data.images.map(item => ({
@@ -83,7 +83,7 @@ const DetailReport = ({navigation, ...props}) => {
   }
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <Popup report={report} />
+      <Popup report={report} fwid={props.route.params.fwid} />
       <PhotoView
         visible={imageView.visible}
         data={imageList}

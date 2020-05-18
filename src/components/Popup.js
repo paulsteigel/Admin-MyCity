@@ -11,7 +11,7 @@ import VerifyFeedback from './VerifyFeedback';
 import QuickHandleFeedback from './QuickHandleFeedback';
 import ForwardFeedback from './ForwardFeedback';
 const {width} = Dimensions.get('window');
-const Popup = ({report}) => {
+const Popup = ({report, fwid}) => {
   const [isSubmit, setIsSubmit] = useState(false);
   const dispatch = useDispatch();
   const {visible, popupId, popupTitle, height} = useSelector(
@@ -34,6 +34,7 @@ const Popup = ({report}) => {
             item={report}
             isSubmit={isSubmit}
             setIsSubmit={setIsSubmit}
+            fwid={fwid}
           />
         );
       case 3:

@@ -18,7 +18,7 @@ import Popup from './src/components/Popup';
 import LoadingModal from './src/components/LoadingModal';
 import LoadingScreen from './src/screen/LoadingScreen';
 import ErrorPopup from './src/components/ErrorPopup';
-import HandleReport from './src/screen/HandleReport';
+// import HandleReport from './src/screen/HandleReport';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -63,7 +63,7 @@ function DrawerNavigator() {
         options={{title: 'Danh sách phản ánh tiếp nhận'}}
         name="phan_anh_tiep_nhan"
       />
-      <Drawer.Screen component={HandleReport} name="phan_anh_xu_ly" />
+      {/* <Drawer.Screen component={HandleReport} name="phan_anh_xu_ly" /> */}
     </Drawer.Navigator>
   );
 }

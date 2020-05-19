@@ -25,11 +25,11 @@ import {
 import {BASE_URL} from '../service';
 import RNFetchBlob from 'rn-fetch-blob';
 import Toast from 'react-native-simple-toast';
-const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
+const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit, url}) => {
   const [report] = useState(item);
   const [isPermit, setIsPermit] = useState(true);
-  const [departmentId, setDepartmentId] = useState(0);
-  const [agencyId, setAgencyId] = useState(0);
+  const [departmentIds, setDepartmentIds] = useState([]);
+  const [agencyIds, setAgencyIds] = useState([]);
   const [dateExpired, setDateExpired] = useState(new Date());
   const [message, setMessage] = useState('');
   const [fileName, setFileName] = useState('');
@@ -62,15 +62,14 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
 
   useEffect(() => {
     if (!isSubmit) return;
-    // console.log('start request', report);
     dispatch({type: CLOSE_POPUP});
     dispatch({type: OPEN_LOADING_MODAL});
-    Axios.post(`${BASE_URL}/admin/feedbacks/forwardFeedback`, {
+    Axios.post(url, {
       id: fwid,
       feedbackId: report.id,
       isPermit,
-      departmentIds: [departmentId],
-      agencyIds: [agencyId],
+      departmentIds: departmentIds,
+      agencyIds: agencyIds,
       message,
       fileName,
       fileBase64,
@@ -78,12 +77,12 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
     })
       .then(res => {
         if (res.status == 200) {
-          Toast.show('Xử lý nhanh phản ánh thành công');
+          Toast.show('Chuyển phản ánh thành công');
           dispatch({
             type: MARK_REPORTS_OUTDATED,
             payload: {isDataOutdated: true},
           });
-        } else Alert.alert('Lỗi', 'Xử lý nhanh phản ánh thất bại');
+        } else Alert.alert('Lỗi', 'Chuyển phản ánh thất bại');
         setIsSubmit(false);
       })
       .catch(err => {
@@ -100,10 +99,13 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
     setShow(Platform.OS === 'ios');
     setDateExpired(currentDate);
   };
-  const handleValueChanged = value => {
-    setDepartmentId(prevState => [...prevState, value]);
-    console.log(departmentId);
+  const onDepartmentSelected = value => {
+    setDepartmentIds(value);
   };
+  const onAgencySelected = value => {
+    setAgencyIds(value);
+  };
+
   return (
     <View style={{padding: 15}}>
       <View
@@ -129,8 +131,8 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
           </Text>
           <DepartmentPicker
             agencyId={user.agencyId}
-            selectedValue={departmentId}
-            onValueChange={value => setDepartmentId(value)}
+            selectedItems={departmentIds}
+            onSelectedItemsChange={onDepartmentSelected}
           />
         </View>
       ) : (
@@ -139,8 +141,8 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
             Đơn vị tiếp nhận
           </Text>
           <AgencyPicker
-            selectedValue={agencyId}
-            onValueChange={agencyId => setAgencyId(agencyId)}
+            selectedItems={agencyIds}
+            onSelectedItemsChange={onAgencySelected}
           />
         </View>
       )}

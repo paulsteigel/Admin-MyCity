@@ -15,10 +15,17 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useDispatch} from 'react-redux';
 import {OPEN_POPUP} from '../redux/constants';
+import {BASE_URL} from '../service';
+
 const {height} = Dimensions.get('window');
 const popupList = [
   {id: 1, height: height * 0.5, title: 'Xử lý nhanh'},
-  {id: 2, height: height * 0.7, title: 'Chuyển phản ánh'},
+  {
+    id: 2,
+    height: height * 0.7,
+    title: 'Chuyển phản ánh',
+    url: `${BASE_URL}/admin/feedbacks/forwardFeedback`,
+  },
   {id: 3, height: height * 0.4, title: 'Xác minh phản ánh'},
   {id: 4, height: height * 0.8, title: 'Cập nhật phản ánh'},
 ];

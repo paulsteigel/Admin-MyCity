@@ -2,20 +2,38 @@ import React, {useState, useEffect} from 'react';
 import {Picker} from '@react-native-community/picker';
 import Axios from 'axios';
 import {BASE_URL} from '../service';
-const AgencyPicker = ({onValueChange, selectedValue}) => {
-  const [agencies, setAgencies] = useState([]);
+import {View} from 'react-native';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+
+const AgencyPicker = ({onSelectedItemsChange, selectedItems}) => {
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
+    let agencies = [];
     Axios.get(`${BASE_URL}/agency`).then(res => {
-      setAgencies(res.data);
+      res.data.map(agency =>
+        agencies.push({
+          id: agency.id,
+          name: agency.name,
+        }),
+      );
+      setItems([{name: 'Chọn cơ quan', id: 0, children: agencies}]);
     });
   }, []);
   return (
-    <Picker onValueChange={onValueChange} selectedValue={selectedValue}>
-      {agencies.map(agency => (
-        <Picker.Item label={agency.name} value={agency.id} key={agency.id} />
-      ))}
-    </Picker>
+    <SectionedMultiSelect
+      hideTags
+      items={items}
+      uniqueKey="id"
+      subKey="children"
+      showDropDowns={false}
+      selectText="Chọn cơ quan"
+      readOnlyHeadings={true}
+      onSelectedItemsChange={onSelectedItemsChange}
+      selectedItems={selectedItems}
+      confirmText="Chọn"
+      searchPlaceholderText="Tìm kiếm cơ quan..."
+    />
   );
 };
 

@@ -11,24 +11,23 @@ import {
   OPEN_ERROR_POPUP,
 } from '../redux/constants';
 import {BASE_URL} from '../service';
-import FilePickerManager from 'react-native-file-picker';
+import RNFetchBlob from 'rn-fetch-blob';
+
 const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
-  const [message, setMessage] = useState(item.description);
-  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState('');
+  const [fileName, setFileName] = useState('');
+  const [fileBase64, setFileBase64] = useState('');
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isSubmit) return;
-    const payload = new FormData();
-    payload.append('message', message);
-    payload.append('file', file);
-    Axios.interceptors.request.use(request => {
-      console.log('Starting Request', request);
-      console.log('Payload', request.data);
-      return request;
-    });
-    Axios.post(`${BASE_URL}/admin/feedbacks/quickHandle/${item.id}`, payload)
+    console.log(fileBase64);
+    Axios.post(`${BASE_URL}/admin/feedbacks/quickHandle/${item.id}`, {
+      message,
+      fileBase64,
+      fileName,
+    })
       .then(res => {
         if (res.status == 200) {
           Alert.alert('Thành công', 'Xử lý nhanh phản ánh thành công');
@@ -40,21 +39,30 @@ const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
         setIsSubmit(false);
         dispatch({type: CLOSE_POPUP});
       })
-      .catch(err => console.log(err));
+      .catch(err =>
+        console.log('err quick handle feedback', JSON.stringify(err)),
+      );
   }, [isSubmit]);
 
   const selectFileAsync = async () => {
-    dispatch({type: OPEN_ERROR_POPUP});
-    console.log('1');
-    FilePickerManager.showFilePicker(null, response => {
-      console.log('Response; ', response);
-      if (response.didCancel || response.error) return;
-      setFile({
-        uri: 'file://' + response.path,
-        name: response.fileName,
-        type: response.type,
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
       });
-    });
+      setFileName(res.name);
+      RNFetchBlob.fs
+        .readFile(res.uri, 'base64')
+        .then(data => {
+          setFileBase64(data);
+        })
+        .catch(err => console.log('react native fetch blob error', err));
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log(err);
+      } else {
+        throw err;
+      }
+    }
   };
 
   return (
@@ -79,14 +87,14 @@ const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
             padding: 10,
           }}>
           <Text>Bấm để chọn file</Text>
-          {file && (
+          {fileName !== '' && (
             <View
               style={{
                 flexDirection: 'row',
                 padding: 5,
               }}>
               <Icon name="attachment" size={20} style={{marginRight: 5}} />
-              <Text numberOfLines={1}>{file.name}</Text>
+              <Text numberOfLines={1}>{fileName}</Text>
             </View>
           )}
         </View>

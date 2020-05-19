@@ -7,8 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint .",
-    "postinstall": "patch-package"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@merryjs/photo-viewer": "^3.1.4",
@@ -39,7 +38,8 @@
     "react-native-tab-view": "^2.14.0",
     "react-native-vector-icons": "^6.6.0",
     "react-redux": "^7.2.0",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
@@ -49,8 +49,6 @@
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.58.0",
-    "patch-package": "^6.2.2",
-    "postinstall-postinstall": "^2.1.0",
     "react-test-renderer": "16.11.0"
   },
   "jest": {

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Text, TouchableWithoutFeedback} from 'react-native';
+import {View, Text, Alert, TouchableWithoutFeedback} from 'react-native';
 import {TextInput, Switch} from 'react-native-gesture-handler';
 import DepartmentPicker from './DepartmentPicker';
 import AgencyPicker from './AgencyPicker';
@@ -9,24 +9,34 @@ import DocumentPicker from 'react-native-document-picker';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Entypo';
 import Axios from 'axios';
-import {CLOSE_POPUP} from '../redux/constants';
+import {CLOSE_POPUP, MARK_REPORTS_OUTDATED} from '../redux/constants';
 import {BASE_URL} from '../service';
+import RNFetchBlob from 'rn-fetch-blob';
 
-const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
+const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
   const [report] = useState(item);
   const [isPermit, setIsPermit] = useState(true);
-  const [departmentId, setDepartmentId] = useState(null);
-  const [agencyId, setAgencyId] = useState(null);
+  const [departmentId, setDepartmentId] = useState(0);
+  const [agencyId, setAgencyId] = useState(0);
   const [dateExpired, setDateExpired] = useState(new Date());
   const [message, setMessage] = useState('');
-  const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState('');
+  const [fileBase64, setFileBase64] = useState('');
   const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
+
   const selectFileAsync = async () => {
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
       });
-      setFile(res);
+      setFileName(res.name);
+      RNFetchBlob.fs
+        .readFile(res.uri, 'base64')
+        .then(data => {
+          setFileBase64(data);
+        })
+        .catch(err => console.log('react native fetch blob error', err));
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         console.log(err);
@@ -36,29 +46,36 @@ const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
     }
   };
 
-  const user = useSelector(state => state.user);
-
-  const dispatch = useDispatch();
+  const {user} = useSelector(state => state.user);
 
   useEffect(() => {
     if (!isSubmit) return;
-    const payload = new FormData();
-    payload.append('feedbackId', report.id);
-    payload.append('isPermit', isPermit);
-    payload.append('departmentIds[]', departmentId);
-    payload.append('agencyIds[]', agencyId);
-    payload.append('message', message);
-    payload.append('file', file);
-    payload.append('dateExpired', dateExpired);
-    console.log('payload', payload);
-    Axios.post(`${BASE_URL}/admin/feedbacks/forwardFeedback`, payload)
+    // console.log('start request', report);
+    Axios.post(`${BASE_URL}/admin/feedbacks/forwardFeedback`, {
+      id: fwid,
+      feedbackId: report.id,
+      isPermit,
+      departmentIds: [departmentId],
+      agencyIds: [agencyId],
+      message,
+      fileName,
+      fileBase64,
+      dateExpired,
+    })
       .then(res => {
-        console.log(res);
-        console.log(res).data;
+        if (res.status == 200) {
+          Alert.alert('Thành công', 'Xử lý nhanh phản ánh thành công');
+          dispatch({
+            type: MARK_REPORTS_OUTDATED,
+            payload: {isDataOutdated: true},
+          });
+        } else Alert.alert('Lỗi', 'Xử lý nhanh phản ánh thất bại');
+        setIsSubmit(false);
       })
-      .catch(err => console.log('err', JSON.stringify(err)));
-    dispatch({type: CLOSE_POPUP});
-    setIsSubmit(false);
+      .catch(err => console.log('err forward feedback', JSON.stringify(err)))
+      .finally(() => {
+        dispatch({type: CLOSE_POPUP});
+      });
   }, [isSubmit]);
 
   const onChange = (event, selectedDate) => {
@@ -66,7 +83,10 @@ const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
     setShow(Platform.OS === 'ios');
     setDateExpired(currentDate);
   };
-
+  const handleValueChanged = value => {
+    setDepartmentId(prevState => [...prevState, value]);
+    console.log(departmentId);
+  };
   return (
     <View style={{padding: 15}}>
       <View
@@ -93,7 +113,7 @@ const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
           <DepartmentPicker
             agencyId={user.agencyId}
             selectedValue={departmentId}
-            onValueChange={departmentId => setDepartmentId(departmentId)}
+            onValueChange={value => setDepartmentId(value)}
           />
         </View>
       ) : (
@@ -117,14 +137,14 @@ const ForwardFeedback = ({item, isSubmit, setIsSubmit}) => {
               padding: 10,
             }}>
             <Text>Bấm để chọn file</Text>
-            {file && (
+            {fileName !== '' && (
               <View
                 style={{
                   flexDirection: 'row',
                   padding: 5,
                 }}>
                 <Icon name="attachment" size={20} style={{marginRight: 5}} />
-                <Text numberOfLines={1}>{file.name}</Text>
+                <Text numberOfLines={1}>{fileName}</Text>
               </View>
             )}
           </View>

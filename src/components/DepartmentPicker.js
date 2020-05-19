@@ -6,9 +6,11 @@ const DepartmentPicker = ({agencyId, onValueChange, selectedValue}) => {
   const [departments, setDepartments] = useState([]);
 
   useEffect(() => {
-    Axios.get(`${BASE_URL}/department?agencyId=${agencyId}`).then(res => {
-      setDepartments(res.data);
-    });
+    Axios.get(`${BASE_URL}/department?agencyId=${agencyId}`)
+      .then(res => {
+        setDepartments(res.data);
+      })
+      .catch(err => console.log('err', JSON.stringify(err)));
   }, []);
   return (
     <Picker onValueChange={onValueChange} selectedValue={selectedValue}>

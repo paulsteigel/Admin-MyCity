@@ -11,12 +11,14 @@ import localization from 'moment/locale/vi';
 import DetailReport from './src/screen/DetailReport';
 import RecivedReports from './src/screen/RecivedReports';
 import CustomDrawerContent from './src/components/CustomDrawer';
-import {LOGIN, GET_SUBJECTS} from './src/redux/constants';
+import {LOGIN, GET_SUBJECTS, CLOSE_ERROR_POPUP} from './src/redux/constants';
 import Axios from 'axios';
 import {BASE_URL} from './src/service';
 import Popup from './src/components/Popup';
 import LoadingModal from './src/components/LoadingModal';
 import LoadingScreen from './src/screen/LoadingScreen';
+import ErrorPopup from './src/components/ErrorPopup';
+import HandleReport from './src/screen/HandleReport';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -54,13 +56,14 @@ function DrawerNavigator() {
       <Drawer.Screen
         component={StackNavigator}
         options={{title: 'Danh sách góp ý, phản ánh'}}
-        name="stack"
+        name="gop_y_phan_anh"
       />
       <Drawer.Screen
         component={RecivedReports}
         options={{title: 'Danh sách phản ánh tiếp nhận'}}
-        name="tabbar"
+        name="phan_anh_tiep_nhan"
       />
+      <Drawer.Screen component={HandleReport} name="phan_anh_xu_ly" />
     </Drawer.Navigator>
   );
 }
@@ -97,6 +100,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <DrawerNavigator />
+      <ErrorPopup />
       <Popup />
       <LoadingModal />
     </NavigationContainer>

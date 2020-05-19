@@ -12,7 +12,7 @@ import {BASE_URL} from '../service';
 import ListItem from '../components/ListItem';
 import Axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
-import {MARK_REPORTS_OUTDATED} from '../redux/constants';
+import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../redux/constants';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const {width, height} = Dimensions.get('window');
 
@@ -74,7 +74,12 @@ function Dashboard({navigation, ...props}) {
         renderItem={({item}) => (
           <ListItem
             report={item}
-            onPress={() => navigation.navigate('detailReport', {id: item.id})}
+            onPress={() => {
+              navigation.navigate('detailReport', {
+                id: item.id,
+              });
+              dispatch({type: UPDATE_FWID, payload: item.fwid});
+            }}
           />
         )}
         ItemSeparatorComponent={() => (

@@ -14,7 +14,7 @@ import ForwardHistory from './ForwardHistory';
 const {width} = Dimensions.get('window');
 const Popup = () => {
   const [isSubmit, setIsSubmit] = useState(false);
-  const {report} = useSelector(state => state.popup);
+  const {report, fwid} = useSelector(state => state.popup);
   const dispatch = useDispatch();
   const {
     visible,
@@ -41,6 +41,7 @@ const Popup = () => {
             item={report}
             isSubmit={isSubmit}
             setIsSubmit={setIsSubmit}
+            fwid={fwid}
           />
         );
       case 3:

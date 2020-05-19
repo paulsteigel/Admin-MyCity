@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'column',
     borderRadius: 20,
-    zIndex: 10,
+    zIndex: 20,
     position: 'absolute',
     top: '50%',
     left: (width - 250) / 2,
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     height,
     backgroundColor: '#000',
     opacity: 0.7,
+    zIndex: 20,
   },
 });
 export default LoadingModal;

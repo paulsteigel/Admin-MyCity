@@ -3,7 +3,7 @@ const initalState = {visible: false, text: ''};
 const loadingModalReducer = (state = initalState, {type, payload}) => {
   switch (type) {
     case OPEN_LOADING_MODAL:
-      return {...state, visible: true, text: payload};
+      return {...state, visible: true, text: 'loading'};
     case CLOSE_LOADING_MODAL:
       return {...state, visible: false};
     default:

@@ -1,18 +1,30 @@
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Text, Alert, TouchableWithoutFeedback} from 'react-native';
+import {
+  View,
+  Text,
+  Alert,
+  TouchableWithoutFeedback,
+  ToastAndroid,
+} from 'react-native';
 import {TextInput, Switch} from 'react-native-gesture-handler';
 import DepartmentPicker from './DepartmentPicker';
 import AgencyPicker from './AgencyPicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DocumentPicker from 'react-native-document-picker';
-import moment from 'moment';
+import moment, {duration} from 'moment';
 import Icon from 'react-native-vector-icons/Entypo';
 import Axios from 'axios';
-import {CLOSE_POPUP, MARK_REPORTS_OUTDATED} from '../redux/constants';
+import {
+  CLOSE_POPUP,
+  MARK_REPORTS_OUTDATED,
+  OPEN_LOADING_MODAL,
+  CLOSE_LOADING_MODAL,
+  OPEN_ERROR_POPUP,
+} from '../redux/constants';
 import {BASE_URL} from '../service';
 import RNFetchBlob from 'rn-fetch-blob';
-
+import Toast from 'react-native-simple-toast';
 const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
   const [report] = useState(item);
   const [isPermit, setIsPermit] = useState(true);
@@ -51,6 +63,8 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
   useEffect(() => {
     if (!isSubmit) return;
     // console.log('start request', report);
+    dispatch({type: CLOSE_POPUP});
+    dispatch({type: OPEN_LOADING_MODAL});
     Axios.post(`${BASE_URL}/admin/feedbacks/forwardFeedback`, {
       id: fwid,
       feedbackId: report.id,
@@ -64,7 +78,7 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
     })
       .then(res => {
         if (res.status == 200) {
-          Alert.alert('Thành công', 'Xử lý nhanh phản ánh thành công');
+          Toast.show('Xử lý nhanh phản ánh thành công');
           dispatch({
             type: MARK_REPORTS_OUTDATED,
             payload: {isDataOutdated: true},
@@ -72,9 +86,12 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit}) => {
         } else Alert.alert('Lỗi', 'Xử lý nhanh phản ánh thất bại');
         setIsSubmit(false);
       })
-      .catch(err => console.log('err forward feedback', JSON.stringify(err)))
+      .catch(err => {
+        dispatch({type: OPEN_ERROR_POPUP});
+        console.log('err forward feedback', JSON.stringify(err));
+      })
       .finally(() => {
-        dispatch({type: CLOSE_POPUP});
+        dispatch({type: CLOSE_LOADING_MODAL});
       });
   }, [isSubmit]);
 

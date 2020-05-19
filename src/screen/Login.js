@@ -16,30 +16,31 @@ import {useDispatch} from 'react-redux';
 import Axios from 'axios';
 import {LOGIN} from '../redux/constants';
 import {BASE_URL} from '../service';
-import {userLogin} from '../service/authenticate';
 const {width, height} = Dimensions.get('window');
 
-const Login = () => {
+function Login() {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const login = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const response = await Axios.post(BASE_URL + '/usersys/authenticate', {
         username,
         password,
+        // username: 'ubnd.tiepnhan.paulsteigel',
+        // password: 'd1ndh1sk',
       });
-      console.log('login: ', response.data);
-
       const user = {...response.data.user, token: response.data.token};
       Axios.defaults.headers.common.Authorization = 'Bearer ' + user.token;
       await AsyncStorage.setItem('user', JSON.stringify(user));
       dispatch({type: LOGIN, payload: user});
     } catch (e) {
-      Alert('Sai tên đăng nhập hoặc mật khẩu');
+      Alert.alert('Sai tên đăng nhập hoặc mật khẩu');
       setPassword('');
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -74,7 +75,7 @@ const Login = () => {
       </View>
     </LinearGradient>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -8,48 +8,30 @@ import {
   View,
   Dimensions,
 } from 'react-native';
+import Toast from 'react-native-simple-toast';
 import {BASE_URL} from '../service';
-import ListItem from '../components/ListItem';
 import Axios from 'axios';
-import {useSelector, useDispatch} from 'react-redux';
-import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../redux/constants';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import ReportComponent from './RejecttedCard';
+import {useDispatch} from 'react-redux';
+import {
+  OPEN_LOADING_MODAL,
+  CLOSE_LOADING_MODAL,
+  OPEN_POPUP_DATA,
+} from '../redux/constants';
 const {width, height} = Dimensions.get('window');
-
-function Dashboard({navigation, ...props}) {
-  const {isDataOutdated} = useSelector(state => state.pendingReport);
-  const dispatch = useDispatch();
-
+function RejectedReport({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
-  const [reports, setReports] = useState([]);
   const [refreshing, setRefeshing] = useState(false);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Icon
-          style={{color: '#fff', paddingLeft: 20}}
-          onPress={() => navigation.toggleDrawer()}
-          size={30}
-          name="menu"
-        />
-      ),
-    });
-  }, []);
-
+  const [reports, setReports] = useState([]);
   useEffect(() => {
     if (loadMore) loadFeedBack(reports.length);
   }, [loadMore]);
-  useEffect(() => {
-    if (isDataOutdated) {
-      loadFeedBack(0);
-      dispatch({type: MARK_REPORTS_OUTDATED, payload: {isDataOutdated: false}});
-    }
-  }, [isDataOutdated]);
 
+  const dispatch = useDispatch();
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
+    let url = `${BASE_URL}/admin/feedbackforwards/agency/newFeedbackForwards?limit=10&skip=${start}`;
     let res = await Axios.get(url);
+    console.log('new report', res.data);
 
     if (!loadMore) setReports(res.data);
     else setReports(prevState => [...prevState, ...res.data]);
@@ -60,7 +42,34 @@ function Dashboard({navigation, ...props}) {
     setRefeshing(true);
     loadFeedBack(0);
   };
-  // useEffect(() => console.log('state changed: ', reports.length), [reports]);
+  const forwarding = async id => {
+    try {
+      dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
+      const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${id}`);
+      dispatch({
+        type: OPEN_POPUP_DATA,
+        payload: {report: res.data, popupId: 2, popupTitle: 'Chuyển phản ánh'},
+      });
+    } catch (error) {
+      Toast.show('Có lỗi xảy ra');
+    } finally {
+      dispatch({type: CLOSE_LOADING_MODAL});
+    }
+  };
+  const viewForwardHistory = async id => {
+    try {
+      dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
+      const res = await Axios.get(`${BASE_URL}/fbfw/${id}`);
+      dispatch({
+        type: OPEN_FORWARD_HISTORY,
+        payload: {forwardHistory: res.data, height: height / 2},
+      });
+    } catch (error) {
+      Toast.show('Có lỗi xảy ra');
+    } finally {
+      dispatch({type: CLOSE_LOADING_MODAL});
+    }
+  };
   const renderList = () => {
     return (
       <FlatList
@@ -68,18 +77,14 @@ function Dashboard({navigation, ...props}) {
         onEndReached={() => setLoadMore(true)}
         data={reports}
         onEndReachedThreshold={0.2}
-        keyExtractor={(item, index) => index + ''}
+        keyExtractor={arg => JSON.stringify(arg)}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
-          <ListItem
-            report={item}
-            onPress={() => {
-              navigation.navigate('detailReport', {
-                id: item.id,
-              });
-              dispatch({type: UPDATE_FWID, payload: item.fwid});
-            }}
+          <ReportComponent
+            viewForwardHistory={viewForwardHistory}
+            forwarding={forwarding}
+            item={item}
           />
         )}
         ItemSeparatorComponent={() => (
@@ -97,7 +102,7 @@ function Dashboard({navigation, ...props}) {
       </View>
     );
   }
-  if (!reports.length)
+  if (!reports.length && loadMore)
     return (
       <View style={{flex: 1, justifyContent: 'center'}}>
         <ActivityIndicator size="large" color="green" />
@@ -118,4 +123,4 @@ function Dashboard({navigation, ...props}) {
     </View>
   );
 }
-export default Dashboard;
+export default RejectedReport;

@@ -8,21 +8,28 @@ import {name as appName} from './app.json';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import appReducer from './src/redux/reducers';
-const store = createStore(appReducer);
 import React from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import {LOGIN} from './src/redux/constants';
+import {LOGIN, LOADING_DONE} from './src/redux/constants';
 import Axios from 'axios';
-AsyncStorage.getItem('user').then(user => {
-  if (!user) return;
-  user = JSON.parse(user);
-  Axios.defaults.headers.common.Authorization = 'Bearer ' + user.token;
-  store.dispatch({type: LOGIN, payload: user});
-});
+import {MenuProvider} from 'react-native-popup-menu';
+const store = createStore(appReducer);
+AsyncStorage.getItem('user')
+  .then(user => {
+    if (!user) return;
+    user = JSON.parse(user);
+    Axios.defaults.headers.common.Authorization = 'Bearer ' + user.token;
+    store.dispatch({type: LOGIN, payload: user});
+  })
+  .finally(() => {
+    store.dispatch({type: LOADING_DONE});
+  });
 function ReduxProvier() {
   return (
     <Provider store={store}>
-      <App />
+      <MenuProvider>
+        <App />
+      </MenuProvider>
     </Provider>
   );
 }

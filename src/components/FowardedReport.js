@@ -9,47 +9,23 @@ import {
   Dimensions,
 } from 'react-native';
 import {BASE_URL} from '../service';
-import ListItem from '../components/ListItem';
 import Axios from 'axios';
-import {useSelector, useDispatch} from 'react-redux';
-import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../redux/constants';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import ForwardComponent from './ForwardedCard';
 const {width, height} = Dimensions.get('window');
 
-function Dashboard({navigation, ...props}) {
-  const {isDataOutdated} = useSelector(state => state.pendingReport);
-  const dispatch = useDispatch();
-
+function ForwardedReport({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
-  const [reports, setReports] = useState([]);
   const [refreshing, setRefeshing] = useState(false);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Icon
-          style={{color: '#fff', paddingLeft: 20}}
-          onPress={() => navigation.toggleDrawer()}
-          size={30}
-          name="menu"
-        />
-      ),
-    });
-  }, []);
+  const [reports, setReports] = useState([]);
 
   useEffect(() => {
     if (loadMore) loadFeedBack(reports.length);
   }, [loadMore]);
-  useEffect(() => {
-    if (isDataOutdated) {
-      loadFeedBack(0);
-      dispatch({type: MARK_REPORTS_OUTDATED, payload: {isDataOutdated: false}});
-    }
-  }, [isDataOutdated]);
 
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
+    let url = `${BASE_URL}/admin/feedbackforwards/agency/forwardedFeedbackForwards?limit=10&skip=${start}`;
     let res = await Axios.get(url);
+    console.log(res.data.length);
 
     if (!loadMore) setReports(res.data);
     else setReports(prevState => [...prevState, ...res.data]);
@@ -60,7 +36,13 @@ function Dashboard({navigation, ...props}) {
     setRefeshing(true);
     loadFeedBack(0);
   };
-  // useEffect(() => console.log('state changed: ', reports.length), [reports]);
+  const forwarding = () => {
+    console.log('forwarding this feedback');
+  };
+  const navigate = () => {
+    console.log('navigating');
+  };
+
   const renderList = () => {
     return (
       <FlatList
@@ -68,18 +50,14 @@ function Dashboard({navigation, ...props}) {
         onEndReached={() => setLoadMore(true)}
         data={reports}
         onEndReachedThreshold={0.2}
-        keyExtractor={(item, index) => index + ''}
+        keyExtractor={arg => JSON.stringify(arg)}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
-          <ListItem
-            report={item}
-            onPress={() => {
-              navigation.navigate('detailReport', {
-                id: item.id,
-              });
-              dispatch({type: UPDATE_FWID, payload: item.fwid});
-            }}
+          <ForwardComponent
+            navigate={navigate}
+            forwarding={forwarding}
+            item={item}
           />
         )}
         ItemSeparatorComponent={() => (
@@ -97,7 +75,7 @@ function Dashboard({navigation, ...props}) {
       </View>
     );
   }
-  if (!reports.length)
+  if (!reports.length && loadMore)
     return (
       <View style={{flex: 1, justifyContent: 'center'}}>
         <ActivityIndicator size="large" color="green" />
@@ -118,4 +96,4 @@ function Dashboard({navigation, ...props}) {
     </View>
   );
 }
-export default Dashboard;
+export default ForwardedReport;

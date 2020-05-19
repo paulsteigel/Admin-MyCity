@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 const BTN_COLOR = '#df1212';
 export default function CustomDrawerContent(props) {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.user);
+  const {user} = useSelector(state => state.user);
   const logout = () => {
     Alert.alert('Đăng xuất', 'Bạn có muốn đăng xuất tài Khoản', [
       {text: 'Hủy', style: 'cancel'},
@@ -50,7 +50,7 @@ export default function CustomDrawerContent(props) {
 }
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 10,
+    padding: 10,
     backgroundColor: '#efefef',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
   },
   imageContainer: {flex: 1},
   userInfo: {
-    marginLeft: 18,
     marginTop: 5,
     // justifyContent: 'center',
     // alignItems: 'center',

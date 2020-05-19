@@ -19,12 +19,14 @@ const litmitStr = str => {
   return res.slice(0, numberOfWords - 1).join(' ') + '...';
 };
 
-export default function ReportComponent({
+export default function HandledCard({
   viewForwardHistory,
   forwarding,
+  isDone,
   ...props
 }) {
-  const {feedbackId, title, message, dateExpired, dateCreate} = props.item;
+  const {feedbackId, message, dateExpired, dateCreate} = props.item;
+  const title = props.item.feedback.title;
   const navigation = useNavigation();
   const handleNavigate = () => {
     navigation.navigate('detailReport', {id: feedbackId, hideHeaderBtn: true});
@@ -61,11 +63,13 @@ export default function ReportComponent({
             <Icon name="dots-vertical" size={25} />
           </MenuTrigger>
           <MenuOptions>
-            <MenuOption
-              style={styles.button}
-              text="Chuyển phản ánh"
-              onSelect={() => forwarding(feedbackId)}
-            />
+            {isDone ? null : (
+              <MenuOption
+                style={styles.button}
+                text="Chuyển phản ánh"
+                onSelect={() => forwarding(feedbackId)}
+              />
+            )}
             <MenuOption
               style={styles.button}
               text="Lịch sử chuyển"

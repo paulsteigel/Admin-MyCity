@@ -1,6 +1,6 @@
 /** @format */
 
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Text,
   StyleSheet,
@@ -25,7 +25,6 @@ function LoadingModal() {
     );
   return <></>;
 }
-function AnimatedLoadingModal() {}
 const styles = StyleSheet.create({
   child: {
     backgroundColor: '#fff',

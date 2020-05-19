@@ -2,18 +2,13 @@ import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   StyleSheet,
-  KeyboardAvoidingView,
-  TextInput,
   Dimensions,
   SafeAreaView,
   Image,
   ActivityIndicator,
-  Keyboard,
-  Share,
   Text,
   Button,
   Linking,
-  Alert,
 } from 'react-native';
 import {
   ScrollView,
@@ -22,11 +17,9 @@ import {
 import {BASE_URL} from '../service';
 import Axios from 'axios';
 import PhotoView from '@merryjs/photo-viewer';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import BottomSheet from 'react-native-raw-bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import HandleFeedback from '../components/HandleFeedback';
-import Popup from '../components/Popup';
 import {useSelector, useDispatch} from 'react-redux';
 import {MARK_REPORTS_OUTDATED, UPDATE_POPUP_DATA} from '../redux/constants';
 
@@ -42,6 +35,7 @@ const DetailReport = ({navigation, ...props}) => {
   const dispatch = useDispatch();
 
   const {isDataOutdated} = useSelector(state => state.pendingReport);
+  const {user} = useSelector(state => state.user);
 
   useEffect(() => {
     let isMounted = true;
@@ -116,12 +110,12 @@ const DetailReport = ({navigation, ...props}) => {
           })}
         </View>
         <View style={{padding: 20}}>
-          {hideHeaderBtn || (
+          {user.groupId <= 3 || report.isHide ? (
             <Button
               title="Thông tin người phản ánh"
               onPress={() => bottomSheet.current.open()}
             />
-          )}
+          ) : null}
         </View>
       </ScrollView>
       <BottomSheet

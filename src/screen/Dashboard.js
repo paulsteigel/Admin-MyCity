@@ -25,19 +25,6 @@ function Dashboard({navigation, ...props}) {
   const [refreshing, setRefeshing] = useState(false);
 
   useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Icon
-          style={{color: '#fff', paddingLeft: 20}}
-          onPress={() => navigation.toggleDrawer()}
-          size={30}
-          name="menu"
-        />
-      ),
-    });
-  }, []);
-
-  useEffect(() => {
     if (loadMore) loadFeedBack(reports.length);
   }, [loadMore]);
   useEffect(() => {
@@ -104,16 +91,45 @@ function Dashboard({navigation, ...props}) {
       </View>
     );
   return (
-    <View style={{flex: 1, paddingHorizontal: 5}}>
-      {renderList()}
-      <View style={{position: 'relative'}}>
-        {loadMore ? (
-          <ActivityIndicator
-            style={{position: 'absolute', bottom: 20, left: '50%'}}
-            size="large"
-            color="green"
-          />
-        ) : null}
+    <View style={{flex: 1}}>
+      {/* header */}
+      <View
+        style={{
+          height: 60,
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: '#018037',
+        }}>
+        <Icon
+          style={{color: '#fff', paddingLeft: 20}}
+          onPress={() => navigation.toggleDrawer()}
+          size={30}
+          name="menu"
+        />
+        <View style={{flex: 1}}>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 18,
+              fontWeight: 'bold',
+              paddingLeft: 20,
+            }}>
+            Phản ánh chưa chuyển
+          </Text>
+        </View>
+      </View>
+      {/* end of header */}
+      <View style={{flex: 1, paddingHorizontal: 5}}>
+        {renderList()}
+        <View style={{position: 'relative'}}>
+          {loadMore ? (
+            <ActivityIndicator
+              style={{position: 'absolute', bottom: 20, left: '50%'}}
+              size="large"
+              color="green"
+            />
+          ) : null}
+        </View>
       </View>
     </View>
   );

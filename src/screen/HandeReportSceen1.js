@@ -11,7 +11,7 @@ import {
 import Toast from 'react-native-simple-toast';
 import {BASE_URL} from '../service';
 import Axios from 'axios';
-import ReportComponent from './RejecttedCard';
+import HandledCard from '../components/HandledCard';
 import {useDispatch} from 'react-redux';
 import {
   OPEN_LOADING_MODAL,
@@ -20,7 +20,7 @@ import {
   OPEN_FORWARD_HISTORY,
 } from '../redux/constants';
 const {width, height} = Dimensions.get('window');
-function RejectedReport({navigation, ...props}) {
+function HandleReportScreen1({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
   const [refreshing, setRefeshing] = useState(false);
   const [reports, setReports] = useState([]);
@@ -30,14 +30,17 @@ function RejectedReport({navigation, ...props}) {
 
   const dispatch = useDispatch();
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbackforwards/agency/newFeedbackForwards?limit=10&skip=${start}`;
-    let res = await Axios.get(url);
-    console.log('new report', res.data);
+    try {
+      let url = `${BASE_URL}/admin/feedbackforwards/department/newFeedbackForwards?limit=10&skip=${start}`;
+      let res = await Axios.get(url);
 
-    if (!loadMore) setReports(res.data);
-    else setReports(prevState => [...prevState, ...res.data]);
-    setLoadMore(false);
-    setRefeshing(false);
+      if (!loadMore) setReports(res.data);
+      else setReports(prevState => [...prevState, ...res.data]);
+      setLoadMore(false);
+      setRefeshing(false);
+    } catch (err) {
+      console.log('sceen1: ', err);
+    }
   };
   const handleRefresh = () => {
     setRefeshing(true);
@@ -61,13 +64,13 @@ function RejectedReport({navigation, ...props}) {
     try {
       dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
       const res = await Axios.get(`${BASE_URL}/fbfw/${id}`);
+
       dispatch({
         type: OPEN_FORWARD_HISTORY,
         payload: {forwardHistory: res.data, height: height / 2},
       });
     } catch (error) {
       Toast.show('Có lỗi xảy ra');
-      console.log('err', error);
     } finally {
       dispatch({type: CLOSE_LOADING_MODAL});
     }
@@ -83,7 +86,7 @@ function RejectedReport({navigation, ...props}) {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
-          <ReportComponent
+          <HandledCard
             viewForwardHistory={viewForwardHistory}
             forwarding={forwarding}
             item={item}
@@ -125,4 +128,4 @@ function RejectedReport({navigation, ...props}) {
     </View>
   );
 }
-export default RejectedReport;
+export default HandleReportScreen1;

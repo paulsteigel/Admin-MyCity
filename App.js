@@ -23,47 +23,42 @@ moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-function StackNavigator() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#018037',
-        },
-        headerTitleStyle: {
-          color: '#fff',
-        },
-        headerTintColor: '#fff',
-      }}>
-      <Stack.Screen
-        component={Dashboard}
-        name="dashboard"
-        options={{title: 'Phản ánh chưa chuyển'}}
-      />
-      <Stack.Screen
-        options={{title: 'Chi tiết phản ánh'}}
-        name="detailReport"
-        component={DetailReport}
-      />
-    </Stack.Navigator>
-  );
-}
-
+const screens = [
+  {
+    id: 3,
+    component: Dashboard,
+    name: 'dashboard',
+    options: {title: 'Phản ánh chưa chuyển'},
+  },
+  {
+    id: 4,
+    component: RecivedReports,
+    name: 'phan_anh_tiep_nhan',
+    options: {title: 'Danh sách phản ánh tiếp nhận'},
+  },
+  {
+    id: 5,
+    component: HandleReport,
+    name: 'phan_anh_xu_ly',
+    options: {title: 'Danh sách phản ánh xử lý'},
+  },
+];
 function DrawerNavigator() {
+  const {user} = useSelector(state => state.user);
   return (
     <Drawer.Navigator
       drawerContent={props => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen
-        component={StackNavigator}
-        options={{title: 'Danh sách góp ý, phản ánh'}}
-        name="gop_y_phan_anh"
-      />
-      <Drawer.Screen
-        component={RecivedReports}
-        options={{title: 'Danh sách phản ánh tiếp nhận'}}
-        name="phan_anh_tiep_nhan"
-      />
-      <Drawer.Screen component={HandleReport} name="phan_anh_xu_ly" />
+      {screens.map(screen => {
+        if (screen.id >= user.groupId)
+          return (
+            <Drawer.Screen
+              component={screen.component}
+              options={screen.options}
+              name={screen.name}
+              key={screen.id}
+            />
+          );
+      })}
     </Drawer.Navigator>
   );
 }
@@ -72,6 +67,7 @@ const App = () => {
   const [user, loadingModal] = useSelector(state => {
     return [state.user, state.loadingModal];
   });
+
   const dispatch = useDispatch();
   useEffect(() => {
     Axios.get(`${BASE_URL}/subjects`)
@@ -99,7 +95,23 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <DrawerNavigator />
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#018037',
+          },
+          headerTitleStyle: {
+            color: '#fff',
+          },
+          headerTintColor: '#fff',
+        }}>
+        <Stack.Screen
+          name="__drawer__"
+          options={{headerShown: false}}
+          component={DrawerNavigator}
+        />
+        <Stack.Screen name="detailReport" component={DetailReport} />
+      </Stack.Navigator>
       <ErrorPopup />
       <Popup />
       <LoadingModal />
@@ -111,14 +123,9 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#018037',
     height: 40,
-    // width,
-    // padding: 0,
-    // zIndex: 1000,
   },
   container: {
     padding: 0,
-    // zIndex: 100000,
-    // backgroundColor: 'red',
   },
 });
 export default App;

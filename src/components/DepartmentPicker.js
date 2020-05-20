@@ -2,26 +2,39 @@ import React, {useState, useEffect} from 'react';
 import {Picker} from '@react-native-community/picker';
 import Axios from 'axios';
 import {BASE_URL} from '../service';
-const DepartmentPicker = ({agencyId, onValueChange, selectedValue}) => {
-  const [departments, setDepartments] = useState([]);
+import {View} from 'react-native';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 
+const DepartmentPicker = ({agencyId, onSelectedItemsChange, selectedItems}) => {
+  const [items, setItems] = useState([]);
   useEffect(() => {
+    let departments = [];
     Axios.get(`${BASE_URL}/department?agencyId=${agencyId}`)
       .then(res => {
-        setDepartments(res.data);
+        res.data.map(department =>
+          departments.push({
+            id: department.id,
+            name: department.name,
+          }),
+        );
+        setItems([{name: 'Chọn đơn vị', id: 0, children: departments}]);
       })
       .catch(err => console.log('err', JSON.stringify(err)));
   }, []);
   return (
-    <Picker onValueChange={onValueChange} selectedValue={selectedValue}>
-      {departments.map(department => (
-        <Picker.Item
-          label={department.name}
-          value={department.id}
-          key={department.id}
-        />
-      ))}
-    </Picker>
+    <SectionedMultiSelect
+      hideTags
+      items={items}
+      uniqueKey="id"
+      subKey="children"
+      showDropDowns={false}
+      selectText="Chọn phòng ban"
+      readOnlyHeadings={true}
+      onSelectedItemsChange={onSelectedItemsChange}
+      selectedItems={selectedItems}
+      confirmText="Chọn"
+      searchPlaceholderText="Tìm kiếm phòng ban..."
+    />
   );
 };
 

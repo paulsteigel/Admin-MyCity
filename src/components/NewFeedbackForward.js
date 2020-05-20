@@ -17,6 +17,7 @@ import {
   OPEN_LOADING_MODAL,
   CLOSE_LOADING_MODAL,
   OPEN_POPUP_DATA,
+  UPDATE_FWID,
   OPEN_FORWARD_HISTORY,
 } from '../redux/constants';
 const {width, height} = Dimensions.get('window');
@@ -43,13 +44,22 @@ function RejectedReport({navigation, ...props}) {
     setRefeshing(true);
     loadFeedBack(0);
   };
-  const forwarding = async id => {
+  const forwarding = async (id, feedbackId) => {
     try {
       dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
-      const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${id}`);
+      const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${feedbackId}`);
       dispatch({
         type: OPEN_POPUP_DATA,
-        payload: {report: res.data, popupId: 2, popupTitle: 'Chuyển phản ánh'},
+        payload: {
+          report: res.data,
+          popupId: 2,
+          popupTitle: 'Chuyển phản ánh',
+          url: `${BASE_URL}/admin/feedbacks/forwardFeedbackToDepartment`,
+        },
+      });
+      dispatch({
+        type: UPDATE_FWID,
+        payload: id,
       });
     } catch (error) {
       Toast.show('Có lỗi xảy ra');
@@ -67,7 +77,6 @@ function RejectedReport({navigation, ...props}) {
       });
     } catch (error) {
       Toast.show('Có lỗi xảy ra');
-      console.log('err', error);
     } finally {
       dispatch({type: CLOSE_LOADING_MODAL});
     }

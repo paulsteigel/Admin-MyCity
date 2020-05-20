@@ -31,6 +31,7 @@ const DetailReport = ({navigation, ...props}) => {
   const [report, setReport] = useState(null);
   const [imageList, setImageList] = useState([]);
   const bottomSheet = useRef(null);
+  const [userInfo, setUserInfo] = useState({});
 
   const dispatch = useDispatch();
 
@@ -52,21 +53,25 @@ const DetailReport = ({navigation, ...props}) => {
     dispatch({type: MARK_REPORTS_OUTDATED, payload: {isDataOutdated: false}});
   }, [isDataOutdated]);
 
-  const loadReport = isMounted => {
-    Axios.get(`${BASE_URL}/admin/feedbacks/${props.route.params.id}`)
-      .then(res => {
-        // console.log(res.data.images);
-        let imageList = res.data.images.map(item => ({
-          source: {uri: `${BASE_URL}/images/${item.id}`},
-        }));
-        if (!isMounted) return;
-        setReport(res.data);
-        dispatch({type: UPDATE_POPUP_DATA, payload: res.data});
-        // console.log(res.data.user);
-
-        setImageList(imageList);
-      })
-      .catch(err => {});
+  const loadReport = async isMounted => {
+    try {
+      const res = await Axios.get(
+        `${BASE_URL}/feedback/${props.route.params.id}`,
+      );
+      let imageList = res.data.image.map(item => ({
+        source: {uri: `${BASE_URL}/images/${item.id}`},
+      }));
+      if (!isMounted) return;
+      setReport(res.data);
+      dispatch({type: UPDATE_POPUP_DATA, payload: res.data});
+      setImageList(imageList);
+      const {data} = await Axios.get(
+        `${BASE_URL}/admin/feedbacks/${props.route.params.id}`,
+      );
+      setUserInfo(data.user);
+    } catch (err) {
+      console.log('DetailReport', err);
+    }
   };
 
   if (!report) {
@@ -109,6 +114,14 @@ const DetailReport = ({navigation, ...props}) => {
             );
           })}
         </View>
+        {report.status === 4 ? (
+          <View style={{paddingHorizontal: 5, paddingVertical: 10}}>
+            <Text style={{opacity: 0.7, color: '#333'}}>
+              Phản hồi từ chính quyền:
+            </Text>
+            <Text style={{color: '#bf280d'}}>{report.description}</Text>
+          </View>
+        ) : null}
         <View style={{padding: 20}}>
           {user.groupId <= 3 || report.isHide ? (
             <Button
@@ -129,41 +142,46 @@ const DetailReport = ({navigation, ...props}) => {
         }}
         closeOnDragDown={true}
         ref={bottomSheet}>
-        <View style={styles.bottomSheet}>
-          <Text style={styles.bottomSheetTitle}>Thông tin người gửi</Text>
-          <View style={styles.bottomSheetBody}>
-            <Image
-              source={require('../assets/user_avatar.png')}
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: 40,
-                overflow: 'hidden',
-              }}
-              borderRadius
-            />
-            <View>
-              <Text>Họ tên: {report.user.name}</Text>
-              <Text>Email: {report.user.email}</Text>
-              <View style={styles.callBtn}>
-                <Text>Điện thoại: {report.user.phone}</Text>
-                <Icon
-                  style={styles.callIcon}
-                  name="phone"
-                  size={30}
-                  color="#fff"
-                  onPress={() => {
-                    Linking.openURL(`tel:${report.user.phone}`);
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-        </View>
+        <UserInfo user={userInfo} />
       </BottomSheet>
     </SafeAreaView>
   );
 };
+function UserInfo({user}) {
+  return (
+    <View style={styles.bottomSheet}>
+      <Text style={styles.bottomSheetTitle}>Thông tin người gửi</Text>
+      <View style={styles.bottomSheetBody}>
+        <Image
+          source={require('../assets/user_avatar.png')}
+          style={{
+            width: 80,
+            height: 80,
+            borderRadius: 40,
+            overflow: 'hidden',
+          }}
+          borderRadius
+        />
+        <View>
+          <Text>Họ tên: {user.name}</Text>
+          <Text>Email: {user.email}</Text>
+          <View style={styles.callBtn}>
+            <Text>Điện thoại: {user.phone}</Text>
+            <Icon
+              style={styles.callIcon}
+              name="phone"
+              size={30}
+              color="#fff"
+              onPress={() => {
+                Linking.openURL(`tel:${user.phone}`);
+              }}
+            />
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,

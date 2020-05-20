@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Alert, TouchableWithoutFeedback} from 'react-native';
+import {
+  View,
+  Text,
+  Alert,
+  TouchableWithoutFeedback,
+  Switch,
+} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import {useDispatch} from 'react-redux';
 import DocumentPicker from 'react-native-document-picker';
@@ -9,25 +15,34 @@ import {
   CLOSE_POPUP,
   MARK_REPORTS_OUTDATED,
   OPEN_ERROR_POPUP,
+  OPEN_LOADING_MODAL,
+  CLOSE_LOADING_MODAL,
 } from '../redux/constants';
 import {BASE_URL} from '../service';
 import RNFetchBlob from 'rn-fetch-blob';
 import SimpleToast from 'react-native-simple-toast';
 
-const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
+const HandleReport = ({item, id, isSubmit, setIsSubmit}) => {
   const [message, setMessage] = useState('');
   const [fileName, setFileName] = useState('');
   const [fileBase64, setFileBase64] = useState('');
-
+  const [isPermit, setIsPermit] = useState(true);
+  const [isPublic, setIsPublic] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isSubmit) return;
-    console.log(fileBase64);
-    Axios.post(`${BASE_URL}/admin/feedbacks/quickHandle/${item.id}`, {
+    dispatch({type: CLOSE_POPUP});
+    dispatch({type: OPEN_LOADING_MODAL});
+    console.log(item.id, item.id);
+    Axios.post(`${BASE_URL}/admin/feedbacks/handlefeedback`, {
+      id,
+      feedbackId: item.id,
       message,
+      isPermit,
       fileBase64,
       fileName,
+      isPublic,
     })
       .then(res => {
         if (res.status == 200) {
@@ -39,11 +54,12 @@ const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
         } else SimpleToast.show('Xử lý phản ánh thất bại');
       })
       .catch(err => {
+        console.log('handle Report ', JSON.stringify(err));
         dispatch({type: OPEN_ERROR_POPUP});
       })
       .finally(() => {
         setIsSubmit(false);
-        dispatch({type: CLOSE_POPUP});
+        dispatch({type: CLOSE_LOADING_MODAL});
       });
   }, [isSubmit]);
 
@@ -70,7 +86,19 @@ const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
 
   return (
     <View style={{padding: 15}}>
-      <Text style={{fontSize: 16, fontWeight: 'bold'}}>Nội dung trả lời</Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingBottom: 10,
+        }}>
+        <Text style={{fontSize: 16, fontWeight: 'bold'}}>Thuộc thẩm quền</Text>
+        <Switch value={isPermit} onValueChange={value => setIsPermit(value)} />
+      </View>
+      <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+        {isPermit ? 'Nội dung trả lời' : 'Lý do trả lại'}
+      </Text>
       <TextInput
         style={{
           borderColor: '#eee',
@@ -102,8 +130,25 @@ const QuickHandleFeedback = ({item, isSubmit, setIsSubmit}) => {
           )}
         </View>
       </TouchableWithoutFeedback>
+      {isPermit && (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingTop: 10,
+          }}>
+          <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+            Công khai phản ánh
+          </Text>
+          <Switch
+            value={isPublic}
+            onValueChange={value => setIsPublic(value)}
+          />
+        </View>
+      )}
     </View>
   );
 };
 
-export default QuickHandleFeedback;
+export default HandleReport;

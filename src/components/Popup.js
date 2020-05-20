@@ -11,12 +11,15 @@ import VerifyFeedback from './VerifyFeedback';
 import QuickHandleFeedback from './QuickHandleFeedback';
 import ForwardFeedback from './ForwardFeedback';
 import ForwardHistory from './ForwardHistory';
+import HandleReport from '../components/HandleReport';
 const {width} = Dimensions.get('window');
 const Popup = () => {
   const [isSubmit, setIsSubmit] = useState(false);
-  const {report, fwid} = useSelector(state => state.popup);
   const dispatch = useDispatch();
   const {
+    report,
+    fwid,
+    url,
     visible,
     popupId,
     popupTitle,
@@ -42,6 +45,7 @@ const Popup = () => {
             isSubmit={isSubmit}
             setIsSubmit={setIsSubmit}
             fwid={fwid}
+            url={url}
           />
         );
       case 3:
@@ -62,6 +66,15 @@ const Popup = () => {
         );
       case 5:
         return <ForwardHistory data={forwardHistory} />;
+      case 6:
+        return (
+          <HandleReport
+            item={report}
+            isSubmit={isSubmit}
+            id={fwid}
+            setIsSubmit={setIsSubmit}
+          />
+        );
       default:
         return <ConfirmReport isSubmit={isSubmit} />;
     }

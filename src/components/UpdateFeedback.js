@@ -5,13 +5,22 @@ import {TextInput} from 'react-native-gesture-handler';
 import Axios from 'axios';
 import {BASE_URL} from '../service';
 import {useDispatch} from 'react-redux';
-import {CLOSE_POPUP, MARK_REPORTS_OUTDATED} from '../redux/constants';
+import {
+  CLOSE_POPUP,
+  MARK_REPORTS_OUTDATED,
+  OPEN_ERROR_POPUP,
+  OPEN_LOADING_MODAL,
+  CLOSE_LOADING_MODAL,
+} from '../redux/constants';
+import Toast from 'react-native-simple-toast';
 
 const UpdateFeedback = ({item, isSubmit, setIsSubmit}) => {
   const [report, setReport] = useState(item);
   const dispatch = useDispatch();
   useEffect(() => {
     if (!isSubmit) return;
+    dispatch({type: CLOSE_POPUP});
+    dispatch({type: OPEN_LOADING_MODAL});
     Axios.post(`${BASE_URL}/admin/feedbacks/update/${report.id}`, {
       title: report.title,
       subId: report.subId,
@@ -21,18 +30,21 @@ const UpdateFeedback = ({item, isSubmit, setIsSubmit}) => {
     })
       .then(res => {
         if (res.status == 200) {
-          Alert.alert('Thành công', 'Cập nhật phản ánh thành công');
+          Toast.show('Cập nhật phản ánh thành công');
           dispatch({
             type: MARK_REPORTS_OUTDATED,
             payload: {isDataOutdated: true},
           });
-        } else {
-          Alert.alert('Lỗi', 'Cập nhật phản ánh thất bại');
-        }
+        } else Alert.alert('Lỗi', 'Cập nhật phản ánh thất bại');
         setIsSubmit(false);
-        dispatch({type: CLOSE_POPUP});
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        dispatch({type: OPEN_ERROR_POPUP});
+        console.log('err update feedback', JSON.stringify(err));
+      })
+      .finally(() => {
+        dispatch({type: CLOSE_LOADING_MODAL});
+      });
   }, [isSubmit]);
   return (
     <View style={styles.container}>

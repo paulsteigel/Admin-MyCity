@@ -15,6 +15,7 @@ const initialstate = {
   forwardHistory: [],
   hideSubmitButton: false,
   fwid: null,
+  url: '',
 };
 
 const PopupReducer = (state = initialstate, {type, payload}) => {
@@ -27,6 +28,7 @@ const PopupReducer = (state = initialstate, {type, payload}) => {
         popupTitle: payload.title,
         height: payload.height,
         hideSubmitButton: false,
+        url: payload.url,
       };
     case UPDATE_POPUP_DATA:
       return {...state, hideSubmitButton: false, report: payload};

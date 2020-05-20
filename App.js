@@ -110,7 +110,11 @@ const App = () => {
           options={{headerShown: false}}
           component={DrawerNavigator}
         />
-        <Stack.Screen name="detailReport" component={DetailReport} />
+        <Stack.Screen
+          options={{title: 'Chi tiết phản ánh'}}
+          name="detailReport"
+          component={DetailReport}
+        />
       </Stack.Navigator>
       <ErrorPopup />
       <Popup />
@@ -119,13 +123,4 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: '#018037',
-    height: 40,
-  },
-  container: {
-    padding: 0,
-  },
-});
 export default App;

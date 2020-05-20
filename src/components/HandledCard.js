@@ -21,11 +21,11 @@ const litmitStr = str => {
 
 export default function HandledCard({
   viewForwardHistory,
-  forwarding,
-  isDone,
+  handleable,
+  handleReport,
   ...props
 }) {
-  const {feedbackId, message, dateExpired, dateCreate} = props.item;
+  const {feedbackId, message, dateExpired, id, dateCreate} = props.item;
   const title = props.item.feedback.title;
   const navigation = useNavigation();
   const handleNavigate = () => {
@@ -63,13 +63,14 @@ export default function HandledCard({
             <Icon name="dots-vertical" size={25} />
           </MenuTrigger>
           <MenuOptions>
-            {isDone ? null : (
+            {handleable ? (
               <MenuOption
                 style={styles.button}
-                text="Chuyển phản ánh"
-                onSelect={() => forwarding(feedbackId)}
+                text="Xử lý phản ánh"
+                onSelect={() => handleReport(feedbackId, id)}
               />
-            )}
+            ) : null}
+
             <MenuOption
               style={styles.button}
               text="Lịch sử chuyển"

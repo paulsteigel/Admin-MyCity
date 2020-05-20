@@ -43,20 +43,7 @@ function HandleReportScreen2({navigation, ...props}) {
     setRefeshing(true);
     loadFeedBack(0);
   };
-  const forwarding = async id => {
-    try {
-      dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
-      const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${id}`);
-      dispatch({
-        type: OPEN_POPUP_DATA,
-        payload: {report: res.data, popupId: 2, popupTitle: 'Chuyển phản ánh'},
-      });
-    } catch (error) {
-      Toast.show('Có lỗi xảy ra');
-    } finally {
-      dispatch({type: CLOSE_LOADING_MODAL});
-    }
-  };
+
   const viewForwardHistory = async id => {
     try {
       dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
@@ -83,12 +70,7 @@ function HandleReportScreen2({navigation, ...props}) {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
-          <HandledCard
-            isDone={true}
-            viewForwardHistory={viewForwardHistory}
-            forwarding={forwarding}
-            item={item}
-          />
+          <HandledCard viewForwardHistory={viewForwardHistory} item={item} />
         )}
         ItemSeparatorComponent={() => (
           <View style={{width: width, height: 10}} />

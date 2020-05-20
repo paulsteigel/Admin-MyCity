@@ -18,6 +18,8 @@ import {
   CLOSE_LOADING_MODAL,
   OPEN_POPUP_DATA,
   OPEN_FORWARD_HISTORY,
+  UPDATE_POPUP_DATA,
+  UPDATE_FWID,
 } from '../redux/constants';
 const {width, height} = Dimensions.get('window');
 function HandleReportScreen1({navigation, ...props}) {
@@ -46,13 +48,14 @@ function HandleReportScreen1({navigation, ...props}) {
     setRefeshing(true);
     loadFeedBack(0);
   };
-  const forwarding = async id => {
+  const handleReport = async (feedbackId, id) => {
     try {
       dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
-      const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${id}`);
+      const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${feedbackId}`);
+      dispatch({type: UPDATE_FWID, payload: id});
       dispatch({
         type: OPEN_POPUP_DATA,
-        payload: {report: res.data, popupId: 2, popupTitle: 'Chuyển phản ánh'},
+        payload: {report: res.data, popupId: 6, popupTitle: 'Xử lý phản ánh'},
       });
     } catch (error) {
       Toast.show('Có lỗi xảy ra');
@@ -60,6 +63,7 @@ function HandleReportScreen1({navigation, ...props}) {
       dispatch({type: CLOSE_LOADING_MODAL});
     }
   };
+
   const viewForwardHistory = async id => {
     try {
       dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
@@ -88,8 +92,9 @@ function HandleReportScreen1({navigation, ...props}) {
         renderItem={({item}) => (
           <HandledCard
             viewForwardHistory={viewForwardHistory}
-            forwarding={forwarding}
             item={item}
+            handleable={true}
+            handleReport={handleReport}
           />
         )}
         ItemSeparatorComponent={() => (

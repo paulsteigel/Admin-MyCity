@@ -24,7 +24,7 @@ export default function ReportComponent({
   forwarding,
   ...props
 }) {
-  const {feedbackId, title, message, dateExpired, dateCreate} = props.item;
+  const {id, feedbackId, title, message, dateExpired, dateCreate} = props.item;
   const navigation = useNavigation();
   const handleNavigate = () => {
     navigation.navigate('detailReport', {id: feedbackId, hideHeaderBtn: true});
@@ -64,7 +64,7 @@ export default function ReportComponent({
             <MenuOption
               style={styles.button}
               text="Chuyển phản ánh"
-              onSelect={() => forwarding(feedbackId)}
+              onSelect={() => forwarding(id, feedbackId)}
             />
             <MenuOption
               style={styles.button}

@@ -26,12 +26,12 @@ import {MARK_REPORTS_OUTDATED, UPDATE_POPUP_DATA} from '../redux/constants';
 const {width, height} = Dimensions.get('window');
 
 const DetailReport = ({navigation, ...props}) => {
-  const {id, hideHeaderBtn = false} = props.route.params;
+  const {hideHeaderBtn = false, id} = props.route.params;
   const [imageView, setImageView] = useState({visible: false, index: 0});
   const [report, setReport] = useState(null);
   const [imageList, setImageList] = useState([]);
   const bottomSheet = useRef(null);
-  const [userInfo, setUserInfo] = useState({});
+  const [response, setResponse] = useState({});
 
   const dispatch = useDispatch();
 
@@ -55,20 +55,16 @@ const DetailReport = ({navigation, ...props}) => {
 
   const loadReport = async isMounted => {
     try {
-      const res = await Axios.get(
-        `${BASE_URL}/feedback/${props.route.params.id}`,
-      );
-      let imageList = res.data.image.map(item => ({
+      const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${id}`);
+      let imageList = res.data.images.map(item => ({
         source: {uri: `${BASE_URL}/images/${item.id}`},
       }));
       if (!isMounted) return;
       setReport(res.data);
       dispatch({type: UPDATE_POPUP_DATA, payload: res.data});
       setImageList(imageList);
-      const {data} = await Axios.get(
-        `${BASE_URL}/admin/feedbacks/${props.route.params.id}`,
-      );
-      setUserInfo(data.user);
+      const {data} = await Axios.get(`${BASE_URL}/feedback/${id}`);
+      setResponse(data);
     } catch (err) {
       console.log('DetailReport', err);
     }
@@ -114,23 +110,23 @@ const DetailReport = ({navigation, ...props}) => {
             );
           })}
         </View>
-        {report.status === 4 ? (
+        {response.status === 4 ? (
           <View style={{paddingHorizontal: 5, paddingVertical: 10}}>
             <Text style={{opacity: 0.7, color: '#333'}}>
               Phản hồi từ chính quyền:
             </Text>
-            <Text style={{color: '#bf280d'}}>{report.description}</Text>
+            <Text style={{color: '#bf280d'}}>{response.description}</Text>
           </View>
         ) : null}
-        <View style={{padding: 20}}>
-          {user.groupId <= 3 || report.isHide ? (
-            <Button
-              title="Thông tin người phản ánh"
-              onPress={() => bottomSheet.current.open()}
-            />
-          ) : null}
-        </View>
       </ScrollView>
+      {user.groupId <= 3 || report.isHide ? (
+        <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
+          <Button
+            title="Thông tin người phản ánh"
+            onPress={() => bottomSheet.current.open()}
+          />
+        </View>
+      ) : null}
       <BottomSheet
         height={height * 0.23}
         duration={450}
@@ -142,7 +138,7 @@ const DetailReport = ({navigation, ...props}) => {
         }}
         closeOnDragDown={true}
         ref={bottomSheet}>
-        <UserInfo user={userInfo} />
+        <UserInfo user={report.user} />
       </BottomSheet>
     </SafeAreaView>
   );

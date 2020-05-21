@@ -1,24 +1,25 @@
-import React, {useEffect} from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import React, {useEffect, useRef, useState} from 'react';
 import Login from './src/screen/Login';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
-import {View, Text, StyleSheet, Alert, BackHandler} from 'react-native';
-import Dashboard from './src/screen/Dashboard';
+import {BackHandler} from 'react-native';
 import moment from 'moment';
 import localization from 'moment/locale/vi';
-import DetailReport from './src/screen/DetailReport';
-import RecivedReports from './src/screen/RecivedReports';
-import CustomDrawerContent from './src/components/CustomDrawer';
-import {LOGIN, GET_SUBJECTS, CLOSE_ERROR_POPUP} from './src/redux/constants';
+import {GET_SUBJECTS} from './src/redux/constants';
 import Axios from 'axios';
 import {BASE_URL} from './src/service';
 import Popup from './src/components/Popup';
 import LoadingModal from './src/components/LoadingModal';
 import LoadingScreen from './src/screen/LoadingScreen';
 import ErrorPopup from './src/components/ErrorPopup';
+import {createStackNavigator} from '@react-navigation/stack';
+import Dashboard from './src/screen/Dashboard';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import HandleReport from './src/screen/HandleReport';
+import DetailReport from './src/screen/DetailReport';
+import RecivedReports from './src/screen/RecivedReports';
+import CustomDrawerContent from './src/components/CustomDrawer';
+import {navigationRef} from './src/service/NotifiService';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -43,6 +44,7 @@ const screens = [
     options: {title: 'Danh sách phản ánh xử lý'},
   },
 ];
+
 function DrawerNavigator() {
   const {user} = useSelector(state => state.user);
   return (
@@ -62,65 +64,79 @@ function DrawerNavigator() {
     </Drawer.Navigator>
   );
 }
-
 const App = () => {
+  const dispatch = useDispatch();
+
   const [user, loadingModal] = useSelector(state => {
     return [state.user, state.loadingModal];
   });
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    Axios.get(`${BASE_URL}/subjects`)
-      .then(res => {
-        dispatch({type: GET_SUBJECTS, payload: res.data});
-      })
-      .catch(err => console.log('subject', JSON.stringify(err)));
-  }, []);
-  useEffect(() => {
+  const getSubject = async () => {
+    try {
+      const res = await Axios.get(`${BASE_URL}/subjects`);
+      dispatch({type: GET_SUBJECTS, payload: res.data});
+    } catch (error) {
+      console.log('subject', JSON.stringify(error));
+    }
+  };
+
+  const preventBackButtonWhileLoading = () => {
     const backAction = () => {
       return loadingModal.visible;
     };
-
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       backAction,
     );
-
     return () => backHandler.remove();
-  }, [loadingModal.visible]);
+  };
+  useEffect(() => {
+    getSubject();
+  }, []);
+  useEffect(preventBackButtonWhileLoading, [loadingModal.visible]);
 
   if (user.isLoading) return <LoadingScreen />;
 
   if (!user.user) return <Login />;
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#018037',
-          },
-          headerTitleStyle: {
-            color: '#fff',
-          },
-          headerTintColor: '#fff',
-        }}>
-        <Stack.Screen
-          name="__drawer__"
-          options={{headerShown: false}}
-          component={DrawerNavigator}
-        />
-        <Stack.Screen
-          options={{title: 'Chi tiết phản ánh'}}
-          name="detailReport"
-          component={DetailReport}
-        />
-      </Stack.Navigator>
+    <NavigationContainer ref={navigationRef}>
+      <StackNavigator />
       <ErrorPopup />
       <Popup />
       <LoadingModal />
     </NavigationContainer>
   );
 };
-
+function StackNavigator() {
+  const [isMoundted, setMounted] = useState(false);
+  const dispatch = useDispatch();
+  useState(() => {
+    dispatch({type: 'MOUNTED'});
+  }, []);
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#018037',
+        },
+        headerTitleStyle: {
+          color: '#fff',
+        },
+        headerTintColor: '#fff',
+      }}
+      initialRouteName="__drawer__">
+      <Stack.Screen
+        options={{title: 'Chi tiết phản ánh'}}
+        name="detailReport"
+        component={DetailReport}
+      />
+      <Stack.Screen
+        name="__drawer__"
+        options={{headerShown: false}}
+        component={DrawerNavigator}
+      />
+    </Stack.Navigator>
+  );
+}
 export default App;

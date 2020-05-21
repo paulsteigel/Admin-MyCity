@@ -9,6 +9,8 @@ import {LOGOUT} from '../redux/constants';
 import Image from 'react-native-fast-image';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
+import Axios from 'axios';
+import {BASE_URL} from '../service';
 const BTN_COLOR = '#df1212';
 export default function CustomDrawerContent(props) {
   const dispatch = useDispatch();
@@ -20,7 +22,16 @@ export default function CustomDrawerContent(props) {
         text: 'OK',
         style: 'default',
         onPress: async () => {
-          await AsyncStorage.removeItem('user');
+          try {
+            await AsyncStorage.removeItem('user');
+            await Axios.post(`${BASE_URL}/usersys/updateToken`, {
+              token: '',
+              id: user.id,
+            });
+            console.log('logged out');
+          } catch (err) {
+            console.log('Logout Err', err);
+          }
           dispatch({type: LOGOUT});
         },
       },
@@ -35,13 +46,13 @@ export default function CustomDrawerContent(props) {
             style={styles.image}
             resizeMode="contain"
           />
-          <Text style={styles.userInfo}>{user.name}</Text>
-          <Text style={styles.userInfo}>{user.email}</Text>
-        </View>
-        <View>
           <TouchableOpacity style={styles.button} onPress={logout}>
             <Text style={{color: BTN_COLOR}}>ĐĂNG XUẤT</Text>
           </TouchableOpacity>
+        </View>
+        <View>
+          <Text style={styles.userInfo}>{user.name}</Text>
+          <Text style={styles.userInfo}>{user.email}</Text>
         </View>
       </View>
       <DrawerItemList {...props} />
@@ -52,7 +63,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     backgroundColor: '#efefef',
-    flexDirection: 'row',
+    // flexDirection: 'row',
     justifyContent: 'space-between',
   },
   image: {
@@ -60,7 +71,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-  imageContainer: {flex: 1},
+  imageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   userInfo: {
     marginTop: 5,
     // justifyContent: 'center',

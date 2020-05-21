@@ -12,7 +12,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import Input from '../components/LoginInput';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Axios from 'axios';
 import {LOGIN} from '../redux/constants';
 import {BASE_URL} from '../service';

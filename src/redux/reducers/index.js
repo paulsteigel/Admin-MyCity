@@ -5,7 +5,6 @@ import subject from './subjectReducer';
 import pendingReport from './pendingReportReducer';
 import loadingModal from './LoadingModalReducer';
 import errorPopup from './errorReducer';
-
 export default combineReducers({
   user,
   popup,

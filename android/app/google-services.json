@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "932428692823",
+    "firebase_url": "https://admin-mycity.firebaseio.com",
+    "project_id": "admin-mycity",
+    "storage_bucket": "admin-mycity.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932428692823:android:de83c566a38368859b1212",
+        "android_client_info": {
+          "package_name": "com.caobangconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "932428692823-pf8ipr4h0q5vfrf3d9svt2v7p9nst2hm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4Pq56l45sMVRfJUG0TDAg0qlXxreRxe4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "932428692823-pf8ipr4h0q5vfrf3d9svt2v7p9nst2hm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

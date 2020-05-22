@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, Dimensions, Button} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {CLOSE_POPUP} from '../redux/constants';
@@ -14,7 +14,6 @@ import ForwardHistory from './ForwardHistory';
 import HandleReport from '../components/HandleReport';
 const {width} = Dimensions.get('window');
 const Popup = () => {
-  const [isSubmit, setIsSubmit] = useState(false);
   const dispatch = useDispatch();
   const {
     report,
@@ -31,52 +30,19 @@ const Popup = () => {
   const renderPopupContent = () => {
     switch (popupId) {
       case 1:
-        return (
-          <QuickHandleFeedback
-            item={report}
-            isSubmit={isSubmit}
-            setIsSubmit={setIsSubmit}
-          />
-        );
+        return <QuickHandleFeedback item={report} />;
       case 2:
-        return (
-          <ForwardFeedback
-            item={report}
-            isSubmit={isSubmit}
-            setIsSubmit={setIsSubmit}
-            fwid={fwid}
-            url={url}
-          />
-        );
+        return <ForwardFeedback item={report} fwid={fwid} url={url} />;
       case 3:
-        return (
-          <VerifyFeedback
-            item={report}
-            isSubmit={isSubmit}
-            setIsSubmit={setIsSubmit}
-          />
-        );
+        return <VerifyFeedback item={report} />;
       case 4:
-        return (
-          <UpdateFeedback
-            item={report}
-            isSubmit={isSubmit}
-            setIsSubmit={setIsSubmit}
-          />
-        );
+        return <UpdateFeedback item={report} />;
       case 5:
         return <ForwardHistory data={forwardHistory} />;
       case 6:
-        return (
-          <HandleReport
-            item={report}
-            isSubmit={isSubmit}
-            id={fwid}
-            setIsSubmit={setIsSubmit}
-          />
-        );
+        return <HandleReport item={report} id={fwid} />;
       default:
-        return <ConfirmReport isSubmit={isSubmit} />;
+        return <ConfirmReport />;
     }
   };
 
@@ -95,18 +61,7 @@ const Popup = () => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{popupTitle}</Text>
         </View>
-        <ScrollView>{renderPopupContent()}</ScrollView>
-        <View style={styles.buttonContainer}>
-          {!hideSubmitButton ? (
-            <Button
-              title="Lưu"
-              color="green"
-              onPress={() => setIsSubmit(true)}
-            />
-          ) : (
-            <Button title="OK" color="green" onPress={handleClose} />
-          )}
-        </View>
+        {renderPopupContent()}
       </View>
     </Modal>
   );

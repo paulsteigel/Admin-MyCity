@@ -1,10 +1,8 @@
 import PushNotification from 'react-native-push-notification';
-import React from 'react';
 import Axios from 'axios';
 import {BASE_URL} from '.';
 import AsyncStorage from '@react-native-community/async-storage';
-
-export const navigationRef = React.createRef();
+import {navigate} from './navigation';
 PushNotification.configure({
   onRegister: function({token}) {
     console.log('onRegister:', token);
@@ -23,17 +21,13 @@ PushNotification.configure({
   },
   onNotification: function(notification) {
     console.log('onNotification:', notification);
-    const type = notification.type || notification.data.type;
+    const {type, feedbackId} = notification.data;
+
     if (type !== 'newfeedback') return;
     if (notification.userInteraction || !notification.foreground) {
-      const feedbackId =
-        notification.feedbackId || notification.data.feedbackId;
-      if (navigationRef.current)
-        navigationRef.current?.navigate('detailReport', {id: feedbackId});
-      else
-        setTimeout(() => {
-          navigationRef.current?.navigate('detailReport', {id: feedbackId});
-        }, 100);
+      setTimeout(() => {
+        navigate('detailReport', {id: feedbackId});
+      }, 100);
     }
   },
   permissions: {

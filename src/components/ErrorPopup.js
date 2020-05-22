@@ -25,7 +25,7 @@ const ErrorPopup = () => {
         <View>
           <Image
             source={require('../assets/error_image.png')}
-            style={{height: height - 100, width: width * 0.85}}
+            style={{height: height - 120, width: width * 0.85}}
             resizeMode="cover"
           />
         </View>

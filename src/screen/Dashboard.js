@@ -19,13 +19,14 @@ const {width, height} = Dimensions.get('window');
 function Dashboard({navigation, ...props}) {
   const {isDataOutdated} = useSelector(state => state.pendingReport);
   const dispatch = useDispatch();
-
+  const [initalLoad, setInitialLoad] = useState(true);
   const [loadMore, setLoadMore] = useState(true);
   const [reports, setReports] = useState([]);
   const [refreshing, setRefeshing] = useState(false);
 
   useEffect(() => {
     if (loadMore) loadFeedBack(reports.length);
+    if (initalLoad) setInitialLoad(false);
   }, [loadMore]);
   useEffect(() => {
     if (isDataOutdated) {
@@ -80,11 +81,11 @@ function Dashboard({navigation, ...props}) {
   function listEmptyComponent() {
     return (
       <View style={{height, alignItems: 'center', justifyContent: 'center'}}>
-        <Text>Chưa có phản ánh nào</Text>
+        <Text>Không có phản ánh nào</Text>
       </View>
     );
   }
-  if (!reports.length)
+  if (initalLoad)
     return (
       <View style={{flex: 1, justifyContent: 'center'}}>
         <ActivityIndicator size="large" color="green" />
@@ -121,7 +122,7 @@ function Dashboard({navigation, ...props}) {
       {/* end of header */}
       <View style={{flex: 1, paddingHorizontal: 5}}>
         {renderList()}
-        <View style={{position: 'relative'}}>
+        <View style={{position: 'relative', width: '100%'}}>
           {loadMore ? (
             <ActivityIndicator
               style={{position: 'absolute', bottom: 20, left: '50%'}}

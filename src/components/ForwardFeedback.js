@@ -6,8 +6,9 @@ import {
   Alert,
   TouchableWithoutFeedback,
   ToastAndroid,
+  Button,
 } from 'react-native';
-import {TextInput, Switch} from 'react-native-gesture-handler';
+import {TextInput, Switch, ScrollView} from 'react-native-gesture-handler';
 import DepartmentPicker from './DepartmentPicker';
 import AgencyPicker from './AgencyPicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -24,8 +25,9 @@ import {
 } from '../redux/constants';
 import {BASE_URL} from '../service';
 import RNFetchBlob from 'rn-fetch-blob';
+import {navigationPopBack} from '../service/navigation';
 import Toast from 'react-native-simple-toast';
-const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit, url}) => {
+const ForwardFeedback = ({fwid, item, url}) => {
   const [report] = useState(item);
   const [isPermit, setIsPermit] = useState(true);
   const [departmentIds, setDepartmentIds] = useState([]);
@@ -59,9 +61,8 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit, url}) => {
   };
 
   const {user} = useSelector(state => state.user);
-
-  useEffect(() => {
-    if (!isSubmit) return;
+  const handleSubmit = () => {
+    // if (!isSubmit) return;
     dispatch({type: CLOSE_POPUP});
     dispatch({type: OPEN_LOADING_MODAL});
     Axios.post(url, {
@@ -82,8 +83,8 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit, url}) => {
             type: MARK_REPORTS_OUTDATED,
             payload: {isDataOutdated: true},
           });
+          navigationPopBack();
         } else Alert.alert('Lỗi', 'Chuyển phản ánh thất bại');
-        setIsSubmit(false);
       })
       .catch(err => {
         dispatch({type: OPEN_ERROR_POPUP});
@@ -92,7 +93,7 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit, url}) => {
       .finally(() => {
         dispatch({type: CLOSE_LOADING_MODAL});
       });
-  }, [isSubmit]);
+  };
 
   const onChange = (event, selectedDate) => {
     let currentDate = selectedDate || date;
@@ -107,107 +108,131 @@ const ForwardFeedback = ({fwid, item, isSubmit, setIsSubmit, url}) => {
   };
 
   return (
-    <View style={{padding: 15}}>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginBottom: 10,
-        }}>
-        <Text
-          style={{
-            fontSize: 16,
-            fontWeight: 'bold',
-          }}>
-          Thuộc thẩm quyền xử lý
-        </Text>
-        <Switch
-          value={isPermit}
-          onValueChange={() => {
-            setDepartmentIds([]);
-            setAgencyIds([]);
-            setIsPermit(!isPermit);
-          }}
-        />
-      </View>
-      {isPermit ? (
-        <View>
-          <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-            Phòng ban tiếp nhận
-          </Text>
-          <DepartmentPicker
-            agencyId={user.agencyId}
-            selectedItems={departmentIds}
-            onSelectedItemsChange={onDepartmentSelected}
-          />
-        </View>
-      ) : (
-        <View>
-          <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-            Đơn vị tiếp nhận
-          </Text>
-          <AgencyPicker
-            selectedItems={agencyIds}
-            onSelectedItemsChange={onAgencySelected}
-          />
-        </View>
-      )}
-      <View>
-        <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-          Tài liệu đính kèm
-        </Text>
-        <TouchableWithoutFeedback onPress={selectFileAsync}>
+    <>
+      <ScrollView>
+        <View style={{padding: 15}}>
           <View
             style={{
-              padding: 10,
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 10,
             }}>
-            <Text>Bấm để chọn file</Text>
-            {fileName !== '' && (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  padding: 5,
-                }}>
-                <Icon name="attachment" size={20} style={{marginRight: 5}} />
-                <Text numberOfLines={1}>{fileName}</Text>
-              </View>
-            )}
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-      <View>
-        <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-          Lý do chuyển phản ánh
-        </Text>
-        <TextInput
-          style={{
-            borderColor: '#eee',
-            borderWidth: 1,
-            textAlignVertical: 'top',
-            borderRadius: 10,
-          }}
-          multiline
-          numberOfLines={5}
-          onChangeText={message => setMessage(message)}
-        />
-      </View>
-      <View>
-        <Text style={{fontSize: 16, fontWeight: 'bold'}}>Thời hạn xử lý</Text>
-        <TouchableWithoutFeedback onPress={() => setShow(true)}>
-          <View>
-            <TextInput
-              style={{borderColor: '#eee', borderWidth: 1}}
-              editable={false}
-              value={moment(dateExpired).format('DD/MM/YYYY')}
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+              }}>
+              Thuộc thẩm quyền xử lý
+            </Text>
+            <Switch
+              value={isPermit}
+              onValueChange={() => {
+                setDepartmentIds([]);
+                setAgencyIds([]);
+                setIsPermit(!isPermit);
+              }}
             />
           </View>
-        </TouchableWithoutFeedback>
-        {show && (
-          <DateTimePicker value={dateExpired} mode="date" onChange={onChange} />
-        )}
+          {isPermit ? (
+            <View>
+              <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                Phòng ban tiếp nhận
+              </Text>
+              <DepartmentPicker
+                agencyId={user.agencyId}
+                selectedItems={departmentIds}
+                onSelectedItemsChange={onDepartmentSelected}
+              />
+            </View>
+          ) : (
+            <View>
+              <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                Đơn vị tiếp nhận
+              </Text>
+              <AgencyPicker
+                selectedItems={agencyIds}
+                onSelectedItemsChange={onAgencySelected}
+              />
+            </View>
+          )}
+          <View>
+            <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+              Tài liệu đính kèm
+            </Text>
+            <TouchableWithoutFeedback onPress={selectFileAsync}>
+              <View
+                style={{
+                  padding: 10,
+                }}>
+                <Text>Bấm để chọn file</Text>
+                {fileName !== '' && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      padding: 5,
+                    }}>
+                    <Icon
+                      name="attachment"
+                      size={20}
+                      style={{marginRight: 5}}
+                    />
+                    <Text numberOfLines={1}>{fileName}</Text>
+                  </View>
+                )}
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+          <View>
+            <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+              Lý do chuyển phản ánh
+            </Text>
+            <TextInput
+              style={{
+                borderColor: '#eee',
+                borderWidth: 1,
+                textAlignVertical: 'top',
+                borderRadius: 10,
+              }}
+              multiline
+              numberOfLines={5}
+              onChangeText={message => setMessage(message)}
+            />
+          </View>
+          <View>
+            <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+              Thời hạn xử lý
+            </Text>
+            <TouchableWithoutFeedback onPress={() => setShow(true)}>
+              <View>
+                <TextInput
+                  style={{borderColor: '#eee', borderWidth: 1}}
+                  editable={false}
+                  value={moment(dateExpired).format('DD/MM/YYYY')}
+                />
+              </View>
+            </TouchableWithoutFeedback>
+            {show && (
+              <DateTimePicker
+                value={dateExpired}
+                mode="date"
+                onChange={onChange}
+              />
+            )}
+          </View>
+        </View>
+      </ScrollView>
+      <View
+        style={{
+          width: '90%',
+          alignSelf: 'center',
+          borderColor: 'lightgreen',
+          borderTopWidth: 1,
+          paddingVertical: 10,
+        }}>
+        <Button title="Lưu" color="green" onPress={handleSubmit} />
       </View>
-    </View>
+    </>
   );
 };
 

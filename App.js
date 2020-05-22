@@ -19,7 +19,7 @@ import HandleReport from './src/screen/HandleReport';
 import DetailReport from './src/screen/DetailReport';
 import RecivedReports from './src/screen/RecivedReports';
 import CustomDrawerContent from './src/components/CustomDrawer';
-import {navigationRef} from './src/service/NotifiService';
+import {navigationRef} from './src/service/navigation';
 moment.updateLocale('vi', localization);
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();

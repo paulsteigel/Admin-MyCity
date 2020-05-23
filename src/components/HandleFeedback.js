@@ -32,7 +32,10 @@ const popupList = [
 const HandleFeedback = props => {
   const dispatch = useDispatch();
   function handleSelect(popupSetting) {
-    dispatch({type: OPEN_POPUP, payload: popupSetting});
+    dispatch({
+      type: OPEN_POPUP,
+      payload: {...popupSetting, fromScreen: 'detailReport'},
+    });
   }
 
   return (

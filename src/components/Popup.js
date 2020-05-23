@@ -23,16 +23,23 @@ const Popup = () => {
     popupId,
     popupTitle,
     height,
-    hideSubmitButton,
     forwardHistory,
+    fromScreen,
   } = useSelector(state => state.popup);
 
   const renderPopupContent = () => {
     switch (popupId) {
       case 1:
-        return <QuickHandleFeedback item={report} />;
+        return <QuickHandleFeedback screen={fromScreen} item={report} />;
       case 2:
-        return <ForwardFeedback item={report} fwid={fwid} url={url} />;
+        return (
+          <ForwardFeedback
+            screen={fromScreen}
+            item={report}
+            fwid={fwid}
+            url={url}
+          />
+        );
       case 3:
         return <VerifyFeedback item={report} />;
       case 4:
@@ -54,7 +61,7 @@ const Popup = () => {
       onBackButtonPress={handleClose}
       isVisible={visible}
       avoidKeyboard={true}>
-      <View style={{...styles.container, height}}>
+      <View style={{...styles.container, maxHeight: height}}>
         <View style={styles.closeModalBtn}>
           <Icon name="close" onPress={handleClose} size={18} />
         </View>

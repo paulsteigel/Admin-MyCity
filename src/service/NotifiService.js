@@ -16,14 +16,23 @@ PushNotification.configure({
           .catch(err => {
             console.log('err updateToken:', err);
           });
-      }
+      } else console.log('no user');
     });
   },
   onNotification: function(notification) {
     console.log('onNotification:', notification);
-    const {type, feedbackId} = notification.data;
-
+    let type, feedbackId;
+    if (notification.data) {
+      type = notification.data.type;
+      feedbackId = notification.data.feedbackId;
+      console.log('if assigned');
+    } else {
+      type = notification.type;
+      feedbackId = notification.feedbackId;
+      console.log('else assignd');
+    }
     if (type !== 'newfeedback') return;
+
     if (notification.userInteraction || !notification.foreground) {
       setTimeout(() => {
         navigate('detailReport', {id: feedbackId});

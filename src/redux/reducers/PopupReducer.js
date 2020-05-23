@@ -13,9 +13,9 @@ const initialstate = {
   height: null,
   report: {},
   forwardHistory: [],
-  hideSubmitButton: false,
   fwid: null,
   url: '',
+  fromScreen: '',
 };
 
 const PopupReducer = (state = initialstate, {type, payload}) => {
@@ -27,22 +27,21 @@ const PopupReducer = (state = initialstate, {type, payload}) => {
         popupId: payload.id,
         popupTitle: payload.title,
         height: payload.height,
-        hideSubmitButton: false,
         url: payload.url,
+        fromScreen: payload.fromScreen,
       };
     case UPDATE_POPUP_DATA:
-      return {...state, hideSubmitButton: false, report: payload};
+      return {...state, report: payload};
     case CLOSE_POPUP:
       return {...state, visible: false};
     case OPEN_POPUP_DATA:
-      return {...state, hideSubmitButton: false, ...payload, visible: true};
+      return {...state, ...payload, visible: true};
     case OPEN_FORWARD_HISTORY:
       return {
         ...state,
         visible: true,
         popupId: 5,
         popupTitle: 'Lịch sử chuyển phản ánh',
-        hideSubmitButton: true,
         ...payload,
       };
     case UPDATE_FWID:

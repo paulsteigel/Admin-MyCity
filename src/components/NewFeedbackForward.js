@@ -33,7 +33,7 @@ function RejectedReport({navigation, ...props}) {
   const loadFeedBack = async start => {
     let url = `${BASE_URL}/admin/feedbackforwards/agency/newFeedbackForwards?limit=10&skip=${start}`;
     let res = await Axios.get(url);
-    console.log('new report', res.data);
+    // console.log('new report', res.data);
 
     if (!loadMore) setReports(res.data);
     else setReports(prevState => [...prevState, ...res.data]);

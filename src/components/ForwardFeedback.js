@@ -5,7 +5,6 @@ import {
   Text,
   Alert,
   TouchableWithoutFeedback,
-  ToastAndroid,
   Button,
 } from 'react-native';
 import {TextInput, Switch, ScrollView} from 'react-native-gesture-handler';
@@ -13,7 +12,7 @@ import DepartmentPicker from './DepartmentPicker';
 import AgencyPicker from './AgencyPicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DocumentPicker from 'react-native-document-picker';
-import moment, {duration} from 'moment';
+import moment from 'moment';
 import Icon from 'react-native-vector-icons/Entypo';
 import Axios from 'axios';
 import {
@@ -22,12 +21,11 @@ import {
   OPEN_LOADING_MODAL,
   CLOSE_LOADING_MODAL,
   OPEN_ERROR_POPUP,
+  NAVIGATE_POP_BACK,
 } from '../redux/constants';
-import {BASE_URL} from '../service';
 import RNFetchBlob from 'rn-fetch-blob';
-import {navigationPopBack} from '../service/navigation';
 import Toast from 'react-native-simple-toast';
-const ForwardFeedback = ({fwid, item, url}) => {
+const ForwardFeedback = ({fwid, screen, item, url}) => {
   const [report] = useState(item);
   const [isPermit, setIsPermit] = useState(true);
   const [departmentIds, setDepartmentIds] = useState([]);
@@ -62,7 +60,21 @@ const ForwardFeedback = ({fwid, item, url}) => {
 
   const {user} = useSelector(state => state.user);
   const handleSubmit = () => {
-    // if (!isSubmit) return;
+    if (message === '') {
+      Toast.show('Nhập lý do chuyển phản ánh');
+      return;
+    }
+    if (isPermit) {
+      if (departmentIds.length === 0) {
+        Toast.show('Chọn phòng ban xử lý');
+        return;
+      }
+    } else {
+      if (agencyIds.length === 0) {
+        Toast.show('Chọn cơ quan tiếp nhận');
+        return;
+      }
+    }
     dispatch({type: CLOSE_POPUP});
     dispatch({type: OPEN_LOADING_MODAL});
     Axios.post(url, {
@@ -83,8 +95,10 @@ const ForwardFeedback = ({fwid, item, url}) => {
             type: MARK_REPORTS_OUTDATED,
             payload: {isDataOutdated: true},
           });
-          navigationPopBack();
         } else Alert.alert('Lỗi', 'Chuyển phản ánh thất bại');
+        if (screen === 'detailReport') {
+          dispatch({type: NAVIGATE_POP_BACK});
+        }
       })
       .catch(err => {
         dispatch({type: OPEN_ERROR_POPUP});
@@ -134,29 +148,31 @@ const ForwardFeedback = ({fwid, item, url}) => {
               }}
             />
           </View>
-          {isPermit ? (
-            <View>
-              <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-                Phòng ban tiếp nhận
-              </Text>
-              <DepartmentPicker
-                agencyId={user.agencyId}
-                selectedItems={departmentIds}
-                onSelectedItemsChange={onDepartmentSelected}
-              />
-            </View>
-          ) : (
-            <View>
-              <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-                Đơn vị tiếp nhận
-              </Text>
-              <AgencyPicker
-                selectedItems={agencyIds}
-                onSelectedItemsChange={onAgencySelected}
-              />
-            </View>
-          )}
           <View>
+            {isPermit ? (
+              <>
+                <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                  Phòng ban tiếp nhận
+                </Text>
+                <DepartmentPicker
+                  agencyId={user.agencyId}
+                  selectedItems={departmentIds}
+                  onSelectedItemsChange={onDepartmentSelected}
+                />
+              </>
+            ) : (
+              <>
+                <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                  Đơn vị tiếp nhận
+                </Text>
+                <AgencyPicker
+                  selectedItems={agencyIds}
+                  onSelectedItemsChange={onAgencySelected}
+                />
+              </>
+            )}
+          </View>
+          <View style={{paddingVertical: 10}}>
             <Text style={{fontSize: 16, fontWeight: 'bold'}}>
               Tài liệu đính kèm
             </Text>
@@ -199,7 +215,7 @@ const ForwardFeedback = ({fwid, item, url}) => {
               onChangeText={message => setMessage(message)}
             />
           </View>
-          <View>
+          <View style={{paddingTop: 10}}>
             <Text style={{fontSize: 16, fontWeight: 'bold'}}>
               Thời hạn xử lý
             </Text>

@@ -9,6 +9,7 @@ import {
   Text,
   Button,
   Linking,
+  TouchableOpacity,
 } from 'react-native';
 import {
   ScrollView,
@@ -32,19 +33,25 @@ const DetailReport = ({navigation, ...props}) => {
   const [imageList, setImageList] = useState([]);
   const bottomSheet = useRef(null);
   const [response, setResponse] = useState({});
-
   const dispatch = useDispatch();
 
-  const {isDataOutdated} = useSelector(state => state.pendingReport);
+  const {isDataOutdated, popBack} = useSelector(state => state.pendingReport);
   const {user} = useSelector(state => state.user);
-
+  const firstRender = useRef(0);
+  const isMounted = useRef(true);
   useEffect(() => {
-    let isMounted = true;
+    if (firstRender.current === 0) {
+      firstRender.current++;
+      return;
+    }
+    navigation.pop();
+  }, [popBack]);
+  useEffect(() => {
     navigation.setOptions({
       headerRight: () => (hideHeaderBtn ? <></> : <HandleFeedback />),
     });
-    loadReport(isMounted);
-    return () => (isMounted = false);
+    loadReport(isMounted.current);
+    return () => (isMounted.current = false);
   }, []);
 
   useEffect(() => {
@@ -128,7 +135,7 @@ const DetailReport = ({navigation, ...props}) => {
         </View>
       ) : null}
       <BottomSheet
-        height={height * 0.23}
+        // height={height * 0.23}
         duration={450}
         customStyles={{
           container: {
@@ -148,32 +155,40 @@ function UserInfo({user}) {
     <View style={styles.bottomSheet}>
       <Text style={styles.bottomSheetTitle}>Thông tin người gửi</Text>
       <View style={styles.bottomSheetBody}>
-        <Image
-          source={require('../assets/user_avatar.png')}
+        <View
           style={{
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            overflow: 'hidden',
-          }}
-          borderRadius
-        />
-        <View>
-          <Text>Họ tên: {user.name}</Text>
-          <Text>Email: {user.email}</Text>
-          <View style={styles.callBtn}>
-            <Text>Điện thoại: {user.phone}</Text>
-            <Icon
-              style={styles.callIcon}
-              name="phone"
-              size={30}
-              color="#fff"
-              onPress={() => {
-                Linking.openURL(`tel:${user.phone}`);
-              }}
-            />
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Image
+            source={require('../assets/user_avatar.png')}
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              overflow: 'hidden',
+            }}
+            borderRadius
+          />
+          <View style={{paddingLeft: 5}}>
+            <Text>Họ tên: {user.name}</Text>
+            <Text>Email: {user.email}</Text>
+            <Text>Điện thoại:{user.phone}</Text>
           </View>
         </View>
+        <TouchableOpacity
+          style={styles.callIcon}
+          onPress={() => {
+            Linking.openURL(`tel:${user.phone}`);
+          }}>
+          <Icon
+            // style={styles.callIcon}
+            name="phone"
+            size={30}
+            color="#fff"
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -187,10 +202,15 @@ const styles = StyleSheet.create({
   },
   callIcon: {
     backgroundColor: '#3b2',
-    padding: 5,
-    paddingHorizontal: 25,
+    elevation: 1,
+    width: '90%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 5,
+    marginTop: 10,
     marginLeft: 10,
+    alignSelf: 'center',
   },
   callBtn: {
     // backgroundColor: '#3b2',
@@ -200,9 +220,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   bottomSheetBody: {
-    flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',
+    // alignItems: 'center',
     flex: 1,
   },
   bottomSheetTitle: {

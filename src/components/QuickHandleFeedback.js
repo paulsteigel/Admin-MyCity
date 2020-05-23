@@ -11,11 +11,11 @@ import {
   OPEN_ERROR_POPUP,
   OPEN_LOADING_MODAL,
   CLOSE_LOADING_MODAL,
+  NAVIGATE_POP_BACK,
 } from '../redux/constants';
 import {BASE_URL} from '../service';
 import RNFetchBlob from 'rn-fetch-blob';
 import SimpleToast from 'react-native-simple-toast';
-import {useNavigation} from '@react-navigation/native';
 
 const QuickHandleFeedback = ({item}) => {
   const [message, setMessage] = useState('');
@@ -23,27 +23,24 @@ const QuickHandleFeedback = ({item}) => {
   const [fileBase64, setFileBase64] = useState('');
 
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const handleSubmit = async () => {
+    if (message === '') {
+      SimpleToast.show('Nội dung trả lời không được để trống');
+      return;
+    }
     try {
       dispatch({type: CLOSE_POPUP});
       dispatch({type: OPEN_LOADING_MODAL});
-      const res = await Axios.post(
-        `${BASE_URL}/admin/feedbacks/quickHandle/${item.id}`,
-        {
-          message,
-          fileBase64,
-          fileName,
-        },
-      );
+      let url = `${BASE_URL}/admin/feedbacks/quickHandle/${item.id}`;
+      const res = await Axios.post(url, {message, fileBase64, fileName});
       if (res.status === 200) {
         SimpleToast.show('Đã xử lý phản ánh');
         dispatch({
           type: MARK_REPORTS_OUTDATED,
           payload: {isDataOutdated: true},
         });
-        navigation.pop();
       } else SimpleToast.show('Xử lý phản ánh thất bại');
+      dispatch({type: NAVIGATE_POP_BACK});
     } catch (err) {
       dispatch({type: OPEN_ERROR_POPUP});
       console.log('[err] xu ly nhanh: ', err.message);

@@ -8,6 +8,7 @@ import HandleReport from './HandleReport';
 import RecivedReports from './RecivedReports';
 import CustomDrawerContent from '../components/CustomDrawer';
 import '../service/NotifiService';
+import NotificationGroup from './NotificationGroup';
 const Stack = createStackNavigator();
 
 const Drawer = createDrawerNavigator();
@@ -30,6 +31,12 @@ const screens = [
     component: HandleReport,
     name: 'phan_anh_xu_ly',
     options: {title: 'Danh sách phản ánh xử lý'},
+  },
+  {
+    id: 2,
+    component: NotificationGroup,
+    name: 'notificationGroup',
+    options: {title: 'Quản lý nhóm thông báo'},
   },
 ];
 

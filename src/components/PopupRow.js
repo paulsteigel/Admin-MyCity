@@ -4,7 +4,14 @@ import {View, Text, TextInput, StyleSheet} from 'react-native';
 
 const COLOR_UNFOCUSED = '#c5b4b8';
 const COLOR_FOCUSED = '#17e357';
-function PopupRow({label, placeholder, multiline}) {
+function PopupRow({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  multiline = false,
+  keyboardType = 'default',
+}) {
   const [borderColor, setBorderColor] = useState(COLOR_UNFOCUSED);
   const handleFocus = () => {
     setBorderColor(COLOR_FOCUSED);
@@ -23,6 +30,9 @@ function PopupRow({label, placeholder, multiline}) {
         multiline={multiline}
         onFocus={handleFocus}
         onBlur={handleUnFocus}
+        value={value}
+        onChangeText={onChangeText}
+        keyboardType={keyboardType}
       />
     </View>
   );

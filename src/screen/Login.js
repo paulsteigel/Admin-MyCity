@@ -19,16 +19,19 @@ import {BASE_URL} from '../service';
 const {width, height} = Dimensions.get('window');
 
 function Login() {
+  const curUser = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const login = async () => {
+    console.log('firebaseToken : ', curUser.firebaseToken);
     try {
       setLoading(true);
       const response = await Axios.post(BASE_URL + '/usersys/authenticate', {
         username,
         password,
+        token: curUser.firebaseToken,
       });
       const user = {...response.data.user, token: response.data.token};
       Axios.defaults.headers.common.Authorization = 'Bearer ' + user.token;
@@ -38,6 +41,7 @@ function Login() {
       Alert.alert('Sai tên đăng nhập hoặc mật khẩu');
       setPassword('');
       setLoading(false);
+      console.log(e);
     }
   };
   return (

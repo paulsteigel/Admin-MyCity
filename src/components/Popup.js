@@ -4,7 +4,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {CLOSE_POPUP} from '../redux/constants';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {ScrollView} from 'react-native-gesture-handler';
 import ConfirmReport from './ConfirmReport';
 import UpdateFeedback from './UpdateFeedback';
 import VerifyFeedback from './VerifyFeedback';

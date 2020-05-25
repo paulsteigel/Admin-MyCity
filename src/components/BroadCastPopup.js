@@ -11,7 +11,7 @@ import {useDispatch} from 'react-redux';
 import {OPEN_LOADING_MODAL, CLOSE_LOADING_MODAL} from '../redux/constants';
 
 const {width, height} = Dimensions.get('window');
-const NotificationGroupPopup = props => {
+const BroadCastPopup = props => {
   const {visible, handleClose, refeshFunc, data} = props;
 
   return (
@@ -21,7 +21,7 @@ const NotificationGroupPopup = props => {
       onBackButtonPress={handleClose}
       isVisible={visible}
       avoidKeyboard={true}>
-      <View style={{...styles.container, maxHeight: height}}>
+      <View style={{...styles.container, maxHeight: height * 0.8}}>
         <View style={styles.closeModalBtn}>
           <Icon name="close" onPress={handleClose} size={18} />
         </View>
@@ -40,13 +40,11 @@ const NotificationGroupPopup = props => {
   );
 };
 function BodyArea({data, refeshFunc, handleClose}) {
-  const [groupName, setGroupName] = useState(data.name);
+  const [title, setTitle] = useState(data.title);
   const [description, setDescription] = useState(data.description);
-  const [sortOrder, setSortOrder] = useState(
-    data.sortOrder == undefined ? '' : data.sortOrder + '',
-  );
+  const [content, setContent] = useState(data.content);
   const dispatch = useDispatch();
-  const [approved, setApproved] = useState(data.approved);
+  const [approved, setApproved] = useState(data.approved || false);
   const handleSubmit = async () => {
     if (!validInput()) {
       SimpleToast.show('Dữ liệu không hợp lệ');
@@ -55,18 +53,18 @@ function BodyArea({data, refeshFunc, handleClose}) {
     try {
       const payload = {
         description,
-        sortOrder,
+        content,
         approved,
-        name: groupName,
+        title,
       };
       handleClose();
       dispatch({type: OPEN_LOADING_MODAL});
       const res = await Axios.post(
-        `${BASE_URL}/admin/notificationGroups/update/${data.id}`,
+        `${BASE_URL}/admin/notifications/update/${data.id}`,
         payload,
       );
       refeshFunc();
-      if (res.status === 200) SimpleToast.show('Đã cập nhật thành công');
+      SimpleToast.show('Đã cập nhật thành công');
     } catch (error) {
       SimpleToast.show('Có lỗi xảy ra');
       console.log('[update Notification Group] err', error);
@@ -75,49 +73,47 @@ function BodyArea({data, refeshFunc, handleClose}) {
     }
   };
   const validInput = () => {
-    if (approved === undefined) setApproved(false);
-    if (description === '' || sortOrder === '' || groupName === '')
-      return false;
-    const notNumber = sortOrder.match(/[^0-9]/g);
-    return notNumber === null;
+    if (description === '' || content === '' || title === '') return false;
+    return true;
   };
-  const createGroup = async () => {
-    if (!validInput()) {
-      SimpleToast.show('Dữ liệu không hợp lệ');
-      return;
-    }
-    try {
-      const payload = {
-        description,
-        sortOrder,
-        approved,
-        name: groupName,
-      };
-      handleClose();
-      dispatch({type: OPEN_LOADING_MODAL});
-      const res = await Axios.post(
-        `${BASE_URL}/admin/notificationGroups`,
-        payload,
-      );
-      refeshFunc();
-      SimpleToast.show('Đã tạo nhóm thành công');
 
-      console.log(res.data);
-    } catch (error) {
-      SimpleToast.show('Có lỗi xảy ra');
-      console.log('[create Notification Group] err', error);
-    } finally {
-      dispatch({type: CLOSE_LOADING_MODAL});
-    }
-  };
+  // const createGroup = async () => {
+  //   if (!validInput()) {
+  //     SimpleToast.show('Dữ liệu không hợp lệ');
+  //     return;
+  //   }
+  //   try {
+  //     const payload = {
+  //       description,
+  //       content,
+  //       approved,
+  //       title,
+  //     };
+  //     handleClose();
+  //     dispatch({type: OPEN_LOADING_MODAL});
+  //     const res = await Axios.post(
+  //       `${BASE_URL}/admin/notificationGroups`,
+  //       payload,
+  //     );
+  //     refeshFunc();
+  //     SimpleToast.show('Đã tạo nhóm thành công');
+
+  //     console.log(res.data);
+  //   } catch (error) {
+  //     SimpleToast.show('Có lỗi xảy ra');
+  //     console.log('[create Notification Group] err', error);
+  //   } finally {
+  //     dispatch({type: CLOSE_LOADING_MODAL});
+  //   }
+  // };
   return (
     <>
       <View style={styles.body}>
         <PopupRow
-          onChangeText={setGroupName}
-          label="Tên nhóm"
-          value={groupName}
-          placeholder="Tên nhóm"
+          onChangeText={setTitle}
+          label="Tiêu đề"
+          value={title}
+          placeholder="Tiêu đề"
         />
         <PopupRow
           onChangeText={setDescription}
@@ -126,11 +122,11 @@ function BodyArea({data, refeshFunc, handleClose}) {
           value={description}
         />
         <PopupRow
-          value={sortOrder}
-          onChangeText={setSortOrder}
-          label="Sắp xếp"
-          placeholder="Sắp xếp"
-          keyboardType="numeric"
+          value={content}
+          onChangeText={setContent}
+          label="Nội dung"
+          placeholder="Nội dung"
+          multiline
         />
         <View
           style={{
@@ -211,4 +207,4 @@ const styles = StyleSheet.create({
     top: -10,
   },
 });
-export default NotificationGroupPopup;
+export default BroadCastPopup;

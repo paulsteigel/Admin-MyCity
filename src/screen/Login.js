@@ -25,7 +25,6 @@ function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const login = async () => {
-    console.log('firebaseToken : ', curUser.firebaseToken);
     try {
       setLoading(true);
       const response = await Axios.post(BASE_URL + '/usersys/authenticate', {

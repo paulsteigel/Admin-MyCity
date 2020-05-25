@@ -1,20 +1,31 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, SectionList, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Alert,
+  Dimensions,
+} from 'react-native';
 import Axios from 'axios';
 import {BASE_URL} from '../service';
 import Icon from 'react-native-vector-icons/AntDesign';
 import MenuIcon from 'react-native-vector-icons/MaterialIcons';
-import {TouchableOpacity, FlatList} from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import moment from 'moment';
 import NotificationGroupPopup from '../components/NotificationGroupPopup';
-import {useDispatch} from 'react-redux';
-import {OPEN_LOADING_MODAL, CLOSE_LOADING_MODAL} from '../redux/constants';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  OPEN_LOADING_MODAL,
+  CLOSE_LOADING_MODAL,
+  PUT_NOTIFICATION_GROUP,
+} from '../redux/constants';
 import SimpleToast from 'react-native-simple-toast';
 const NotificationGroup = ({navigation}) => {
-  const [data, setData] = useState([]);
+  const data = useSelector(state => state.notifyGroup);
   const [dataPopup, setDataPopup] = useState({});
   const [isOpenPopup, setOpenPopup] = useState(false);
-  const [isRefesh, setRefesh] = useState(true);
+  const [isRefesh, setRefesh] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     getNotificationGroup();
@@ -26,9 +37,13 @@ const NotificationGroup = ({navigation}) => {
   const getNotificationGroup = async () => {
     try {
       const res = await Axios.get(`${BASE_URL}/admin/notificationGroups`);
-      setData(res.data.filter(item => item.approved));
+      dispatch({
+        type: PUT_NOTIFICATION_GROUP,
+        payload: res.data.filter(item => item.approved),
+      });
     } catch (error) {
       console.log(error);
+      SimpleToast.show('Có lỗi xảy ra');
     } finally {
       setRefesh(false);
     }
@@ -46,11 +61,11 @@ const NotificationGroup = ({navigation}) => {
         onPress: async () => {
           try {
             dispatch({type: OPEN_LOADING_MODAL});
-            const res = await Axios.delete(
-              `${BASE_URL}/admin/notificationGroups/${item.id}`,
+            const res = await Axios.post(
+              `${BASE_URL}/admin/notificationGroups/delete/${item.id}`,
             );
             getNotificationGroup();
-            SimpleToast.show('Đã xóa nhóm thông báo');
+            if (res.status === 200) SimpleToast.show('Đã xóa nhóm thông báo');
           } catch (err) {
             SimpleToast.show('Có lỗi xảy ra');
             console.log('Logout Err', err);
@@ -159,6 +174,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 5,
     paddingHorizontal: 5,
+    height: Dimensions.get('window').height - 100,
   },
   itemInfo: {
     padding: 10,

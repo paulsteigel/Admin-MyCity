@@ -67,10 +67,13 @@ const DetailReport = ({navigation, ...props}) => {
         source: {uri: `${BASE_URL}/images/${item.id}`},
       }));
       if (!isMounted) return;
+
       setReport(res.data);
       dispatch({type: UPDATE_POPUP_DATA, payload: res.data});
       setImageList(imageList);
       const {data} = await Axios.get(`${BASE_URL}/feedback/${id}`);
+      console.log('data response', data.status);
+
       setResponse(data);
     } catch (err) {
       console.log('DetailReport', err);
@@ -126,7 +129,7 @@ const DetailReport = ({navigation, ...props}) => {
           </View>
         ) : null}
       </ScrollView>
-      {user.groupId <= 3 || report.isHide ? (
+      {user.groupId <= 3 || !report.isHide ? (
         <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
           <Button
             title="Thông tin người phản ánh"

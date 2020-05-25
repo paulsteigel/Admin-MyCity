@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
-  Alert,
+  Button,
   TouchableWithoutFeedback,
   Switch,
 } from 'react-native';
@@ -21,7 +21,6 @@ import {
 import {BASE_URL} from '../service';
 import RNFetchBlob from 'rn-fetch-blob';
 import SimpleToast from 'react-native-simple-toast';
-import {useNavigation} from '@react-navigation/native';
 
 const HandleReport = ({item, id}) => {
   const [message, setMessage] = useState('');
@@ -30,8 +29,11 @@ const HandleReport = ({item, id}) => {
   const [isPermit, setIsPermit] = useState(true);
   const [isPublic, setIsPublic] = useState(true);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const handleSubmit = () => {
+    if (message === '') {
+      SimpleToast.show('Chưa nhập nội dung trả lời');
+      return;
+    }
     dispatch({type: CLOSE_POPUP});
     dispatch({type: OPEN_LOADING_MODAL});
     console.log(item.id, item.id);
@@ -51,7 +53,6 @@ const HandleReport = ({item, id}) => {
             type: MARK_REPORTS_OUTDATED,
             payload: {isDataOutdated: true},
           });
-          navigation.pop();
         } else SimpleToast.show('Xử lý phản ánh thất bại');
       })
       .catch(err => {

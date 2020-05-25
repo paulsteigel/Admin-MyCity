@@ -25,9 +25,10 @@ function PopupRow({
     <View style={styles.row}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
-        style={{...styles.textInput, borderColor}}
+        style={{...styles.textInput, borderColor, maxHeight: 150}}
         placeholder={placeholder}
         multiline={multiline}
+        numberOfLines={multiline ? 10 : 1}
         onFocus={handleFocus}
         onBlur={handleUnFocus}
         value={value}
@@ -48,9 +49,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   textInput: {
-    // borderColor: '#eee',
     borderWidth: 1,
     alignSelf: 'stretch',
+    textAlignVertical: 'top',
     paddingHorizontal: 10,
     borderRadius: 10,
   },

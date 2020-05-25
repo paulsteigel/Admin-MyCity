@@ -5,6 +5,7 @@ import subject from './subjectReducer';
 import pendingReport from './pendingReportReducer';
 import loadingModal from './LoadingModalReducer';
 import errorPopup from './errorReducer';
+import notifyGroup from './notificationGroupReducer';
 export default combineReducers({
   user,
   popup,
@@ -12,4 +13,5 @@ export default combineReducers({
   subject,
   pendingReport,
   errorPopup,
+  notifyGroup,
 });

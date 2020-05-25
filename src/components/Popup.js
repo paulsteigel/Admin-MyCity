@@ -11,7 +11,7 @@ import QuickHandleFeedback from './QuickHandleFeedback';
 import ForwardFeedback from './ForwardFeedback';
 import ForwardHistory from './ForwardHistory';
 import HandleReport from '../components/HandleReport';
-const {width} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 const Popup = () => {
   const dispatch = useDispatch();
   const {
@@ -21,7 +21,7 @@ const Popup = () => {
     visible,
     popupId,
     popupTitle,
-    height,
+
     forwardHistory,
     fromScreen,
   } = useSelector(state => state.popup);
@@ -60,7 +60,7 @@ const Popup = () => {
       onBackButtonPress={handleClose}
       isVisible={visible}
       avoidKeyboard={true}>
-      <View style={{...styles.container, maxHeight: height}}>
+      <View style={{...styles.container, maxHeight: height * 0.8}}>
         <View style={styles.closeModalBtn}>
           <Icon name="close" onPress={handleClose} size={18} />
         </View>

@@ -75,6 +75,11 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
         return;
       }
     }
+    Axios.interceptors.request.use(config => {
+      console.log('forward feedback:', config);
+
+      return config;
+    });
     dispatch({type: CLOSE_POPUP});
     dispatch({type: OPEN_LOADING_MODAL});
     Axios.post(url, {
@@ -127,15 +132,15 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
         <View style={{padding: 15}}>
           <View
             style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
               marginBottom: 10,
+              justifyContent: 'space-between',
+              flexDirection: 'row',
             }}>
             <Text
               style={{
                 fontSize: 16,
                 fontWeight: 'bold',
+                flex: 1,
               }}>
               Thuộc thẩm quyền xử lý
             </Text>

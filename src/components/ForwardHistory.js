@@ -20,7 +20,7 @@ const ForwardHistory = props => {
               style={{justifyContent: 'space-between', flexDirection: 'row'}}>
               <Text style={styles.bold}>{item.userCreateName}</Text>
               <Text style={{color: '#666', fontSize: 12}}>
-                {moment(item.updatedAt).format('DD/MM/YYYY')}
+                {moment(item.dateCreate).format('DD/MM/YYYY')}
               </Text>
             </View>
             <Text style={{color: '#999'}}>Chuyển phản ánh đến:</Text>
@@ -37,7 +37,7 @@ const ForwardHistory = props => {
 
 const styles = StyleSheet.create({
   card: {
-    elevation: 2,
+    elevation: 1,
     width: '100%',
     marginTop: 10,
     flex: 1,

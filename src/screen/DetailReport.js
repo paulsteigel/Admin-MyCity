@@ -48,7 +48,7 @@ const DetailReport = ({navigation, ...props}) => {
   }, [popBack]);
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (hideHeaderBtn ? <></> : <HandleFeedback />),
+      headerRight: () => <HandleFeedback />,
     });
     loadReport(isMounted.current);
     return () => (isMounted.current = false);

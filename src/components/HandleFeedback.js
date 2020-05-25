@@ -1,11 +1,5 @@
-import React from 'react';
-import {
-  TouchableWithoutFeedback,
-  Text,
-  StyleSheet,
-  Dimensions,
-  View,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {TouchableWithoutFeedback, Text, StyleSheet, View} from 'react-native';
 import {
   Menu,
   MenuOptions,
@@ -13,23 +7,32 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {OPEN_POPUP} from '../redux/constants';
 import {BASE_URL} from '../service';
 
-const {height} = Dimensions.get('window');
 const popupList = [
-  {id: 1, height: height * 0.5, title: 'Xử lý nhanh'},
+  {permisstionLevel: 3, id: 1, title: 'Xử lý nhanh'},
   {
+    permisstionLevel: 4,
     id: 2,
-    height: height * 0.7,
     title: 'Chuyển phản ánh',
     url: `${BASE_URL}/admin/feedbacks/forwardFeedback`,
   },
-  {id: 3, height: height * 0.4, title: 'Xác minh phản ánh'},
-  {id: 4, height: height * 0.8, title: 'Cập nhật phản ánh'},
+  {
+    permisstionLevel: 3,
+    id: 3,
+    title: 'Xác minh phản ánh',
+  },
+  {
+    permisstionLevel: 3,
+    id: 4,
+    title: 'Cập nhật phản ánh',
+  },
+  {permisstionLevel: 5, id: 5, title: 'Lịch sử chuyển phản ánh'},
 ];
 const HandleFeedback = props => {
+  const {user} = useSelector(state => state.user);
   const dispatch = useDispatch();
   function handleSelect(popupSetting) {
     dispatch({
@@ -37,7 +40,9 @@ const HandleFeedback = props => {
       payload: {...popupSetting, fromScreen: 'detailReport'},
     });
   }
-
+  useEffect(() => {
+    console.log(user.groupId);
+  }, []);
   return (
     <Menu>
       <MenuTrigger
@@ -47,14 +52,17 @@ const HandleFeedback = props => {
         </View>
       </MenuTrigger>
       <MenuOptions>
-        {popupList.map(item => (
-          <MenuOption
-            key={item.title}
-            style={styles.btn}
-            onSelect={() => handleSelect(item)}>
-            <Text style={styles.text}>{item.title}</Text>
-          </MenuOption>
-        ))}
+        {popupList.map(item => {
+          if (item.permisstionLevel >= user.groupId)
+            return (
+              <MenuOption
+                key={item.title}
+                style={styles.btn}
+                onSelect={() => handleSelect(item)}>
+                <Text style={styles.text}>{item.title}</Text>
+              </MenuOption>
+            );
+        })}
       </MenuOptions>
     </Menu>
   );

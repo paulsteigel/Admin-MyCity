@@ -30,9 +30,13 @@ const HandleReport = ({item, id}) => {
   const [isPublic, setIsPublic] = useState(true);
   const dispatch = useDispatch();
   const handleSubmit = () => {
-    if (message === '') {
-      SimpleToast.show('Chưa nhập nội dung trả lời');
-      return;
+    if (isPermit) {
+      if (message === '') {
+        SimpleToast.show('Chưa nhập nội dung trả lời');
+        return;
+      }
+    } else {
+      setMessage('');
     }
     dispatch({type: CLOSE_POPUP});
     dispatch({type: OPEN_LOADING_MODAL});
@@ -97,7 +101,7 @@ const HandleReport = ({item, id}) => {
               paddingBottom: 10,
             }}>
             <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-              Thuộc thẩm quền
+              Thuộc thẩm quyền
             </Text>
             <Switch
               value={isPermit}
@@ -105,7 +109,7 @@ const HandleReport = ({item, id}) => {
             />
           </View>
           <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-            {isPermit ? 'Nội dung trả lời' : 'Lý do trả lại'}
+            Nội dung trả lời
           </Text>
           <TextInput
             style={{
@@ -115,6 +119,7 @@ const HandleReport = ({item, id}) => {
               borderRadius: 10,
             }}
             multiline
+            editable={isPermit}
             numberOfLines={5}
             value={message}
             onChangeText={message => setMessage(message)}

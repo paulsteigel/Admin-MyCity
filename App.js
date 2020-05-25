@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux';
 import {BackHandler} from 'react-native';
 import moment from 'moment';
 import localization from 'moment/locale/vi';
-
+import SplashScreen from 'react-native-splash-screen';
 import Popup from './src/components/Popup';
 import LoadingModal from './src/components/LoadingModal';
 import LoadingScreen from './src/screen/LoadingScreen';
@@ -29,7 +29,7 @@ const App = () => {
     );
     return () => backHandler.remove();
   };
-
+  useEffect(SplashScreen.hide, []);
   useEffect(preventBackButtonWhileLoading, [loadingModal.visible]);
 
   if (user.isLoading) return <LoadingScreen />;

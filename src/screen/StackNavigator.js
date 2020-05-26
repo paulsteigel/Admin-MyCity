@@ -14,6 +14,11 @@ import {GET_SUBJECTS, PUT_NOTIFICATION_GROUP} from '../redux/constants';
 import SimpleToast from 'react-native-simple-toast';
 import Axios from 'axios';
 import {BASE_URL} from '../service';
+import VerifiedReport from './VerifiedReport';
+import ForwardedReport from './ForwardedReport';
+import RejectedReport from './RejectedReport';
+import AgencyExipredReport from './AgencyExipredReport';
+import DepartmentExpiredReport from './DepartmentExpiredReport';
 const Stack = createStackNavigator();
 
 const Drawer = createDrawerNavigator();
@@ -24,6 +29,31 @@ const screens = [
     component: RecivedReports,
     name: 'phan_anh_tiep_nhan',
     options: {title: 'Tiếp nhận'},
+  },
+  {
+    component: VerifiedReport,
+    name: 'phan_anh_xac_minh',
+    options: {title: 'Đã xác minh'},
+  },
+  {
+    component: ForwardedReport,
+    name: 'phan_anh_chuyen_tiep',
+    options: {title: 'Chuyển xử lý'},
+  },
+  {
+    component: RejectedReport,
+    name: 'phan_anh_tra_lai',
+    options: {title: 'Trả lại'},
+  },
+  {
+    component: AgencyExipredReport,
+    name: 'phan_anh_cham_chuyen_tiep',
+    options: {title: 'Chậm chuyển tiếp'},
+  },
+  {
+    component: DepartmentExpiredReport,
+    name: 'phan_anh_qua_han',
+    options: {title: 'Quá hạn'},
   },
   // {
   //   component: Dashboard,

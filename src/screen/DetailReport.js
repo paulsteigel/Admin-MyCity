@@ -62,6 +62,7 @@ const DetailReport = ({navigation, ...props}) => {
 
   const loadReport = async isMounted => {
     try {
+      console.log(id);
       const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${id}`);
       let imageList = res.data.images.map(item => ({
         source: {uri: `${BASE_URL}/images/${item.id}`},

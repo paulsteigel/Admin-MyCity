@@ -9,14 +9,16 @@ import {
   Dimensions,
 } from 'react-native';
 import {BASE_URL} from '../../service';
-import ListItem from '../../components/ListItem';
+import ListItem from './ListItem';
 import Axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
 import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../../redux/constants';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useNavigation} from '@react-navigation/native';
 const {width, height} = Dimensions.get('window');
 
-function VerifiedReport({navigation, ...props}) {
+export default function() {
+  const navigation = useNavigation();
   const {isDataOutdated} = useSelector(state => state.pendingReport);
   const dispatch = useDispatch();
   const [initalLoad, setInitialLoad] = useState(true);
@@ -36,7 +38,7 @@ function VerifiedReport({navigation, ...props}) {
   }, [isDataOutdated]);
 
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
+    let url = `${BASE_URL}/admin/feedbackforwards/agency/expiredFeedbackForwards?limit=10&skip=${start}`;
     let res = await Axios.get(url);
 
     if (!loadMore) setReports(res.data);
@@ -64,7 +66,7 @@ function VerifiedReport({navigation, ...props}) {
             report={item}
             onPress={() => {
               navigation.navigate('detailReport', {
-                id: item.id,
+                id: item.feedbackId,
               });
               dispatch({type: UPDATE_FWID, payload: item.fwid});
             }}
@@ -115,7 +117,7 @@ function VerifiedReport({navigation, ...props}) {
               fontWeight: 'bold',
               paddingLeft: 20,
             }}>
-            Phản ánh tiếp nhận
+            Phản ánh chậm chuyển tiếp
           </Text>
         </View>
       </View>
@@ -135,4 +137,3 @@ function VerifiedReport({navigation, ...props}) {
     </View>
   );
 }
-export default VerifiedReport;

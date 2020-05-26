@@ -35,6 +35,8 @@ const VerifyFeedback = ({item}) => {
       .catch(err => {
         SimpleToast.show('Có lỗi xảy ra: ', err.message);
         console.log(err);
+      })
+      .finally(() => {
         dispatch({type: CLOSE_LOADING_MODAL});
       });
   };

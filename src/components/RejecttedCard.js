@@ -27,7 +27,7 @@ export default function ReportComponent({
   const {id, feedbackId, title, message, dateExpired, dateCreate} = props.item;
   const navigation = useNavigation();
   const handleNavigate = () => {
-    navigation.navigate('detailReport', {id: feedbackId, hideHeaderBtn: true});
+    navigation.navigate('detailReport', {id: feedbackId});
   };
 
   return (

@@ -20,14 +20,14 @@ import Axios from 'axios';
 import PhotoView from '@merryjs/photo-viewer';
 import BottomSheet from 'react-native-raw-bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import HandleFeedback from '../components/HandleFeedback';
+import TopLeftMenu from '../components/TopLeftMenu';
 import {useSelector, useDispatch} from 'react-redux';
 import {MARK_REPORTS_OUTDATED, UPDATE_POPUP_DATA} from '../redux/constants';
 
 const {width, height} = Dimensions.get('window');
 
 const DetailReport = ({navigation, ...props}) => {
-  const {hideHeaderBtn = false, id} = props.route.params;
+  const {id} = props.route.params;
   const [imageView, setImageView] = useState({visible: false, index: 0});
   const [report, setReport] = useState(null);
   const [imageList, setImageList] = useState([]);
@@ -48,7 +48,7 @@ const DetailReport = ({navigation, ...props}) => {
   }, [popBack]);
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <HandleFeedback />,
+      headerRight: () => <TopLeftMenu />,
     });
     loadReport(isMounted.current);
     return () => (isMounted.current = false);

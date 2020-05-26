@@ -29,7 +29,7 @@ export default function HandledCard({
   const title = props.item.feedback.title;
   const navigation = useNavigation();
   const handleNavigate = () => {
-    navigation.navigate('detailReport', {id: feedbackId, hideHeaderBtn: true});
+    navigation.navigate('detailReport', {id: feedbackId});
   };
 
   return (

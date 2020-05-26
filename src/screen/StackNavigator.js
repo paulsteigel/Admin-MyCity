@@ -5,7 +5,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import Dashboard from './Dashboard';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import HandleReport from './HandleReport';
-import RecivedReports from './RecivedReports';
+import RecivedReports from './ReceivedReport';
 import CustomDrawerContent from '../components/CustomDrawer';
 import '../service/NotifiService';
 import NotificationGroup from './NotificationGroup';
@@ -20,31 +20,28 @@ const Drawer = createDrawerNavigator();
 
 const screens = [
   {
-    permissLevel: 3,
-    component: Dashboard,
-    name: 'dashboard',
-    options: {title: 'Phản ánh chưa chuyển'},
-  },
-  {
-    permissLevel: 4,
+    // Màn hình 1
     component: RecivedReports,
     name: 'phan_anh_tiep_nhan',
-    options: {title: 'Danh sách phản ánh tiếp nhận'},
+    options: {title: 'Tiếp nhận'},
   },
+  // {
+  //   component: Dashboard,
+  //   name: 'dashboard',
+  //   options: {title: 'Phản ánh chưa chuyển'},
+  // },
+
+  // {
+  //   component: HandleReport,
+  //   name: 'phan_anh_xu_ly',
+  //   options: {title: 'Danh sách phản ánh xử lý'},
+  // },
+  // {
+  //   component: NotificationGroup,
+  //   name: 'notificationGroup',
+  //   options: {title: 'Quản lý nhóm thông báo'},
+  // },
   {
-    permissLevel: 5,
-    component: HandleReport,
-    name: 'phan_anh_xu_ly',
-    options: {title: 'Danh sách phản ánh xử lý'},
-  },
-  {
-    permissLevel: 2,
-    component: NotificationGroup,
-    name: 'notificationGroup',
-    options: {title: 'Quản lý nhóm thông báo'},
-  },
-  {
-    permissLevel: 2,
     component: BroadCastNotify,
     name: 'broadcastNotify',
     options: {title: 'Thông báo cộng đồng'},
@@ -57,15 +54,14 @@ function DrawerNavigator() {
     <Drawer.Navigator
       drawerContent={props => <CustomDrawerContent {...props} />}>
       {screens.map(screen => {
-        if (screen.permissLevel >= user.groupId)
-          return (
-            <Drawer.Screen
-              component={screen.component}
-              options={screen.options}
-              name={screen.name}
-              key={screen.name}
-            />
-          );
+        return (
+          <Drawer.Screen
+            component={screen.component}
+            options={screen.options}
+            name={screen.name}
+            key={screen.name}
+          />
+        );
       })}
     </Drawer.Navigator>
   );

@@ -8,15 +8,17 @@ import {
   View,
   Dimensions,
 } from 'react-native';
-import {BASE_URL} from '../service';
-import ListItem from '../components/ListItem';
+import {BASE_URL} from '../../service';
+import ListItem from './ListItem';
 import Axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
-import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../redux/constants';
+import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../../redux/constants';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useNavigation} from '@react-navigation/native';
 const {width, height} = Dimensions.get('window');
 
-function Dashboard({navigation, ...props}) {
+function Agency() {
+  const navigation = useNavigation();
   const {isDataOutdated} = useSelector(state => state.pendingReport);
   const dispatch = useDispatch();
   const [initalLoad, setInitialLoad] = useState(true);
@@ -36,7 +38,7 @@ function Dashboard({navigation, ...props}) {
   }, [isDataOutdated]);
 
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
+    let url = `${BASE_URL}/admin/feedbackforwards/department/newFeedbackForwards?limit=10&skip=${start}`;
     let res = await Axios.get(url);
 
     if (!loadMore) setReports(res.data);
@@ -135,4 +137,4 @@ function Dashboard({navigation, ...props}) {
     </View>
   );
 }
-export default Dashboard;
+export default Agency;

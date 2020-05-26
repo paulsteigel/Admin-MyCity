@@ -39,10 +39,14 @@ function Agency() {
 
   const loadFeedBack = async start => {
     let url = `${BASE_URL}/admin/feedbackforwards/department/newFeedbackForwards?limit=10&skip=${start}`;
-    let res = await Axios.get(url);
-
-    if (!loadMore) setReports(res.data);
-    else setReports(prevState => [...prevState, ...res.data]);
+    try {
+      let res = await Axios.get(url);
+      console.log('department: ', res.data);
+      if (!loadMore) setReports(res.data);
+      else setReports(prevState => [...prevState, ...res.data]);
+    } catch (error) {
+      console.log('[Department] loadfeedback err', JSON.stringify(error));
+    }
     setLoadMore(false);
     setRefeshing(false);
   };
@@ -63,10 +67,14 @@ function Agency() {
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
           <ListItem
-            report={item}
+            report={{
+              ...item.feedback,
+              dateCreate: item.dateCreate,
+              dateExpired: item.dateExpired,
+            }}
             onPress={() => {
               navigation.navigate('detailReport', {
-                id: item.id,
+                id: item.feedback.id,
               });
               dispatch({type: UPDATE_FWID, payload: item.fwid});
             }}

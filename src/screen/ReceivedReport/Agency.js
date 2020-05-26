@@ -39,10 +39,14 @@ function Agency() {
 
   const loadFeedBack = async start => {
     let url = `${BASE_URL}/admin/feedbackforwards/agency/newFeedbackForwards?limit=10&skip=${start}`;
-    let res = await Axios.get(url);
-
-    if (!loadMore) setReports(res.data);
-    else setReports(prevState => [...prevState, ...res.data]);
+    try {
+      let res = await Axios.get(url);
+      console.log('Agency: ', res.data);
+      if (!loadMore) setReports(res.data);
+      else setReports(prevState => [...prevState, ...res.data]);
+    } catch (error) {
+      console.log('[Agency] loadfeedback err', error);
+    }
     setLoadMore(false);
     setRefeshing(false);
   };
@@ -50,7 +54,6 @@ function Agency() {
     setRefeshing(true);
     loadFeedBack(0);
   };
-  // useEffect(() => console.log('state changed: ', reports.length), [reports]);
   const renderList = () => {
     return (
       <FlatList

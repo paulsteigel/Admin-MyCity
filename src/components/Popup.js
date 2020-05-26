@@ -21,7 +21,6 @@ const Popup = () => {
     visible,
     popupId,
     popupTitle,
-
     forwardHistory,
     fromScreen,
   } = useSelector(state => state.popup);

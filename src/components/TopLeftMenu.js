@@ -12,24 +12,22 @@ import {OPEN_POPUP} from '../redux/constants';
 import {BASE_URL} from '../service';
 
 const popupList = [
-  {permisstionLevel: 3, id: 1, title: 'Xử lý nhanh'},
+  {id: 1, title: 'Xử lý nhanh'},
   {
-    permisstionLevel: 4,
     id: 2,
     title: 'Chuyển phản ánh',
     url: `${BASE_URL}/admin/feedbacks/forwardFeedback`,
   },
   {
-    permisstionLevel: 3,
     id: 3,
     title: 'Xác minh phản ánh',
   },
   {
-    permisstionLevel: 3,
     id: 4,
     title: 'Cập nhật phản ánh',
   },
-  {permisstionLevel: 5, id: 5, title: 'Lịch sử chuyển phản ánh'},
+  {id: 6, title: 'Xử lý phản ánh'},
+  {id: 5, title: 'Lịch sử chuyển phản ánh'},
 ];
 const HandleFeedback = props => {
   const {user} = useSelector(state => state.user);
@@ -53,15 +51,15 @@ const HandleFeedback = props => {
       </MenuTrigger>
       <MenuOptions>
         {popupList.map(item => {
-          if (item.permisstionLevel >= user.groupId)
-            return (
-              <MenuOption
-                key={item.title}
-                style={styles.btn}
-                onSelect={() => handleSelect(item)}>
-                <Text style={styles.text}>{item.title}</Text>
-              </MenuOption>
-            );
+          // if (item.permisstionLevel >= user.groupId)
+          return (
+            <MenuOption
+              key={item.title}
+              style={styles.btn}
+              onSelect={() => handleSelect(item)}>
+              <Text style={styles.text}>{item.title}</Text>
+            </MenuOption>
+          );
         })}
       </MenuOptions>
     </Menu>

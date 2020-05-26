@@ -8,7 +8,7 @@ import HandleReport from './HandleReport';
 import RecivedReports from './ReceivedReport';
 import CustomDrawerContent from '../components/CustomDrawer';
 import '../service/NotifiService';
-import NotificationGroup from './NotificationGroup';
+import ReturnedReport from '../screen/ReturnedReport';
 import BroadCastNotify from './BroadCastNotify';
 import {GET_SUBJECTS, PUT_NOTIFICATION_GROUP} from '../redux/constants';
 import SimpleToast from 'react-native-simple-toast';
@@ -37,9 +37,9 @@ const screens = [
   //   options: {title: 'Danh sách phản ánh xử lý'},
   // },
   // {
-  //   component: NotificationGroup,
-  //   name: 'notificationGroup',
-  //   options: {title: 'Quản lý nhóm thông báo'},
+  //   component: ReturnedReport,
+  //   name: 'returnedReport',
+  //   options: {title: 'Trả lại'},
   // },
   {
     component: BroadCastNotify,

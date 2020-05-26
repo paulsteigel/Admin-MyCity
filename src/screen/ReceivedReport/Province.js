@@ -15,6 +15,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../../redux/constants';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import SimpleToast from 'react-native-simple-toast';
 const {width, height} = Dimensions.get('window');
 
 function Agency() {
@@ -38,11 +39,16 @@ function Agency() {
   }, [isDataOutdated]);
 
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
-    let res = await Axios.get(url);
+    try {
+      let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
+      let res = await Axios.get(url);
+      console.log('provinceL ', res.data);
 
-    if (!loadMore) setReports(res.data);
-    else setReports(prevState => [...prevState, ...res.data]);
+      if (!loadMore) setReports(res.data);
+      else setReports(prevState => [...prevState, ...res.data]);
+    } catch (error) {
+      // console.log('[province] loadfeedback err', error);
+    }
     setLoadMore(false);
     setRefeshing(false);
   };

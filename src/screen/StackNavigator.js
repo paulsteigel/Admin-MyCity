@@ -37,7 +37,7 @@ const screens = [
   },
   {
     component: ForwardedReport,
-    name: 'phan_anh_chuyen_tiep',
+    name: 'phan_anh_chuyen_xu_ly',
     options: {title: 'Chuyển xử lý'},
   },
   {
@@ -73,26 +73,42 @@ const screens = [
   // },
   {
     component: BroadCastNotify,
-    name: 'broadcastNotify',
-    options: {title: 'Thông báo cộng đồng'},
+    name: 'thong_bao',
+    options: {title: 'Thông báo'},
   },
 ];
 
 function DrawerNavigator() {
+  let hiddenScreens = [];
   const {user} = useSelector(state => state.user);
+  if (user.agencyId != 1) {
+    hiddenScreens.push('phan_anh_xac_minh', 'phan_anh_qua_han');
+  }
+  if (user.groupId > 3) {
+    hiddenScreens.push('phan_anh_cham_chuyen_tiep');
+  }
+  if (user.groupId > 4) {
+    hiddenScreens.push(
+      'phan_anh_chuyen_xu_ly',
+      'phan_anh_tra_lai',
+      'thong_bao',
+    );
+  }
   return (
     <Drawer.Navigator
       drawerContent={props => <CustomDrawerContent {...props} />}>
-      {screens.map(screen => {
-        return (
-          <Drawer.Screen
-            component={screen.component}
-            options={screen.options}
-            name={screen.name}
-            key={screen.name}
-          />
-        );
-      })}
+      {screens
+        .filter(screen => !hiddenScreens.includes(screen.name))
+        .map(screen => {
+          return (
+            <Drawer.Screen
+              component={screen.component}
+              options={screen.options}
+              name={screen.name}
+              key={screen.name}
+            />
+          );
+        })}
     </Drawer.Navigator>
   );
 }

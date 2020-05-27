@@ -87,7 +87,7 @@ export default function CustomDrawerContent(props) {
       })}
       <DrawerItem
         label="Thông báo"
-        onPress={() => props.navigation.navigate('broadcastNotify')}
+        onPress={() => props.navigation.navigate('thong_bao')}
       />
     </DrawerContentScrollView>
   );

@@ -9,17 +9,24 @@ function truncate(str, displayWords) {
 
   //   return '';
   // }
-  let result = str;
-  result = str.trim().split(' ');
-  if (result.length > displayWords) {
-    result = result.splice(0, displayWords);
-    return result.join(' ') + '...';
+  try {
+    let result = str;
+    result = str.trim().split(' ');
+    if (result.length > displayWords) {
+      result = result.splice(0, displayWords);
+      return result.join(' ') + '...';
+    }
+    return result.join(' ');
+  } catch (error) {
+    console.log('trim err:', error);
+    return '';
   }
-  return result.join(' ');
 }
 export default function ListItem(props) {
   const {user} = useSelector(state => state.user);
   const {report, onPress} = props;
+  console.log('props ', report);
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <View style={styles.cardContent}>

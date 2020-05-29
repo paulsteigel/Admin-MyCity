@@ -67,6 +67,7 @@ function Agency() {
             onPress={() => {
               navigation.navigate('detailReport', {
                 id: item.feedbackId,
+                dropdownOptions: [4, 5],
               });
               dispatch({type: UPDATE_FWID, payload: item.fwid});
             }}

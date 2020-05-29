@@ -40,6 +40,7 @@ function Agency() {
   const loadFeedBack = async start => {
     let url = `${BASE_URL}/admin/feedbackforwards/agency/rejectedFeedbackForwards?limit=10&skip=${start}`;
     let res = await Axios.get(url);
+    console.log(res.data);
 
     if (!loadMore) setReports(res.data);
     else setReports(prevState => [...prevState, ...res.data]);
@@ -67,6 +68,7 @@ function Agency() {
             onPress={() => {
               navigation.navigate('detailReport', {
                 id: item.feedbackId,
+                dropdownOptions: [2, 5],
               });
               dispatch({type: UPDATE_FWID, payload: item.fwid});
             }}

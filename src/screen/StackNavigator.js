@@ -2,9 +2,9 @@ import React, {useEffect} from 'react';
 import DetailReport from './DetailReport';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
-import Dashboard from './Dashboard';
+// import Dashboard from './Dashboard';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import HandleReport from './HandleReport';
+// import HandleReport from './HandleReport';
 import RecivedReports from './ReceivedReport';
 import CustomDrawerContent from '../components/CustomDrawer';
 import '../service/NotifiService';
@@ -82,7 +82,7 @@ function DrawerNavigator() {
   let hiddenScreens = [];
   const {user} = useSelector(state => state.user);
   if (user.agencyId != 1) {
-    hiddenScreens.push('phan_anh_xac_minh', 'phan_anh_qua_han');
+    hiddenScreens.push('phan_anh_xac_minh');
   }
   if (user.groupId > 3) {
     hiddenScreens.push('phan_anh_cham_chuyen_tiep');
@@ -91,7 +91,7 @@ function DrawerNavigator() {
     hiddenScreens.push(
       'phan_anh_chuyen_xu_ly',
       'phan_anh_tra_lai',
-      'thong_bao',
+      'phan_anh_qua_han',
     );
   }
   return (

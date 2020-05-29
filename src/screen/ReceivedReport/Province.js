@@ -15,7 +15,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../../redux/constants';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
-import SimpleToast from 'react-native-simple-toast';
 const {width, height} = Dimensions.get('window');
 
 function Agency() {
@@ -73,6 +72,7 @@ function Agency() {
             onPress={() => {
               navigation.navigate('detailReport', {
                 id: item.id,
+                dropdownOptions: [1, 2, 3, 4, 7],
               });
               dispatch({type: UPDATE_FWID, payload: item.fwid});
             }}

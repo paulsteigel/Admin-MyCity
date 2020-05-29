@@ -20,6 +20,7 @@ import {
 } from '../redux/constants';
 import {BASE_URL} from '../service';
 import RNFetchBlob from 'rn-fetch-blob';
+import {navigationPopBack, navigate} from '../service/navigation';
 import SimpleToast from 'react-native-simple-toast';
 
 const HandleReport = ({item, id}) => {
@@ -35,12 +36,9 @@ const HandleReport = ({item, id}) => {
         SimpleToast.show('Chưa nhập nội dung trả lời');
         return;
       }
-    } else {
-      setMessage('');
     }
     dispatch({type: CLOSE_POPUP});
     dispatch({type: OPEN_LOADING_MODAL});
-    console.log(item.id, item.id);
     Axios.post(`${BASE_URL}/admin/feedbacks/handlefeedback`, {
       id,
       feedbackId: item.id,
@@ -57,6 +55,7 @@ const HandleReport = ({item, id}) => {
             type: MARK_REPORTS_OUTDATED,
             payload: {isDataOutdated: true},
           });
+          navigate('phan_anh_tiep_nhan', {});
         } else SimpleToast.show('Xử lý phản ánh thất bại');
       })
       .catch(err => {
@@ -119,7 +118,7 @@ const HandleReport = ({item, id}) => {
               borderRadius: 10,
             }}
             multiline
-            editable={isPermit}
+            // editable={isPermit}
             numberOfLines={5}
             value={message}
             onChangeText={message => setMessage(message)}

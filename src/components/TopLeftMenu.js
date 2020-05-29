@@ -24,14 +24,30 @@ const popupList = [
   },
   {
     id: 4,
-    title: 'Cập nhật phản ánh',
+    title: 'Công khai phản ánh',
   },
-  {id: 6, title: 'Xử lý phản ánh'},
+  {
+    id: 7,
+    title: 'Ẩn thông tin người gửi',
+  },
   {id: 5, title: 'Lịch sử chuyển phản ánh'},
+  {id: 6, title: 'Xử lý phản ánh'},
+  {
+    id: 8,
+    title: 'Chuyển phản ánh',
+    url: `${BASE_URL}/admin/feedbacks/forwardFeedbackToDepartment`,
+  },
 ];
-const HandleFeedback = props => {
+const TopLeftMenu = ({dropdownOptions}) => {
   const {user} = useSelector(state => state.user);
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  const listDropdown = dropdownOptions.map(item => {
+    return popupList.find(i => i.id === item);
+  });
+  // }, [dropdownOptions]);
+
   function handleSelect(popupSetting) {
     dispatch({
       type: OPEN_POPUP,
@@ -50,7 +66,7 @@ const HandleFeedback = props => {
         </View>
       </MenuTrigger>
       <MenuOptions>
-        {popupList.map(item => {
+        {listDropdown.map(item => {
           // if (item.permisstionLevel >= user.groupId)
           return (
             <MenuOption
@@ -76,4 +92,4 @@ const styles = StyleSheet.create({
     padding: 5,
   },
 });
-export default HandleFeedback;
+export default TopLeftMenu;

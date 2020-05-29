@@ -17,6 +17,7 @@ const BTN_COLOR = '#df1212';
 export default function CustomDrawerContent(props) {
   const dispatch = useDispatch();
   const [isHiddenDropdown, setHiddenDropdown] = useState(true);
+  const [currentItem, setCurrentItem] = useState('');
   const {user} = useSelector(state => state.user);
   const logout = () => {
     Alert.alert('Đăng xuất', 'Bạn có muốn đăng xuất tài Khoản', [
@@ -49,15 +50,22 @@ export default function CustomDrawerContent(props) {
       label: descriptors[item].options.title,
     }));
 
-  const avartar =
-    user.avartar === ''
+  const avatar =
+    user.avatar === ''
       ? require('../assets/user_avatar.png')
-      : {uri: user.avartar};
+      : {uri: BASE_URL + user.avatar};
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={avartar} style={styles.image} resizeMode="contain" />
+          <Image
+            onError={err => {
+              console.log('avatar err');
+            }}
+            source={avatar}
+            style={styles.image}
+            resizeMode="contain"
+          />
           <TouchableOpacity style={styles.button} onPress={logout}>
             <Text style={{color: BTN_COLOR}}>ĐĂNG XUẤT</Text>
           </TouchableOpacity>
@@ -73,21 +81,42 @@ export default function CustomDrawerContent(props) {
         hideDropdown={isHiddenDropdown}
         onPress={() => setHiddenDropdown(!isHiddenDropdown)}
       />
-      {drawerItems.map((item, index) => {
-        if (!isHiddenDropdown)
-          return (
-            <DrawerItem
-              key={index}
-              label={item.label}
-              labelStyle={{paddingLeft: 20}}
-              onPress={() => props.navigation.navigate(item.name)}
-            />
-          );
-        return null;
-      })}
+      <View>
+        {drawerItems.map((item, index) => {
+          if (!isHiddenDropdown)
+            return (
+              <DrawerItem
+                key={index}
+                style={{
+                  borderColor: item.name === currentItem ? '#35acdb' : '#eee',
+                  borderBottomWidth: 1,
+                  marginLeft: 20,
+                }}
+                labelStyle={{
+                  color: item.name === currentItem ? '#35acdb' : '#666',
+                }}
+                label={item.label}
+                onPress={() => {
+                  props.navigation.navigate(item.name);
+                  setCurrentItem(item.name);
+                }}
+              />
+            );
+          return null;
+        })}
+      </View>
+
       <DrawerItem
         label="Thông báo"
-        onPress={() => props.navigation.navigate('thong_bao')}
+        labelStyle={{
+          color: 'thong_bao' === currentItem ? '#35acdb' : '#666',
+        }}
+        onPress={() => {
+          const name = 'thong_bao';
+          setCurrentItem(name);
+          setHiddenDropdown(true);
+          props.navigation.navigate(name);
+        }}
       />
     </DrawerContentScrollView>
   );
@@ -99,7 +128,7 @@ const OuterDrawerItem = ({label, hideDropdown, onPress}) => (
     style={{
       paddingTop: 21,
       paddingBottom: 16,
-      paddingLeft: 15,
+      paddingLeft: 20,
       paddingRight: 10,
     }}>
     <View

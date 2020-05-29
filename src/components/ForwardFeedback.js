@@ -60,6 +60,11 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
 
   const {user} = useSelector(state => state.user);
   const handleSubmit = () => {
+    const isPast = moment(dateExpired).isBefore(new Date(), 'day');
+    if (isPast) {
+      Toast.show('Hạn xử lý không hợp lệ');
+      return;
+    }
     if (message === '') {
       Toast.show('Nhập lý do chuyển phản ánh');
       return;
@@ -75,11 +80,11 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
         return;
       }
     }
-    Axios.interceptors.request.use(config => {
-      console.log('forward feedback:', config);
+    // Axios.interceptors.request.use(config => {
+    //   console.log('forward feedback:', config);
 
-      return config;
-    });
+    //   return config;
+    // });
     dispatch({type: CLOSE_POPUP});
     dispatch({type: OPEN_LOADING_MODAL});
     Axios.post(url, {
@@ -95,7 +100,7 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
     })
       .then(res => {
         if (res.status == 200) {
-          Toast.show('Chuyển phản ánh thành công');
+          Toast.show('Chuyển phản ánh thành công', Toast.LONG);
           dispatch({
             type: MARK_REPORTS_OUTDATED,
             payload: {isDataOutdated: true},
@@ -115,9 +120,13 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
   };
 
   const onChange = (event, selectedDate) => {
-    let currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDateExpired(currentDate);
+    try {
+      let currentDate = selectedDate || dateExpired;
+      setShow(Platform.OS === 'ios');
+      setDateExpired(currentDate);
+    } catch (error) {
+      console.log('err date', error);
+    }
   };
   const onDepartmentSelected = value => {
     setDepartmentIds(value);
@@ -235,6 +244,8 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
             </TouchableWithoutFeedback>
             {show && (
               <DateTimePicker
+                minimumDate={new Date()}
+                timeZoneOffsetInMinutes={0}
                 value={dateExpired}
                 mode="date"
                 onChange={onChange}

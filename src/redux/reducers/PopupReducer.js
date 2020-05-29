@@ -3,7 +3,6 @@ import {
   CLOSE_POPUP,
   OPEN_POPUP_DATA,
   UPDATE_POPUP_DATA,
-  OPEN_FORWARD_HISTORY,
   UPDATE_FWID,
 } from '../constants';
 
@@ -12,7 +11,6 @@ const initialstate = {
   popupTitle: '',
   height: null,
   report: {},
-  forwardHistory: [],
   fwid: null,
   url: '',
   fromScreen: '',
@@ -36,14 +34,6 @@ const PopupReducer = (state = initialstate, {type, payload}) => {
       return {...state, visible: false};
     case OPEN_POPUP_DATA:
       return {...state, ...payload, visible: true};
-    case OPEN_FORWARD_HISTORY:
-      return {
-        ...state,
-        visible: true,
-        popupId: 5,
-        popupTitle: 'Lịch sử chuyển phản ánh',
-        ...payload,
-      };
     case UPDATE_FWID:
       return {
         ...state,

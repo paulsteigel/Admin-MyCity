@@ -18,7 +18,7 @@ function truncate(str, displayWords) {
     }
     return result.join(' ');
   } catch (error) {
-    return 'err';
+    return '';
   }
 }
 export default function ListItem(props) {

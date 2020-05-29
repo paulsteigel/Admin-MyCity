@@ -20,7 +20,7 @@ import {
   OPEN_FORWARD_HISTORY,
 } from '../redux/constants';
 const {width, height} = Dimensions.get('window');
-function HandleReportScreen2({navigation, ...props}) {
+function HandledReport({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
   const [refreshing, setRefeshing] = useState(false);
   const [reports, setReports] = useState([]);
@@ -108,4 +108,4 @@ function HandleReportScreen2({navigation, ...props}) {
     </View>
   );
 }
-export default HandleReportScreen2;
+export default HandledReport;

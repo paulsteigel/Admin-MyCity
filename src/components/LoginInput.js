@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 const {width} = Dimensions.get('window');
 
 export default function Input(props) {
+  const {editable = true} = props;
   return (
     <View>
       <Text style={styles.label}>{props.label}</Text>
@@ -16,6 +17,7 @@ export default function Input(props) {
         style={{borderRadius: 10, elevation: 10}}>
         <Icon name={props.name} color="#fff" size={18} style={styles.icons} />
         <TextInput
+          editable={editable}
           autoCapitalize="none"
           placeholderTextColor="#ddd"
           placeholder={props.placeholder}

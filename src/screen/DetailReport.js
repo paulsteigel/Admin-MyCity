@@ -23,16 +23,33 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import TopLeftMenu from '../components/TopLeftMenu';
 import {useSelector, useDispatch} from 'react-redux';
 import {MARK_REPORTS_OUTDATED, UPDATE_POPUP_DATA} from '../redux/constants';
-
+import Popup from '../components/Popup';
+import moment from 'moment';
 const {width, height} = Dimensions.get('window');
-
+const HANDLE_STATUS = [
+  'Khởi tạo',
+  'Chuyển xử lý',
+  'Phân công xử lý',
+  'Đang xử lý',
+  'Đã phản hồi thông tin',
+  'Đã xác minh',
+  'Phản ánh bị trả lại',
+];
+const COLOR = [
+  '#8c9c8e',
+  '#777',
+  '#777',
+  '#e0db4a',
+  '#34eb46',
+  '#23cc77',
+  '#d43131',
+];
 const DetailReport = ({navigation, ...props}) => {
-  const {id} = props.route.params;
+  const {id, dropdownOptions} = props.route.params;
   const [imageView, setImageView] = useState({visible: false, index: 0});
   const [report, setReport] = useState(null);
   const [imageList, setImageList] = useState([]);
   const bottomSheet = useRef(null);
-  const [response, setResponse] = useState({});
   const dispatch = useDispatch();
 
   const {isDataOutdated, popBack} = useSelector(state => state.pendingReport);
@@ -48,7 +65,7 @@ const DetailReport = ({navigation, ...props}) => {
   }, [popBack]);
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <TopLeftMenu />,
+      headerRight: () => <TopLeftMenu dropdownOptions={dropdownOptions} />,
     });
     loadReport(isMounted.current);
     return () => (isMounted.current = false);
@@ -56,28 +73,24 @@ const DetailReport = ({navigation, ...props}) => {
 
   useEffect(() => {
     if (!isDataOutdated) return;
-    loadReport(true);
+    loadReport(isMounted.current);
     dispatch({type: MARK_REPORTS_OUTDATED, payload: {isDataOutdated: false}});
   }, [isDataOutdated]);
 
   const loadReport = async isMounted => {
     try {
-      console.log(id);
+      if (!isMounted) return;
       const res = await Axios.get(`${BASE_URL}/admin/feedbacks/${id}`);
+      // console.log('res', res.status, res.data);
       let imageList = res.data.images.map(item => ({
         source: {uri: `${BASE_URL}/images/${item.id}`},
       }));
       if (!isMounted) return;
-
       setReport(res.data);
       dispatch({type: UPDATE_POPUP_DATA, payload: res.data});
       setImageList(imageList);
-      const {data} = await Axios.get(`${BASE_URL}/feedback/${id}`);
-      console.log('data response', data.status);
-
-      setResponse(data);
     } catch (err) {
-      console.log('DetailReport', err);
+      console.log('DetailReport err', err);
     }
   };
 
@@ -101,7 +114,18 @@ const DetailReport = ({navigation, ...props}) => {
       <ScrollView>
         <View style={styles.header}>
           <Text style={styles.title}>{report.title}</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{...styles.location, flex: 1}}>
+              Lĩnh vực: {report.subArea}
+            </Text>
+            <Text style={styles.createdAt}>
+              {moment(report.createdAt).format('DD/MM/YYYY')}
+            </Text>
+          </View>
           <Text style={styles.location}>Địa điểm: {report.address}</Text>
+          <Text style={{color: COLOR[report.status], fontSize: 13}}>
+            Trạng thái {HANDLE_STATUS[report.status]}
+          </Text>
           <View style={styles.spacer} />
           <Text>{report.content}</Text>
         </View>
@@ -121,12 +145,12 @@ const DetailReport = ({navigation, ...props}) => {
             );
           })}
         </View>
-        {response.status === 4 ? (
+        {report.status === 4 ? (
           <View style={{paddingHorizontal: 5, paddingVertical: 10}}>
             <Text style={{opacity: 0.7, color: '#333'}}>
               Phản hồi từ chính quyền:
             </Text>
-            <Text style={{color: '#bf280d'}}>{response.description}</Text>
+            <Text style={{color: '#bf280d'}}>{report.description}</Text>
           </View>
         ) : null}
       </ScrollView>
@@ -138,6 +162,7 @@ const DetailReport = ({navigation, ...props}) => {
           />
         </View>
       ) : null}
+      <Popup feedbackId={id} />
       <BottomSheet
         // height={height * 0.23}
         duration={450}
@@ -228,6 +253,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     flex: 1,
   },
+
   bottomSheetTitle: {
     alignSelf: 'center',
     fontWeight: 'bold',
@@ -239,6 +265,11 @@ const styles = StyleSheet.create({
   location: {
     opacity: 0.5,
     fontSize: 13,
+  },
+  createdAt: {
+    fontSize: 12,
+    opacity: 0.5,
+    color: '#666',
   },
   spacer: {
     height: 20,

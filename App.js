@@ -6,7 +6,6 @@ import {BackHandler} from 'react-native';
 import moment from 'moment';
 import localization from 'moment/locale/vi';
 import SplashScreen from 'react-native-splash-screen';
-import Popup from './src/components/Popup';
 import LoadingModal from './src/components/LoadingModal';
 import LoadingScreen from './src/screen/LoadingScreen';
 import ErrorPopup from './src/components/ErrorPopup';
@@ -40,7 +39,6 @@ const App = () => {
     <NavigationContainer ref={navigationRef}>
       <StackNavigator />
       <ErrorPopup />
-      <Popup />
       <LoadingModal />
     </NavigationContainer>
   );

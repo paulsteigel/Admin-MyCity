@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import Axios from 'axios';
 import {LOGIN} from '../redux/constants';
 import {BASE_URL} from '../service';
+import SimpleToast from 'react-native-simple-toast';
 const {width, height} = Dimensions.get('window');
 
 function Login() {
@@ -25,6 +26,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const login = async () => {
+    if (username === '' || password === '') return;
     try {
       setLoading(true);
       const response = await Axios.post(BASE_URL + '/usersys/authenticate', {
@@ -37,7 +39,8 @@ function Login() {
       await AsyncStorage.setItem('user', JSON.stringify(user));
       dispatch({type: LOGIN, payload: user});
     } catch (e) {
-      Alert.alert('Sai tên đăng nhập hoặc mật khẩu');
+      if (e.status === 401) SimpleToast.show('Sai tên đăng nhập hoặc mật khẩu');
+      else SimpleToast.show('Có lỗi xảy ra');
       setPassword('');
       setLoading(false);
       console.log(e);
@@ -50,6 +53,7 @@ function Login() {
         <View>
           <Input
             label="Tài khoản"
+            editable={!loading}
             placeholder="Nhập tài khoản"
             name="user"
             onChangeText={setUsername}
@@ -57,6 +61,7 @@ function Login() {
           />
           <View style={{height: 20}} />
           <Input
+            editable={!loading}
             label="Mật khẩu"
             placeholder="Nhập mật khẩu"
             name="key"
@@ -64,7 +69,10 @@ function Login() {
             onChangeText={setPassword}
             value={password}
           />
-          <TouchableOpacity onPress={login} style={styles.btnLogin}>
+          <TouchableOpacity
+            disabled={loading}
+            onPress={login}
+            style={styles.btnLogin}>
             {!loading ? (
               <Text style={styles.txtLogin}>Đăng nhập</Text>
             ) : (

@@ -5,14 +5,19 @@ import {CLOSE_POPUP} from '../redux/constants';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ConfirmReport from './ConfirmReport';
-import UpdateFeedback from './UpdateFeedback';
+import PublicFeedback from './PublicFeedback';
+import AnonymizeUser from './AnonymizeUser';
 import VerifyFeedback from './VerifyFeedback';
 import QuickHandleFeedback from './QuickHandleFeedback';
 import ForwardFeedback from './ForwardFeedback';
 import ForwardHistory from './ForwardHistory';
 import HandleReport from '../components/HandleReport';
+import {
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 const {height, width} = Dimensions.get('window');
-const Popup = () => {
+const Popup = ({feedbackId}) => {
   const dispatch = useDispatch();
   const {
     report,
@@ -21,7 +26,6 @@ const Popup = () => {
     visible,
     popupId,
     popupTitle,
-    forwardHistory,
     fromScreen,
   } = useSelector(state => state.popup);
 
@@ -41,13 +45,15 @@ const Popup = () => {
       case 3:
         return <VerifyFeedback item={report} />;
       case 4:
-        return <UpdateFeedback item={report} />;
+        return <PublicFeedback item={report} />;
       case 5:
-        return <ForwardHistory data={forwardHistory} />;
+        return <ForwardHistory feedbackId={feedbackId} />;
       case 6:
         return <HandleReport item={report} id={fwid} />;
+      case 7:
+        return <AnonymizeUser item={report} />;
       default:
-        return <ConfirmReport />;
+        return <Text>Có lỗi xảy ra</Text>;
     }
   };
 
@@ -60,9 +66,13 @@ const Popup = () => {
       isVisible={visible}
       avoidKeyboard={true}>
       <View style={{...styles.container, maxHeight: height * 0.8}}>
+        {/* <TouchableOpacity
+          onPress={() => console.log('asd')}
+          containerStyle={styles.closeModalBtn}> */}
         <View style={styles.closeModalBtn}>
-          <Icon name="close" onPress={handleClose} size={18} />
+          <Icon onPress={() => console.log('asd')} name="close" size={20} />
         </View>
+        {/* </TouchableOpacity> */}
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{popupTitle}</Text>
         </View>
@@ -75,7 +85,7 @@ const Popup = () => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    width: width * 0.85,
+    width: width * 0.92,
     backgroundColor: '#fff',
     borderRadius: 20,
   },

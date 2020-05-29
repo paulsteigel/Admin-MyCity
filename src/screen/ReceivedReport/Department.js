@@ -41,7 +41,7 @@ function Agency() {
     let url = `${BASE_URL}/admin/feedbackforwards/department/newFeedbackForwards?limit=10&skip=${start}`;
     try {
       let res = await Axios.get(url);
-      console.log('department: ', res.data);
+      // console.log('department: ', res.data);
       if (!loadMore) setReports(res.data);
       else setReports(prevState => [...prevState, ...res.data]);
     } catch (error) {
@@ -75,8 +75,9 @@ function Agency() {
             onPress={() => {
               navigation.navigate('detailReport', {
                 id: item.feedback.id,
+                dropdownOptions: [4, 6, 5],
               });
-              dispatch({type: UPDATE_FWID, payload: item.fwid});
+              dispatch({type: UPDATE_FWID, payload: item.id});
             }}
           />
         )}
@@ -125,7 +126,7 @@ function Agency() {
               fontWeight: 'bold',
               paddingLeft: 20,
             }}>
-            Phản ánh tiếp nhận
+            Phản ánh cần xử lý
           </Text>
         </View>
       </View>

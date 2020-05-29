@@ -40,7 +40,7 @@ export default function ListItem(props) {
             </Text>
           </View>
           <View>
-            <Text style={styles.time}>Ngày chuyển</Text>
+            <Text style={styles.time}>Ngày trả lại</Text>
             <Text style={styles.time}>
               {moment(report.createdAt).format('DD/MM/YYYY')}
             </Text>

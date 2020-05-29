@@ -42,6 +42,15 @@ const Popup = ({feedbackId}) => {
             url={url}
           />
         );
+      case 8:
+        return (
+          <ForwardFeedback
+            screen={fromScreen}
+            item={report}
+            fwid={fwid}
+            url={url}
+          />
+        );
       case 3:
         return <VerifyFeedback item={report} />;
       case 4:

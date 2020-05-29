@@ -87,7 +87,7 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
     // });
     dispatch({type: CLOSE_POPUP});
     dispatch({type: OPEN_LOADING_MODAL});
-    Axios.post(url, {
+    const payload = {
       id: fwid,
       feedbackId: report.id,
       isPermit,
@@ -97,7 +97,8 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
       fileName,
       fileBase64,
       dateExpired,
-    })
+    };
+    Axios.post(url, payload)
       .then(res => {
         if (res.status == 200) {
           Toast.show('Chuyển phản ánh thành công', Toast.LONG);

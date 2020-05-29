@@ -32,6 +32,11 @@ const popupList = [
   },
   {id: 5, title: 'Lịch sử chuyển phản ánh'},
   {id: 6, title: 'Xử lý phản ánh'},
+  {
+    id: 8,
+    title: 'Chuyển phản ánh',
+    url: `${BASE_URL}/admin/feedbacks/forwardFeedbackToDepartment`,
+  },
 ];
 const TopLeftMenu = ({dropdownOptions}) => {
   const {user} = useSelector(state => state.user);

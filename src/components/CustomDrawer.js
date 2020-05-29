@@ -105,19 +105,20 @@ export default function CustomDrawerContent(props) {
           return null;
         })}
       </View>
-
-      <DrawerItem
-        label="Thông báo"
-        labelStyle={{
-          color: 'thong_bao' === currentItem ? '#35acdb' : '#666',
-        }}
-        onPress={() => {
-          const name = 'thong_bao';
-          setCurrentItem(name);
-          setHiddenDropdown(true);
-          props.navigation.navigate(name);
-        }}
-      />
+      {user.groupId !== 5 && (
+        <DrawerItem
+          label="Thông báo"
+          labelStyle={{
+            color: 'thong_bao' === currentItem ? '#35acdb' : '#666',
+          }}
+          onPress={() => {
+            const name = 'thong_bao';
+            setCurrentItem(name);
+            setHiddenDropdown(true);
+            props.navigation.navigate(name);
+          }}
+        />
+      )}
     </DrawerContentScrollView>
   );
 }

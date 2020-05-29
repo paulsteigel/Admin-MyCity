@@ -70,9 +70,9 @@ function Agency() {
             onPress={() => {
               navigation.navigate('detailReport', {
                 id: item.feedbackId,
-                dropdownOptions: [2, 4, 5],
+                dropdownOptions: [8, 4, 5],
               });
-              dispatch({type: UPDATE_FWID, payload: item.fwid});
+              dispatch({type: UPDATE_FWID, payload: item.id});
             }}
           />
         )}

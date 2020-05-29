@@ -38,8 +38,9 @@ export default function() {
   }, [isDataOutdated]);
 
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbackforwards/department/expiredFeedbackForwards?limit=10&skip=${start}`;
-    let res = await Axios.get(url);
+    const url = `${BASE_URL}/admin/feedbackforwards/department/expiredFeedbackForwards?limit=10&skip=${start}`;
+    const res = await Axios.get(url);
+    // console.log(res.data);
 
     if (!loadMore) setReports(res.data);
     else setReports(prevState => [...prevState, ...res.data]);
@@ -67,7 +68,10 @@ export default function() {
             onPress={() => {
               navigation.navigate('detailReport', {
                 id: item.feedbackId,
+                dropdownOptions: [5],
               });
+              console.log(item);
+
               dispatch({type: UPDATE_FWID, payload: item.fwid});
             }}
           />

@@ -9,14 +9,20 @@ function truncate(str, displayWords) {
 
   //   return '';
   // }
-  let result = str;
-  result = str.trim().split(' ');
-  if (result.length > displayWords) {
-    result = result.splice(0, displayWords);
-    return result.join(' ') + '...';
+  try {
+    let result = str;
+    result = str.trim().split(' ');
+    if (result.length > displayWords) {
+      result = result.splice(0, displayWords);
+      return result.join(' ') + '...';
+    }
+    return result.join(' ');
+  } catch (error) {
+    console.log('trim err:', error);
+    return '';
   }
-  return result.join(' ');
 }
+
 export default function ListItem(props) {
   const {user} = useSelector(state => state.user);
   const {report, onPress} = props;
@@ -34,15 +40,21 @@ export default function ListItem(props) {
         </View>
         <View style={styles.cardDescription}>
           <View>
-            <Text style={styles.time}>Hạn xử lý</Text>
+            <Text style={styles.time}>Ngày chuyển</Text>
             <Text style={styles.time}>
-              {moment(report.dateExpire).format('DD/MM/YYYY')}
+              {moment(report.dateCreate).format('DD/MM/YYYY')}
             </Text>
           </View>
           <View>
-            <Text style={styles.time}>Ngày chuyển</Text>
+            <Text style={styles.time}>Hạn xử lý</Text>
             <Text style={styles.time}>
-              {moment(report.createdAt).format('DD/MM/YYYY')}
+              {moment(report.dateExpired).format('DD/MM/YYYY')}
+            </Text>
+          </View>
+          <View style={{justifyContent: 'center'}}>
+            <Text style={styles.time}>
+              {`Chậm ${moment(report.dateExpired).diff(new Date(), 'day') *
+                -1} ngày`}
             </Text>
           </View>
         </View>
@@ -70,7 +82,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 
-  time: {fontSize: 12, color: '#999'},
+  time: {
+    fontSize: 12,
+    color: '#999',
+  },
   cardContent: {
     flex: 1,
     justifyContent: 'space-between',

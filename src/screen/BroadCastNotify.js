@@ -15,7 +15,7 @@ const BroadCastNotifi = ({navigation}) => {
   const [data, setData] = useState([]);
   const [dataPopup, setDataPopup] = useState({});
   const [isOpenPopup, setOpenPopup] = useState(false);
-  const [isRefesh, setRefesh] = useState(true);
+  const [isRefesh, setRefesh] = useState(false);
   const [sendNotifyPopup, setSendNotifyPopup] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -29,6 +29,7 @@ const BroadCastNotifi = ({navigation}) => {
     try {
       const res = await Axios.get(`${BASE_URL}/admin/notifications`);
       setData(res.data);
+      console.log('Thong bao cong dong', res.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -109,6 +110,11 @@ const BroadCastNotifi = ({navigation}) => {
           )}
           ItemSeparatorComponent={() => <View style={{height: 10}} />}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <View style={styles.center}>
+              <Text>Chưa có thông báo nào</Text>
+            </View>
+          )}
         />
       </View>
       <BroadCastPopup
@@ -144,25 +150,9 @@ function SectionListItem(props) {
               justifyContent: 'space-between',
             }}>
             {data.approved ? (
-              <Text
-                style={{
-                  borderRadius: 5,
-                  paddingHorizontal: 5,
-                  color: '#fff',
-                  backgroundColor: '#71ba51',
-                }}>
-                Hiển thị
-              </Text>
+              <Text style={styles.display}>Hiển thị</Text>
             ) : (
-              <Text
-                style={{
-                  borderRadius: 5,
-                  color: '#fff',
-                  paddingHorizontal: 5,
-                  backgroundColor: '#e84943',
-                }}>
-                Không hiển thị
-              </Text>
+              <Text style={styles.notDisplay}>Không hiển thị</Text>
             )}
             <Text
               style={{
@@ -193,6 +183,18 @@ function SectionListItem(props) {
 }
 
 const styles = StyleSheet.create({
+  notDisplay: {
+    borderRadius: 5,
+    color: '#fff',
+    paddingHorizontal: 5,
+    backgroundColor: '#e84943',
+  },
+  display: {
+    borderRadius: 5,
+    paddingHorizontal: 5,
+    color: '#fff',
+    backgroundColor: '#71ba51',
+  },
   iconStyle: {
     flex: 1,
     justifyContent: 'center',
@@ -244,6 +246,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     paddingLeft: 20,
+  },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
 });
 export default BroadCastNotifi;

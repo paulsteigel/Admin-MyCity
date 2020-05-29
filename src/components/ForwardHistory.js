@@ -5,18 +5,16 @@ import {
   Dimensions,
   Text,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import moment from 'moment';
 import {ScrollView} from 'react-native-gesture-handler';
 import SimpleToast from 'react-native-simple-toast';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  CLOSE_POPUP,
-  OPEN_LOADING_MODAL,
-  CLOSE_LOADING_MODAL,
-} from '../redux/constants';
+import {CLOSE_POPUP} from '../redux/constants';
 import Axios from 'axios';
 import {BASE_URL} from '../service';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 const {width} = Dimensions.get('window');
 
 const ForwardHistory = ({feedbackId}) => {
@@ -32,6 +30,7 @@ const ForwardHistory = ({feedbackId}) => {
     try {
       const res = await Axios.get(`${BASE_URL}/fbfw/${feedbackId}`);
       setData(res.data);
+      console.log('fbfw: ', res.data);
     } catch (error) {
       console.log(JSON.stringify(error));
       SimpleToast.show('Có lỗi xảy ra');
@@ -63,7 +62,20 @@ const ForwardHistory = ({feedbackId}) => {
                 {moment(item.dateCreate).format('DD/MM/YYYY')}
               </Text>
             </View>
-            <Text style={{color: '#999'}}>Chuyển phản ánh đến:</Text>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={{color: '#999', flex: 1}}>Chuyển phản ánh đến:</Text>
+              {item.filePath && (
+                <Icon
+                  name="attach-file"
+                  size={25}
+                  onPress={() => {
+                    const url = BASE_URL + item.filePath;
+                    Linking.openURL(url);
+                  }}
+                />
+              )}
+            </View>
             <Text style={styles.bold}>
               {item.departmentUpdateName || item.agencyIdUpdateName}
             </Text>
@@ -77,13 +89,15 @@ const ForwardHistory = ({feedbackId}) => {
 
 const styles = StyleSheet.create({
   card: {
-    elevation: 1,
     width: '100%',
     marginTop: 10,
     flex: 1,
     alignSelf: 'center',
     padding: 10,
     borderRadius: 10,
+    borderColor: '#aaa',
+    borderWidth: 1,
+    // backgroundColor: 'red',
   },
   bold: {
     flex: 1,

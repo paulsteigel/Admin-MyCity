@@ -90,7 +90,7 @@ export default function CustomDrawerContent(props) {
                 style={{
                   borderColor: item.name === currentItem ? '#35acdb' : '#eee',
                   borderBottomWidth: 1,
-                  marginLeft: 20,
+                  marginLeft: 35,
                 }}
                 labelStyle={{
                   color: item.name === currentItem ? '#35acdb' : '#666',

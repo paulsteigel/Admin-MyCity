@@ -4,18 +4,17 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import moment from 'moment';
 import {useSelector} from 'react-redux';
 function truncate(str, displayWords) {
-  // if (!str) {
-  //   console.log('rnoe');
-
-  //   return '';
-  // }
-  let result = str;
-  result = str.trim().split(' ');
-  if (result.length > displayWords) {
-    result = result.splice(0, displayWords);
-    return result.join(' ') + '...';
+  try {
+    let result = str;
+    result = str.trim().split(' ');
+    if (result.length > displayWords) {
+      result = result.splice(0, displayWords);
+      return result.join(' ') + '...';
+    }
+    return result.join(' ');
+  } catch (error) {
+    return '';
   }
-  return result.join(' ');
 }
 export default function ListItem(props) {
   const {user} = useSelector(state => state.user);
@@ -30,7 +29,7 @@ export default function ListItem(props) {
           </Text>
         </View>
         <View>
-          <Text style={styles.maincontent}>{report.message}</Text>
+          <Text style={styles.maincontent}>{truncate(report.message, 20)}</Text>
         </View>
         <View style={styles.cardDescription}>
           <View>

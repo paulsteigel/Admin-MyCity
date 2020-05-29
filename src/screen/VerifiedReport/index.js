@@ -14,6 +14,7 @@ import Axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
 import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../../redux/constants';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import SimpleToast from 'react-native-simple-toast';
 const {width, height} = Dimensions.get('window');
 
 function VerifiedReport({navigation, ...props}) {
@@ -36,13 +37,20 @@ function VerifiedReport({navigation, ...props}) {
   }, [isDataOutdated]);
 
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbacks/verifiedFeedbacks?limit=10&skip=${start}`;
-    let res = await Axios.get(url);
+    try {
+      let url = `${BASE_URL}/admin/feedbacks/verifiedFeedbacks?limit=10&skip=${start}`;
+      let res = await Axios.get(url);
 
-    if (!loadMore) setReports(res.data);
-    else setReports(prevState => [...prevState, ...res.data]);
-    setLoadMore(false);
-    setRefeshing(false);
+      if (!loadMore) setReports(res.data);
+      else setReports(prevState => [...prevState, ...res.data]);
+      setLoadMore(false);
+      setRefeshing(false);
+    } catch (error) {
+      console.log('verify feed back', JSON.stringify(error));
+      SimpleToast.show('Có lỗi xảy ra');
+      setLoadMore(false);
+      setRefeshing(false);
+    }
   };
   const handleRefresh = () => {
     setRefeshing(true);
@@ -65,6 +73,7 @@ function VerifiedReport({navigation, ...props}) {
               console.log('id', item.id);
               navigation.navigate('detailReport', {
                 id: item.id,
+                dropdownOptions: [2, 4, 7],
               });
               dispatch({type: UPDATE_FWID, payload: item.fwid});
             }}

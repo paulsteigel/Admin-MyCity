@@ -41,15 +41,21 @@ export default function ListItem(props) {
         </View>
         <View style={styles.cardDescription}>
           <View>
-            <Text style={styles.time}>Hạn xử lý</Text>
+            <Text style={styles.time}>Ngày chuyển</Text>
             <Text style={styles.time}>
-              {moment(report.dateExpire).format('DD/MM/YYYY')}
+              {moment(report.dateCreate).format('DD/MM/YYYY')}
             </Text>
           </View>
           <View>
-            <Text style={styles.time}>Ngày chuyển</Text>
+            <Text style={styles.time}>Hạn xử lý</Text>
             <Text style={styles.time}>
-              {moment(report.createdAt).format('DD/MM/YYYY')}
+              {moment(report.dateExpired).format('DD/MM/YYYY')}
+            </Text>
+          </View>
+          <View style={{justifyContent: 'center'}}>
+            <Text style={styles.time}>
+              {`Chậm ${moment(report.dateExpired).diff(new Date(), 'day') *
+                -1} ngày`}
             </Text>
           </View>
         </View>

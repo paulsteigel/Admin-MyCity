@@ -24,7 +24,9 @@ PushNotification.configure({
 
     if (notification.userInteraction || !notification.foreground) {
       setTimeout(() => {
-        navigate('detailReport', {id: feedbackId});
+        let option = [];
+
+        navigate('detailReport', {id: feedbackId, dropdownOptions: option});
       }, 100);
     }
   },

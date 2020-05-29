@@ -124,7 +124,7 @@ const DetailReport = ({navigation, ...props}) => {
           </View>
           <Text style={styles.location}>Địa điểm: {report.address}</Text>
           <Text style={{color: COLOR[report.status], fontSize: 13}}>
-            Trạng thái {HANDLE_STATUS[report.status]}
+            Trạng thái: {HANDLE_STATUS[report.status]}
           </Text>
           <View style={styles.spacer} />
           <Text>{report.content}</Text>

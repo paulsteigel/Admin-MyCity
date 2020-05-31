@@ -57,7 +57,7 @@ export default function ListItem(props) {
             </>
           ) : (
             <>
-              <Text style={styles.time}>Trạng thái: {report.status} </Text>
+              <Text style={styles.time}>Trạng thái: Khởi tạo</Text>
               <Text style={styles.time}>
                 {moment(report.createdAt).fromNow()}
               </Text>

@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   Image,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
@@ -39,8 +38,7 @@ function Login() {
       await AsyncStorage.setItem('user', JSON.stringify(user));
       dispatch({type: LOGIN, payload: user});
     } catch (e) {
-      if (e.status === 401) SimpleToast.show('Sai tên đăng nhập hoặc mật khẩu');
-      else SimpleToast.show('Có lỗi xảy ra');
+      SimpleToast.show('Sai tên đăng nhập hoặc mật khẩu');
       setPassword('');
       setLoading(false);
       console.log(e);

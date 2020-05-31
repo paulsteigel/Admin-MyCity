@@ -65,7 +65,7 @@ const ForwardHistory = ({feedbackId}) => {
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={{color: '#999', flex: 1}}>Chuyển phản ánh đến:</Text>
-              {item.filePath && (
+              {item.filePath ? (
                 <Icon
                   name="attach-file"
                   size={25}
@@ -74,7 +74,7 @@ const ForwardHistory = ({feedbackId}) => {
                     Linking.openURL(url);
                   }}
                 />
-              )}
+              ) : null}
             </View>
             <Text style={styles.bold}>
               {item.departmentUpdateName || item.agencyIdUpdateName}

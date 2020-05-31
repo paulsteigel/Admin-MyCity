@@ -88,11 +88,11 @@ const BroadCastNotifi = ({navigation}) => {
         <View style={{flex: 1}}>
           <Text style={styles.headerText}>Thông báo cộng đồng</Text>
         </View>
-        {/* <TouchableOpacity
+        <TouchableOpacity
           onPress={createNotificationGroup}
           containerStyle={styles.createButton}>
           <Icon name="plus" size={30} color="#fff" />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
       <View style={styles.container}>
         <FlatList

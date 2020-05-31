@@ -87,6 +87,8 @@ const DetailReport = ({navigation, ...props}) => {
       }));
       if (!isMounted) return;
       setReport(res.data);
+      // console.log(res.data);
+
       dispatch({type: UPDATE_POPUP_DATA, payload: res.data});
       setImageList(imageList);
     } catch (err) {
@@ -116,7 +118,7 @@ const DetailReport = ({navigation, ...props}) => {
           <Text style={styles.title}>{report.title}</Text>
           <View style={{flexDirection: 'row'}}>
             <Text style={{...styles.location, flex: 1}}>
-              Lĩnh vực: {report.subArea}
+              Lĩnh vực: {report.subject.subArea}
             </Text>
             <Text style={styles.createdAt}>
               {moment(report.createdAt).format('DD/MM/YYYY')}

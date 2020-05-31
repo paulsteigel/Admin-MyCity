@@ -43,8 +43,8 @@ function BodyArea({data, refeshFunc, handleClose}) {
   const [title, setTitle] = useState(data.title);
   const [description, setDescription] = useState(data.description);
   const [content, setContent] = useState(data.content);
-  const dispatch = useDispatch();
   const [approved, setApproved] = useState(data.approved || false);
+  const dispatch = useDispatch();
   const handleSubmit = async () => {
     if (!validInput()) {
       SimpleToast.show('Dữ liệu không hợp lệ');
@@ -77,35 +77,37 @@ function BodyArea({data, refeshFunc, handleClose}) {
     return true;
   };
 
-  // const createGroup = async () => {
-  //   if (!validInput()) {
-  //     SimpleToast.show('Dữ liệu không hợp lệ');
-  //     return;
-  //   }
-  //   try {
-  //     const payload = {
-  //       description,
-  //       content,
-  //       approved,
-  //       title,
-  //     };
-  //     handleClose();
-  //     dispatch({type: OPEN_LOADING_MODAL});
-  //     const res = await Axios.post(
-  //       `${BASE_URL}/admin/notificationGroups`,
-  //       payload,
-  //     );
-  //     refeshFunc();
-  //     SimpleToast.show('Đã tạo nhóm thành công');
+  const createGroup = async () => {
+    if (!validInput()) {
+      SimpleToast.show('Dữ liệu không hợp lệ');
+      return;
+    }
 
-  //     console.log(res.data);
-  //   } catch (error) {
-  //     SimpleToast.show('Có lỗi xảy ra');
-  //     console.log('[create Notification Group] err', error);
-  //   } finally {
-  //     dispatch({type: CLOSE_LOADING_MODAL});
-  //   }
-  // };
+    try {
+      const paragraphingContent = content
+        .split('\n')
+        .map(item => `<p>${item}</p>`)
+        .join('\n');
+      const payload = {
+        description,
+        approved,
+        title,
+        content: paragraphingContent,
+      };
+      handleClose();
+      dispatch({type: OPEN_LOADING_MODAL});
+      const res = await Axios.post(`${BASE_URL}/admin/notifications`, payload);
+      refeshFunc();
+      SimpleToast.show('Đã tạo nhóm thành công');
+
+      console.log(res.data);
+    } catch (error) {
+      SimpleToast.show('Có lỗi xảy ra');
+      console.log('[create Notification Group] err', error);
+    } finally {
+      dispatch({type: CLOSE_LOADING_MODAL});
+    }
+  };
   return (
     <>
       <View style={styles.body}>
@@ -121,13 +123,17 @@ function BodyArea({data, refeshFunc, handleClose}) {
           placeholder="Mô tả"
           value={description}
         />
-        <PopupRow
-          value={content}
-          onChangeText={setContent}
-          label="Nội dung"
-          placeholder="Nội dung"
-          multiline
-        />
+
+        {data.popupTitle === 'Cập nhật' ? null : (
+          <PopupRow
+            value={content}
+            onChangeText={setContent}
+            label="Nội dung"
+            placeholder="Nội dung"
+            multiline
+          />
+        )}
+
         <View
           style={{
             alignItems: 'center',

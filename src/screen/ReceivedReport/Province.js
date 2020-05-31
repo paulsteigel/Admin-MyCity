@@ -41,7 +41,7 @@ function Agency() {
     try {
       let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
       let res = await Axios.get(url);
-      // console.log('provinceL ', res.data);
+      console.log('provinceL ', res.data);
 
       if (!loadMore) setReports(res.data);
       else setReports(prevState => [...prevState, ...res.data]);

@@ -5,11 +5,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import PopupRow from './PopupRow';
 import Axios from 'axios';
 import {BASE_URL} from '../service';
-import {Switch} from 'react-native-gesture-handler';
+import {Switch, ScrollView} from 'react-native-gesture-handler';
 import SimpleToast from 'react-native-simple-toast';
 import {useDispatch} from 'react-redux';
 import {OPEN_LOADING_MODAL, CLOSE_LOADING_MODAL} from '../redux/constants';
-
+import HTML from 'react-native-render-html';
 const {width, height} = Dimensions.get('window');
 const BroadCastPopup = props => {
   const {visible, handleClose, refeshFunc, data} = props;
@@ -110,7 +110,7 @@ function BodyArea({data, refeshFunc, handleClose}) {
   };
   return (
     <>
-      <View style={styles.body}>
+      <ScrollView style={styles.body}>
         <PopupRow
           onChangeText={setTitle}
           label="Tiêu đề"
@@ -124,7 +124,12 @@ function BodyArea({data, refeshFunc, handleClose}) {
           value={description}
         />
 
-        {data.popupTitle === 'Cập nhật' ? null : (
+        {data.popupTitle === 'Cập nhật' ? (
+          <View style={styles.htmlView}>
+            <Text>Nội dung</Text>
+            <HTML html={content} imagesMaxWidth={width * 0.85 - 30} />
+          </View>
+        ) : (
           <PopupRow
             value={content}
             onChangeText={setContent}
@@ -148,7 +153,7 @@ function BodyArea({data, refeshFunc, handleClose}) {
             onValueChange={setApproved}
           />
         </View>
-      </View>
+      </ScrollView>
       <View style={{padding: 15, paddingBottom: 20}}>
         {data.popupTitle === 'Cập nhật' ? (
           <Button onPress={handleSubmit} title="cập nhật" />
@@ -174,6 +179,10 @@ const styles = StyleSheet.create({
   label: {
     flex: 1,
   },
+  htmlView: {
+    marginTop: 10,
+    paddingHorizontal: 15,
+  },
   titleContainer: {
     paddingVertical: 10,
     width: '90%',
@@ -194,7 +203,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   body: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 5,
   },
   row: {
     flexDirection: 'row',

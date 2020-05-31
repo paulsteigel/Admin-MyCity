@@ -49,14 +49,14 @@ const BroadCastNotifi = ({navigation}) => {
         onPress: async () => {
           try {
             dispatch({type: OPEN_LOADING_MODAL});
-            const res = await Axios.delete(
-              `${BASE_URL}/admin/notificationGroups/${item.id}`,
+            const res = await Axios.post(
+              `${BASE_URL}/admin/notifications/delete/${item.id}`,
             );
             getNotificationGroup();
             SimpleToast.show('Đã xóa nhóm thông báo');
           } catch (err) {
             SimpleToast.show('Có lỗi xảy ra');
-            console.log('Logout Err', err);
+            // console.log('Logout Err', err);
           } finally {
             dispatch({type: CLOSE_LOADING_MODAL});
           }
@@ -66,7 +66,7 @@ const BroadCastNotifi = ({navigation}) => {
   };
   const createNotificationGroup = () => {
     setOpenPopup(true);
-    setDataPopup({popupTitle: 'Tạo nhóm thông báo'});
+    setDataPopup({popupTitle: 'Tạo thông báo cộng đồng'});
   };
   const closePopup = () => {
     setOpenPopup(false);

@@ -4,7 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
 // import Dashboard from './Dashboard';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-// import HandleReport from './HandleReport';
+import HandledReport from './HandledReport';
 import RecivedReports from './ReceivedReport';
 import CustomDrawerContent from '../components/CustomDrawer';
 import '../service/NotifiService';
@@ -61,11 +61,11 @@ const screens = [
   //   options: {title: 'Phản ánh chưa chuyển'},
   // },
 
-  // {
-  //   component: HandleReport,
-  //   name: 'phan_anh_xu_ly',
-  //   options: {title: 'Danh sách phản ánh xử lý'},
-  // },
+  {
+    component: HandledReport,
+    name: 'phan_anh_da_xu_ly',
+    options: {title: 'Đã xử lý'},
+  },
   // {
   //   component: ReturnedReport,
   //   name: 'returnedReport',
@@ -93,6 +93,9 @@ function DrawerNavigator() {
       'phan_anh_tra_lai',
       'phan_anh_qua_han',
     );
+  }
+  if (user.groupId != 5) {
+    hiddenScreens.push('phan_anh_da_xu_ly');
   }
   return (
     <Drawer.Navigator

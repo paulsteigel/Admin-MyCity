@@ -24,6 +24,12 @@ const ForwardHistory = ({feedbackId}) => {
   useEffect(() => {
     getFbfw();
   }, []);
+  const getName = filePath => {
+    const arr = filePath.split('/');
+    const length = arr.length;
+    if (arr[length - 1].length < 15) return arr[length - 1];
+    else return `...${arr[length - 1].split('.').reverse()[0]}`;
+  };
   const getFbfw = async () => {
     // setLoading(true);
     // dispatch({type: OPEN_LOADING_MODAL});
@@ -64,21 +70,31 @@ const ForwardHistory = ({feedbackId}) => {
             </View>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={{color: '#999', flex: 1}}>Chuyển phản ánh đến:</Text>
+              <View style={{flex: 1}}>
+                <Text style={{color: '#999', flex: 1}}>
+                  Chuyển phản ánh đến:
+                </Text>
+                <Text style={styles.bold}>
+                  {item.departmentUpdateName || item.agencyIdUpdateName}
+                </Text>
+              </View>
               {item.filePath ? (
-                <Icon
-                  name="attach-file"
-                  size={25}
-                  onPress={() => {
-                    const url = BASE_URL + item.filePath;
-                    Linking.openURL(url);
-                  }}
-                />
+                <View>
+                  <Icon
+                    name="attach-file"
+                    size={25}
+                    onPress={() => {
+                      const url = BASE_URL + item.filePath;
+                      Linking.openURL(url);
+                    }}
+                  />
+                  <Text style={{fontSize: 12, color: '#666'}}>
+                    {getName(item.filePath)}
+                  </Text>
+                </View>
               ) : null}
             </View>
-            <Text style={styles.bold}>
-              {item.departmentUpdateName || item.agencyIdUpdateName}
-            </Text>
+
             <Text style={{marginTop: 10}}>{item.message}</Text>
           </View>
         ))}

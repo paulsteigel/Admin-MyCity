@@ -8,17 +8,12 @@ import {
   View,
   Dimensions,
 } from 'react-native';
-import Toast from 'react-native-simple-toast';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {BASE_URL} from '../service';
 import Axios from 'axios';
 import HandledCard from '../components/HandledCard';
 import {useDispatch} from 'react-redux';
-import {
-  OPEN_LOADING_MODAL,
-  CLOSE_LOADING_MODAL,
-  OPEN_POPUP_DATA,
-  OPEN_FORWARD_HISTORY,
-} from '../redux/constants';
+
 const {width, height} = Dimensions.get('window');
 function HandledReport({navigation, ...props}) {
   const [loadMore, setLoadMore] = useState(true);
@@ -44,21 +39,6 @@ function HandledReport({navigation, ...props}) {
     loadFeedBack(0);
   };
 
-  const viewForwardHistory = async id => {
-    try {
-      dispatch({type: OPEN_LOADING_MODAL, payload: 'loading'});
-      const res = await Axios.get(`${BASE_URL}/fbfw/${id}`);
-
-      dispatch({
-        type: OPEN_FORWARD_HISTORY,
-        payload: {forwardHistory: res.data, height: height / 2},
-      });
-    } catch (error) {
-      Toast.show('Có lỗi xảy ra');
-    } finally {
-      dispatch({type: CLOSE_LOADING_MODAL});
-    }
-  };
   const renderList = () => {
     return (
       <FlatList
@@ -70,7 +50,15 @@ function HandledReport({navigation, ...props}) {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
-          <HandledCard viewForwardHistory={viewForwardHistory} item={item} />
+          <HandledCard
+            onPress={() => {
+              navigation.navigate('detailReport', {
+                id: item.feedbackId,
+                dropdownOptions: [5],
+              });
+            }}
+            item={item}
+          />
         )}
         ItemSeparatorComponent={() => (
           <View style={{width: width, height: 10}} />
@@ -94,8 +82,35 @@ function HandledReport({navigation, ...props}) {
       </View>
     );
   return (
-    <View style={{flex: 1, paddingHorizontal: 5}}>
-      {renderList()}
+    <View style={{flex: 1}}>
+      {/* header */}
+      <View
+        style={{
+          height: 60,
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: '#018037',
+        }}>
+        <Icon
+          style={{color: '#fff', paddingLeft: 20}}
+          onPress={() => navigation.toggleDrawer()}
+          size={30}
+          name="menu"
+        />
+        <View style={{flex: 1}}>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 18,
+              fontWeight: 'bold',
+              paddingLeft: 20,
+            }}>
+            Phản ánh đã xử lý
+          </Text>
+        </View>
+      </View>
+      {/* end of header */}
+      <View style={{paddingHorizontal: 5}}>{renderList()}</View>
       <View style={{position: 'relative'}}>
         {loadMore ? (
           <ActivityIndicator

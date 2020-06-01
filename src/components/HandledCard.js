@@ -12,72 +12,38 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const litmitStr = str => {
-  if (!str) return '';
-  const numberOfWords = 20;
-  const res = str.split(' ');
-  if (res.length < numberOfWords) return res.join(' ');
-  return res.slice(0, numberOfWords - 1).join(' ') + '...';
+  try {
+    const numberOfWords = 20;
+    const res = str.split(' ');
+    if (res.length < numberOfWords) return res.join(' ');
+    return res.slice(0, numberOfWords - 1).join(' ') + '...';
+  } catch (error) {
+    return '';
+  }
 };
 
 export default function HandledCard({
   viewForwardHistory,
   handleable,
   handleReport,
+  onPress,
   ...props
 }) {
-  const {feedbackId, message, dateExpired, id, dateCreate} = props.item;
+  const {message, dateExpired, dateCreate} = props.item;
   const title = props.item.feedback.title;
-  const navigation = useNavigation();
-  const handleNavigate = () => {
-    navigation.navigate('detailReport', {id: feedbackId});
-  };
-
   return (
     <View style={styles.Item}>
-      <TouchableOpacity onPress={handleNavigate}>
+      <TouchableOpacity onPress={onPress}>
         <Text style={styles.title}>Tiêu đề: {title}</Text>
         <Text style={styles.message}>Ghi chú: {litmitStr(message)}</Text>
       </TouchableOpacity>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <View>
-          <Text style={styles.time}>
-            Ngày gửi: {moment(dateCreate).format('DD/MM/YYYY')}
-          </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={styles.time}>Hạn xử lý: </Text>
-            <Text
-              style={{
-                ...styles.time,
-                color:
-                  moment(dateExpired).diff(new Date(), 'days') < 0
-                    ? '#de6a6a'
-                    : '#000',
-              }}>
-              {moment(dateExpired).format('DD/MM/YYYY')}
-            </Text>
-          </View>
-        </View>
-        <Menu>
-          <MenuTrigger
-            customStyles={{TriggerTouchableComponent: TouchableOpacity}}>
-            <Icon name="dots-vertical" size={25} />
-          </MenuTrigger>
-          <MenuOptions>
-            {handleable ? (
-              <MenuOption
-                style={styles.button}
-                text="Xử lý phản ánh"
-                onSelect={() => handleReport(feedbackId, id)}
-              />
-            ) : null}
-
-            <MenuOption
-              style={styles.button}
-              text="Lịch sử chuyển"
-              onSelect={() => viewForwardHistory(feedbackId)}
-            />
-          </MenuOptions>
-        </Menu>
+        <Text style={styles.time}>
+          Hạn xử lý: {moment(dateExpired).format('DD/MM/YYYY')}
+        </Text>
+        <Text style={styles.time}>
+          Ngày xử lý: {moment(dateCreate).format('DD/MM/YYYY')}
+        </Text>
       </View>
     </View>
   );

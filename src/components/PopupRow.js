@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, StyleSheet} from 'react-native';
+import {View, Text, TextInput, Platform, StyleSheet} from 'react-native';
 // import TextInput from './TextInputOutlined';
 
 const COLOR_UNFOCUSED = '#c5b4b8';
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   textInput: {
+    paddingVertical: Platform.OS === 'ios' ? 10 : 0,
     borderWidth: 1,
     alignSelf: 'stretch',
     textAlignVertical: 'top',

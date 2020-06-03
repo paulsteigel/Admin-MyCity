@@ -83,6 +83,7 @@ const QuickHandleFeedback = ({item}) => {
               borderWidth: 1,
               textAlignVertical: 'top',
               borderRadius: 10,
+              paddingVertical: Platform.OS === 'ios' ? 10 : 0,
             }}
             multiline
             numberOfLines={5}

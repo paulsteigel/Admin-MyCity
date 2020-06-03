@@ -65,7 +65,11 @@ const DetailReport = ({navigation, ...props}) => {
   }, [popBack]);
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <TopLeftMenu dropdownOptions={dropdownOptions} />,
+      headerRight: () => (
+        <View style={styles.topMenu}>
+          <TopLeftMenu dropdownOptions={dropdownOptions} />
+        </View>
+      ),
     });
     loadReport(isMounted.current);
     return () => (isMounted.current = false);
@@ -295,5 +299,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   handleHistory: {},
+  topMenu: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 export default DetailReport;

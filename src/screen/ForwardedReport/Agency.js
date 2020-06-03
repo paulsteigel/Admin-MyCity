@@ -15,6 +15,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {MARK_REPORTS_OUTDATED, UPDATE_FWID} from '../../redux/constants';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 const {width, height} = Dimensions.get('window');
 
 function Agency() {
@@ -95,7 +96,7 @@ function Agency() {
       </View>
     );
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       {/* header */}
       <View
         style={{
@@ -135,7 +136,7 @@ function Agency() {
           ) : null}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 export default Agency;

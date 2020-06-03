@@ -13,6 +13,7 @@ import {BASE_URL} from '../service';
 import Axios from 'axios';
 import HandledCard from '../components/HandledCard';
 import {useDispatch} from 'react-redux';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const {width, height} = Dimensions.get('window');
 function HandledReport({navigation, ...props}) {
@@ -82,7 +83,7 @@ function HandledReport({navigation, ...props}) {
       </View>
     );
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       {/* header */}
       <View
         style={{
@@ -120,7 +121,7 @@ function HandledReport({navigation, ...props}) {
           />
         ) : null}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 export default HandledReport;

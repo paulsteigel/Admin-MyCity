@@ -161,7 +161,7 @@ export default function StackNavigator() {
       />
       <Stack.Screen
         name="__drawer__"
-        options={{headerShown: false}}
+        options={{headerShown: false, title: ''}}
         component={DrawerNavigator}
       />
     </Stack.Navigator>

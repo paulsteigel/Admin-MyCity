@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Dimensions,
   Button,
-  TextInput,
   TouchableWithoutFeedback,
   Platform,
 } from 'react-native';
@@ -13,7 +12,7 @@ import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PopupRow from './PopupRow';
 import Axios from 'axios';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 import {BASE_URL} from '../service';
 import {Switch, ScrollView} from 'react-native-gesture-handler';
 import SimpleToast from 'react-native-simple-toast';
@@ -92,14 +91,12 @@ function BodyArea({data, refeshFunc, handleClose}) {
     if (description && content && title) return true;
     return false;
   };
-  const onChange = (event, selectedDate) => {
+  const onChange = (date, selectedDate) => {
     try {
-      let currentDate = selectedDate || expiredDate;
-      setShow(Platform.OS === 'ios');
-      setExpiredDate(currentDate);
+      setShow(false);
+      setExpiredDate(date);
     } catch (error) {
       console.log('err date', error);
-      alert('err', error);
     }
   };
   const createGroup = async () => {
@@ -169,23 +166,26 @@ function BodyArea({data, refeshFunc, handleClose}) {
           <Text>Ngày hết hạn</Text>
           <TouchableWithoutFeedback onPress={() => setShow(true)}>
             <View>
-              <TextInput
-                placeholder={moment(expiredDate).format('DD/MM/YYYY')}
-                editable={false}
-                onb
-                style={{borderColor: '#eee', borderWidth: 1, borderRadius: 5}}
-              />
+              <Text
+                style={{
+                  borderColor: '#eee',
+                  borderWidth: 1,
+                  paddingVertical: 10,
+                  borderRadius: 5,
+                  paddingLeft: 10,
+                }}>
+                {moment(expiredDate).format('DD/MM/YYYY')}
+              </Text>
             </View>
           </TouchableWithoutFeedback>
-          {show && (
-            <DateTimePicker
-              minimumDate={new Date()}
-              timeZoneOffsetInMinutes={0}
-              value={expiredDate}
-              mode="date"
-              onChange={onChange}
-            />
-          )}
+          <DateTimePicker
+            isVisible={show}
+            minimumDate={new Date()}
+            date={expiredDate}
+            mode="date"
+            onConfirm={onChange}
+            onCancel={() => setShow(false)}
+          />
         </View>
         <View
           style={{
@@ -193,6 +193,7 @@ function BodyArea({data, refeshFunc, handleClose}) {
             paddingHorizontal: 15,
             flexDirection: 'row',
             paddingTop: 10,
+            justifyContent: 'space-between',
           }}>
           <Text>Trạng thái</Text>
           <Switch

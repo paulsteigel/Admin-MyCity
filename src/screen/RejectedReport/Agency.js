@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import {BASE_URL} from '../../service';
 import ListItem from './ListItem';
@@ -96,7 +97,7 @@ function Agency() {
       </View>
     );
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       {/* header */}
       <View
         style={{
@@ -136,7 +137,7 @@ function Agency() {
           ) : null}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 export default Agency;

@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import {BASE_URL} from '../../service';
 import ListItem from './ListItem';
@@ -95,7 +96,7 @@ export default function() {
       </View>
     );
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       {/* header */}
       <View
         style={{
@@ -135,6 +136,6 @@ export default function() {
           ) : null}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

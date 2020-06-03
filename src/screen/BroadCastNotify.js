@@ -11,6 +11,7 @@ import {OPEN_LOADING_MODAL, CLOSE_LOADING_MODAL} from '../redux/constants';
 import SimpleToast from 'react-native-simple-toast';
 import BroadCastPopup from '../components/BroadCastPopup';
 import SendNotificationGroupPopup from '../components/SendNotificationPopup';
+import {SafeAreaView} from 'react-native-safe-area-context';
 const BroadCastNotifi = ({navigation}) => {
   const [data, setData] = useState([]);
   const [dataPopup, setDataPopup] = useState({});
@@ -77,7 +78,7 @@ const BroadCastNotifi = ({navigation}) => {
     console.log('send notify', data.title);
   };
   return (
-    <View>
+    <SafeAreaView>
       <View style={styles.headerContainer}>
         <MaterialIcons
           style={{color: '#fff', paddingLeft: 20}}
@@ -128,7 +129,7 @@ const BroadCastNotifi = ({navigation}) => {
         visible={sendNotifyPopup}
         data={dataPopup}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 function SectionListItem(props) {

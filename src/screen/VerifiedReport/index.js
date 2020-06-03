@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import {BASE_URL} from '../../service';
 import ListItem from './ListItem';
@@ -101,7 +102,7 @@ function VerifiedReport({navigation, ...props}) {
       </View>
     );
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       {/* header */}
       <View
         style={{
@@ -141,7 +142,7 @@ function VerifiedReport({navigation, ...props}) {
           ) : null}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 export default VerifiedReport;

@@ -31,10 +31,13 @@ const App = () => {
   useEffect(SplashScreen.hide, []);
   useEffect(preventBackButtonWhileLoading, [loadingModal.visible]);
 
-  if (user.isLoading) return <LoadingScreen />;
+  if (user.isLoading) {
+    return <LoadingScreen />;
+  }
 
-  if (!user.user) return <Login />;
-
+  if (!user.user) {
+    return <Login />;
+  }
   return (
     <NavigationContainer ref={navigationRef}>
       <StackNavigator />

@@ -6,11 +6,12 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Button,
+  TouchableOpacity,
 } from 'react-native';
 import {TextInput, Switch, ScrollView} from 'react-native-gesture-handler';
 import DepartmentPicker from './DepartmentPicker';
 import AgencyPicker from './AgencyPicker';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 import DocumentPicker from 'react-native-document-picker';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -120,11 +121,10 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
       });
   };
 
-  const onChange = (event, selectedDate) => {
+  const onChange = date => {
     try {
-      let currentDate = selectedDate || dateExpired;
-      setShow(Platform.OS === 'ios');
-      setDateExpired(currentDate);
+      setShow(false);
+      setDateExpired(date);
     } catch (error) {
       console.log('err date', error);
     }
@@ -224,6 +224,8 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
                 borderWidth: 1,
                 textAlignVertical: 'top',
                 borderRadius: 10,
+                paddingVertical: 15,
+                paddingHorizontal: 10,
               }}
               multiline
               numberOfLines={5}
@@ -231,27 +233,35 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
             />
           </View>
           <View style={{paddingTop: 10}}>
-            <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-              Thời hạn xử lý
-            </Text>
-            <TouchableWithoutFeedback onPress={() => setShow(true)}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setShow(true);
+                console.log('cloasdj');
+              }}>
               <View>
-                <TextInput
-                  style={{borderColor: '#eee', borderWidth: 1}}
-                  editable={false}
-                  value={moment(dateExpired).format('DD/MM/YYYY')}
-                />
+                <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                  Thời hạn xử lý
+                </Text>
+                <Text
+                  style={{
+                    borderColor: '#eee',
+                    borderWidth: 1,
+                    paddingVertical: 10,
+                    borderRadius: 5,
+                    paddingLeft: 10,
+                  }}>
+                  {moment(dateExpired).format('DD/MM/YYYY')}
+                </Text>
               </View>
             </TouchableWithoutFeedback>
-            {show && (
-              <DateTimePicker
-                minimumDate={new Date()}
-                timeZoneOffsetInMinutes={0}
-                value={dateExpired}
-                mode="date"
-                onChange={onChange}
-              />
-            )}
+            <DateTimePicker
+              isVisible={show}
+              minimumDate={new Date()}
+              date={dateExpired}
+              mode="date"
+              onConfirm={onChange}
+              onCancel={() => setShow(false)}
+            />
           </View>
         </View>
       </ScrollView>
@@ -263,7 +273,7 @@ const ForwardFeedback = ({fwid, screen, item, url}) => {
           borderTopWidth: 1,
           paddingVertical: 10,
         }}>
-        <Button title="Lưu" color="green" onPress={handleSubmit} />
+        <Button title="Chuyển" color="green" onPress={handleSubmit} />
       </View>
     </>
   );

@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import {BASE_URL} from '../../service';
 import ListItem from './ListItem';
@@ -41,7 +42,7 @@ function Agency() {
     try {
       let url = `${BASE_URL}/admin/feedbacks/pendingFeedbacks?limit=10&skip=${start}`;
       let res = await Axios.get(url);
-      console.log('provinceL ', res.data);
+      // console.log('provinceL ', res.data);
 
       if (!loadMore) setReports(res.data);
       else setReports(prevState => [...prevState, ...res.data]);
@@ -100,7 +101,7 @@ function Agency() {
       </View>
     );
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       {/* header */}
       <View
         style={{
@@ -140,7 +141,7 @@ function Agency() {
           ) : null}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 export default Agency;

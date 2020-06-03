@@ -7,7 +7,7 @@ import Axios from 'axios';
 import {BASE_URL} from '.';
 PushNotification.configure({
   onRegister: function({token}) {
-    console.log(token);
+    console.log( "TOken: ",token);
 
     store.dispatch({type: ONREGISTER_FIREBASE, payload: token});
     AsyncStorage.getItem('user').then(value => {

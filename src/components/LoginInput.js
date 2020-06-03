@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import {View, Text, StyleSheet, Platform, Dimensions} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     width: width - 100,
     paddingLeft: 50,
     color: '#fff',
+    paddingVertical: Platform.OS === 'ios' ? 20 : 0,
   },
   label: {
     textAlign: 'left',

@@ -1,15 +1,26 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Dimensions, Button} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Button,
+  TextInput,
+  TouchableWithoutFeedback,
+  Platform,
+} from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PopupRow from './PopupRow';
 import Axios from 'axios';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {BASE_URL} from '../service';
 import {Switch, ScrollView} from 'react-native-gesture-handler';
 import SimpleToast from 'react-native-simple-toast';
 import {useDispatch} from 'react-redux';
 import {OPEN_LOADING_MODAL, CLOSE_LOADING_MODAL} from '../redux/constants';
 import HTML from 'react-native-render-html';
+import moment from 'moment';
 const {width, height} = Dimensions.get('window');
 const BroadCastPopup = props => {
   const {visible, handleClose, refeshFunc, data} = props;
@@ -40,11 +51,14 @@ const BroadCastPopup = props => {
   );
 };
 function BodyArea({data, refeshFunc, handleClose}) {
-  const [title, setTitle] = useState(data.title);
-  const [description, setDescription] = useState(data.description);
-  const [content, setContent] = useState(data.content);
+  const [title, setTitle] = useState(data.title || '');
+  const [description, setDescription] = useState(data.description || '');
+  const [content, setContent] = useState(data.content || '');
   const [approved, setApproved] = useState(data.approved || false);
+  const [expiredDate, setExpiredDate] = useState(new Date());
+  const [show, setShow] = useState(false);
   const dispatch = useDispatch();
+
   const handleSubmit = async () => {
     if (!validInput()) {
       SimpleToast.show('Dữ liệu không hợp lệ');
@@ -56,7 +70,9 @@ function BodyArea({data, refeshFunc, handleClose}) {
         content,
         approved,
         title,
+        expriedDate: expiredDate,
       };
+
       handleClose();
       dispatch({type: OPEN_LOADING_MODAL});
       const res = await Axios.post(
@@ -73,16 +89,24 @@ function BodyArea({data, refeshFunc, handleClose}) {
     }
   };
   const validInput = () => {
-    if (description === '' || content === '' || title === '') return false;
-    return true;
+    if (description && content && title) return true;
+    return false;
   };
-
+  const onChange = (event, selectedDate) => {
+    try {
+      let currentDate = selectedDate || expiredDate;
+      setShow(Platform.OS === 'ios');
+      setExpiredDate(currentDate);
+    } catch (error) {
+      console.log('err date', error);
+      alert('err', error);
+    }
+  };
   const createGroup = async () => {
     if (!validInput()) {
       SimpleToast.show('Dữ liệu không hợp lệ');
       return;
     }
-
     try {
       const paragraphingContent = content
         .split('\n')
@@ -93,12 +117,14 @@ function BodyArea({data, refeshFunc, handleClose}) {
         approved,
         title,
         content: paragraphingContent,
+        expriedDate: expiredDate,
       };
+      console.log('pkay', payload);
       handleClose();
       dispatch({type: OPEN_LOADING_MODAL});
       const res = await Axios.post(`${BASE_URL}/admin/notifications`, payload);
       refeshFunc();
-      SimpleToast.show('Đã tạo nhóm thành công');
+      SimpleToast.show('Đã tạo thông báo thành công');
 
       console.log(res.data);
     } catch (error) {
@@ -139,6 +165,28 @@ function BodyArea({data, refeshFunc, handleClose}) {
           />
         )}
 
+        <View style={{padding: 15}}>
+          <Text>Ngày hết hạn</Text>
+          <TouchableWithoutFeedback onPress={() => setShow(true)}>
+            <View>
+              <TextInput
+                placeholder={moment(expiredDate).format('DD/MM/YYYY')}
+                editable={false}
+                onb
+                style={{borderColor: '#eee', borderWidth: 1, borderRadius: 5}}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+          {show && (
+            <DateTimePicker
+              minimumDate={new Date()}
+              timeZoneOffsetInMinutes={0}
+              value={expiredDate}
+              mode="date"
+              onChange={onChange}
+            />
+          )}
+        </View>
         <View
           style={{
             alignItems: 'center',
@@ -158,7 +206,7 @@ function BodyArea({data, refeshFunc, handleClose}) {
         {data.popupTitle === 'Cập nhật' ? (
           <Button onPress={handleSubmit} title="cập nhật" />
         ) : (
-          <Button onPress={createGroup} title="Tạo nhóm" />
+          <Button onPress={createGroup} title="Lưu lại" />
         )}
       </View>
     </>

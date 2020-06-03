@@ -41,6 +41,7 @@ const SendNotificationGroupPopup = props => {
         if (el.selected) groupIds.push(el.id);
       });
       const res = await Axios.post(url, {groupIds});
+      SimpleToast.show('Đã gửi thông báo');
       console.log('res status', res.status);
     } catch (error) {
       SimpleToast.show('Có lỗi xảy ra');

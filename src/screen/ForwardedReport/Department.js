@@ -38,11 +38,14 @@ function Agency() {
   }, [isDataOutdated]);
 
   const loadFeedBack = async start => {
-    let url = `${BASE_URL}/admin/feedbackforwards/department/newFeedbackForwards?limit=10&skip=${start}`;
-    let res = await Axios.get(url);
-
-    if (!loadMore) setReports(res.data);
-    else setReports(prevState => [...prevState, ...res.data]);
+    try {
+      const url = `${BASE_URL}/admin/feedbackforwards/department/newFeedbackForwards?limit=10&skip=${start}`;
+      const res = await Axios.get(url);
+      if (!loadMore) setReports(res.data);
+      else setReports(prevState => [...prevState, ...res.data]);
+    } catch (error) {
+      SimpleToast.show('Có lỗi xảy ra');
+    }
     setLoadMore(false);
     setRefeshing(false);
   };
@@ -62,15 +65,16 @@ function Agency() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
         renderItem={({item}) => (
-          <ListItem
-            report={item}
-            onPress={() => {
-              navigation.navigate('detailReport', {
-                id: item.id,
-              });
-              dispatch({type: UPDATE_FWID, payload: item.fwid});
-            }}
-          />
+          // <ListItem
+          //   report={item}
+          //   onPress={() => {
+          //     navigation.navigate('detailReport', {
+          //       id: item.id,
+          //     });
+          //     dispatch({type: UPDATE_FWID, payload: item.fwid});
+          //   }}
+          // />
+          <Text>asd</Text>
         )}
         ItemSeparatorComponent={() => (
           <View style={{width: width, height: 10}} />

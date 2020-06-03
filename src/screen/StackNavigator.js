@@ -7,7 +7,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import HandledReport from './HandledReport';
 import RecivedReports from './ReceivedReport';
 import CustomDrawerContent from '../components/CustomDrawer';
-import '../service/NotifiService';
+import PushNotificationService from '../service/NotifiService';
 // import ReturnedReport from '../screen/ReturnedReport';
 import BroadCastNotify from './BroadCastNotify';
 import {GET_SUBJECTS, PUT_NOTIFICATION_GROUP} from '../redux/constants';
@@ -143,27 +143,30 @@ export default function StackNavigator() {
     getNotificationGroup();
   }, []);
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#018037',
-        },
-        headerTitleStyle: {
-          color: '#fff',
-        },
-        headerTintColor: '#fff',
-      }}
-      initialRouteName="__drawer__">
-      <Stack.Screen
-        options={{title: 'Chi tiết phản ánh'}}
-        name="detailReport"
-        component={DetailReport}
-      />
-      <Stack.Screen
-        name="__drawer__"
-        options={{headerShown: false, title: ''}}
-        component={DrawerNavigator}
-      />
-    </Stack.Navigator>
+    <>
+      <PushNotificationService />
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#018037',
+          },
+          headerTitleStyle: {
+            color: '#fff',
+          },
+          headerTintColor: '#fff',
+        }}
+        initialRouteName="__drawer__">
+        <Stack.Screen
+          options={{title: 'Chi tiết phản ánh'}}
+          name="detailReport"
+          component={DetailReport}
+        />
+        <Stack.Screen
+          name="__drawer__"
+          options={{headerShown: false, title: ''}}
+          component={DrawerNavigator}
+        />
+      </Stack.Navigator>
+    </>
   );
 }

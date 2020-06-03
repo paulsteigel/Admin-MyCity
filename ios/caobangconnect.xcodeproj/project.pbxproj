@@ -17,7 +17,7 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* caobangconnectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* caobangconnectTests.m */; };
-		4ABF612524875DC80052E032 /* google-services.json in Resources */ = {isa = PBXBuildFile; fileRef = 4ABF612424875DC80052E032 /* google-services.json */; };
+		4A8935E3248783430013E736 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4A8935E2248783430013E736 /* GoogleService-Info.plist */; };
 		C8AD65EAB95187E5AABCA468 /* libPods-caobangconnect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B34664DA725694401A88415 /* libPods-caobangconnect.a */; };
 		F5B5AB5C7D702C2B074BC1E6 /* libPods-caobangconnect-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B450BD53504BAAB94D921E /* libPods-caobangconnect-tvOSTests.a */; };
 		F9E4BC20814421EC08E7F9C7 /* libPods-caobangconnect-caobangconnectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DA0D7EF95B20C55E6EE8BCF /* libPods-caobangconnect-caobangconnectTests.a */; };
@@ -55,7 +55,7 @@
 		2D02E47B1E0B4A5D006451C7 /* caobangconnect-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "caobangconnect-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* caobangconnect-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "caobangconnect-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		33F710BF3A7608FB8A84BA27 /* Pods-caobangconnect-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-caobangconnect-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-caobangconnect-tvOSTests/Pods-caobangconnect-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		4ABF612424875DC80052E032 /* google-services.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "google-services.json"; path = "../android/app/google-services.json"; sourceTree = "<group>"; };
+		4A8935E2248783430013E736 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4ABF612624875E130052E032 /* caobangconnect.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = caobangconnect.entitlements; path = caobangconnect/caobangconnect.entitlements; sourceTree = "<group>"; };
 		5B34664DA725694401A88415 /* libPods-caobangconnect.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-caobangconnect.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FD6CE47C0BDCB5138271192 /* Pods-caobangconnect.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-caobangconnect.debug.xcconfig"; path = "Target Support Files/Pods-caobangconnect/Pods-caobangconnect.debug.xcconfig"; sourceTree = "<group>"; };
@@ -178,7 +178,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				4ABF612424875DC80052E032 /* google-services.json */,
+				4A8935E2248783430013E736 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* caobangconnect */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* caobangconnectTests */,
@@ -347,7 +347,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-				4ABF612524875DC80052E032 /* google-services.json in Resources */,
+				4A8935E3248783430013E736 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

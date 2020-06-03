@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     width: width - 100,
     paddingLeft: 50,
     color: '#fff',
-    paddingVertical: Platform.OS === 'ios' ? 20 : 0,
+    paddingVertical: Platform.OS === 'ios' ? 10 : 0,
   },
   label: {
     textAlign: 'left',

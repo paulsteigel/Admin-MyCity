@@ -7,7 +7,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import HandledReport from './HandledReport';
 import RecivedReports from './ReceivedReport';
 import CustomDrawerContent from '../components/CustomDrawer';
-import '../service/NotifiService';
+import NotifyService from '../service/NotifiService';
 // import ReturnedReport from '../screen/ReturnedReport';
 import BroadCastNotify from './BroadCastNotify';
 import {GET_SUBJECTS, PUT_NOTIFICATION_GROUP} from '../redux/constants';
@@ -143,6 +143,8 @@ export default function StackNavigator() {
     getNotificationGroup();
   }, []);
   return (
+    <>
+    <NotifyService/>
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
@@ -165,5 +167,6 @@ export default function StackNavigator() {
         component={DrawerNavigator}
       />
     </Stack.Navigator>
+    </>
   );
 }

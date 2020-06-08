@@ -144,7 +144,7 @@ export default function StackNavigator() {
   }, []);
   return (
     <>
-    <NotifyService/>
+    <NotifyService>
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
@@ -167,6 +167,7 @@ export default function StackNavigator() {
         component={DrawerNavigator}
       />
     </Stack.Navigator>
+    </NotifyService>
     </>
   );
 }

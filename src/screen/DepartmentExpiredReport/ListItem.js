@@ -51,9 +51,10 @@ export default function ListItem(props) {
               {moment(report.dateExpired).format('DD/MM/YYYY')}
             </Text>
           </View>
-          <View style={{justifyContent: 'center'}}>
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={styles.time}>Chậm</Text>
             <Text style={styles.time}>
-              {`Chậm ${moment(report.dateExpired).diff(new Date(), 'day') *
+              {`${moment(report.dateExpired).diff(new Date(), 'day') *
                 -1} ngày`}
             </Text>
           </View>

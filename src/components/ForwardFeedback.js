@@ -25,12 +25,23 @@ import {
 } from '../redux/constants';
 import RNFetchBlob from 'rn-fetch-blob';
 import Toast from 'react-native-simple-toast';
+
+function getNextWeek() {
+  var today = new Date();
+  var nextweek = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + 7,
+  );
+  return nextweek;
+}
+
 const ForwardFeedback = ({fwid, screen, item, url}) => {
   const [report] = useState(item);
   const [isPermit, setIsPermit] = useState(true);
   const [departmentIds, setDepartmentIds] = useState([]);
   const [agencyIds, setAgencyIds] = useState([]);
-  const [dateExpired, setDateExpired] = useState(new Date());
+  const [dateExpired, setDateExpired] = useState(getNextWeek());
   const [message, setMessage] = useState('');
   const [fileName, setFileName] = useState('');
   const [fileBase64, setFileBase64] = useState('');

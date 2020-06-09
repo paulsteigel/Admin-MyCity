@@ -4,11 +4,11 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import moment from 'moment';
 import {useSelector} from 'react-redux';
 function truncate(str, displayWords) {
-  // if (!str) {
-  //   console.log('rnoe');
+  if (!str) {
+    console.log('rnoe');
 
-  //   return '';
-  // }
+    return '';
+  }
   let result = str;
   result = str.trim().split(' ');
   if (result.length > displayWords) {
@@ -19,7 +19,10 @@ function truncate(str, displayWords) {
 }
 export default function ListItem(props) {
   const {user} = useSelector(state => state.user);
+
   const {report, onPress} = props;
+  console.log(report);
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <View style={styles.cardContent}>
@@ -34,7 +37,7 @@ export default function ListItem(props) {
         </View>
         <View style={styles.cardDescription}>
           <View>
-            <Text style={styles.time}>Hạn xử lý</Text>
+            <Text style={styles.time}>Ngày chuyển</Text>
             <Text style={styles.time}>
               {moment(report.dateExpired).format('DD/MM/YYYY')}
             </Text>
@@ -42,7 +45,7 @@ export default function ListItem(props) {
           <View>
             <Text style={styles.time}>Ngày trả lại</Text>
             <Text style={styles.time}>
-              {moment(report.dateCreate).format('DD/MM/YYYY')}
+              {moment(report.updatedAt).format('DD/MM/YYYY')}
             </Text>
           </View>
         </View>
